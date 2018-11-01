@@ -1,8 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,8 +23,6 @@ import dom.model.user.tdg.UserTDG;
 public class UserServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-	private static final String CONNECTION_STRING = "jdbc:mysql://localhost:3308/pokemon?"
-			+ "user=vartanbeno&password=password";
 	
 	@Override
 	public void init(javax.servlet.ServletConfig config) throws ServletException {
@@ -52,11 +48,9 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		Connection con = null;
 		try {
 			
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			con = DriverManager.getConnection(CONNECTION_STRING);
 			
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
@@ -75,7 +69,6 @@ public class UserServlet extends HttpServlet {
 		}
 		finally {
 			try {
-				con.close();
 				DbRegistry.getDbConnection().close();
 				DbRegistry.closeDbConnectionIfNeeded();
 			}

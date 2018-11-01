@@ -13,7 +13,7 @@ services:
       - "./data:/var/lib/mysql:rw"
       - "./:/docker-entrypoint-initdb.d"
     ports:
-      - "3308:3306"
+      - "3306:3306"
 
   client:
     image: mysql:8
