@@ -24,6 +24,9 @@ public class UserTDG {
 	
 	private static final String DELETE = "DELETE FROM users WHERE id = ? AND version = ?;";
 	
+	private static final String GET_MAX_ID = "SELECT MAX(id) AS max_id FROM users;";
+	private static long maxId = 0;
+	
 	public static ResultSet findAll() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
@@ -97,6 +100,20 @@ public class UserTDG {
 		ps.close();
 		
 		return result;
+	}
+	
+	public static synchronized long getMaxId() throws SQLException {
+		if (maxId == 0) {
+			Connection con = DbRegistry.getDbConnection();
+			
+			PreparedStatement ps = con.prepareStatement(GET_MAX_ID);
+			ResultSet rs = ps.executeQuery();
+			
+			maxId = rs.next() ? rs.getLong("max_id") : 1;
+			rs.close();
+		}
+		
+		return ++maxId;
 	}
 	
 }
