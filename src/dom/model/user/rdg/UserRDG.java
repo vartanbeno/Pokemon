@@ -21,6 +21,9 @@ public class UserRDG {
 	private static final String INSERT = "INSERT INTO users (id, version, username, password) "
 			+ "VALUES (?, ?, ?, ?);";
 	
+	private static final String UPDATE = "UPDATE users SET username = ?, password = ?, version = (version + 1) "
+			+ "WHERE id = ? AND version = ?";
+	
 	private static final String DELETE = "DELETE FROM users WHERE id = ? AND version = ?;";
 	
 	private static final String GET_MAX_ID = "SELECT MAX(id) AS max_id FROM users;";
@@ -136,7 +139,7 @@ public class UserRDG {
 		return user;
 	}
 	
-	public void insert() throws SQLException {
+	public int insert() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
@@ -145,19 +148,38 @@ public class UserRDG {
 		ps.setString(3, username);
 		ps.setString(4, password);
 		
-		ps.executeUpdate();
+		int result = ps.executeUpdate();
 		ps.close();
+		
+		return result;
 	}
 	
-	public void delete() throws SQLException {
+	public int update() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(UPDATE);
+		ps.setString(1, username);
+		ps.setString(2, password);
+		ps.setLong(3, id);
+		ps.setInt(4, version);
+		
+		int result = ps.executeUpdate();
+		ps.close();
+		
+		return result;
+	}
+	
+	public int delete() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
 		ps.setLong(1, id);
 		ps.setInt(2, version);
 		
-		ps.executeUpdate();
+		int result = ps.executeUpdate();
 		ps.close();
+		
+		return result;
 	}
 	
 	public static synchronized long getMaxId() throws SQLException {
