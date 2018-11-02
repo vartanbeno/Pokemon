@@ -30,7 +30,7 @@ public class UserRDG {
 			+ "id BIGINT NOT NULL,"
 			+ "version INT NOT NULL,"
 			+ "username VARCHAR(30) NOT NULL,"
-			+ "password VARCHAR(30) NOT NULL,"
+			+ "password VARCHAR(64) NOT NULL,"
 			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
@@ -45,11 +45,14 @@ public class UserRDG {
 
 	private static final String FIND_BY_USERNAME = String.format("SELECT id, version, username, password "
 			+ "FROM %s WHERE username = ?;", TABLE_NAME);
+	
+	private static final String FIND_BY_USERNAME_AND_PASSWORD = String.format("SELECT id, version, username, password "
+			+ "FROM %s WHERE username = ? AND password = SHA2(?, 256);", TABLE_NAME);
 		
 	private static final String INSERT = String.format("INSERT INTO %s (id, version, username, password) "
-			+ "VALUES (?, ?, ?, ?);", TABLE_NAME);
+			+ "VALUES (?, ?, ?, SHA2(?, 256));", TABLE_NAME);
 	
-	private static final String UPDATE = String.format("UPDATE %s SET username = ?, password = ?, version = (version + 1) "
+	private static final String UPDATE = String.format("UPDATE %s SET username = ?, password = SHA2(?, 256), version = (version + 1) "
 			+ "WHERE id = ? AND version = ?", TABLE_NAME);
 	
 	private static final String DELETE = String.format("DELETE FROM %s WHERE id = ? AND version = ?;", TABLE_NAME);
