@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dom.model.user.IUser;
 import dom.model.user.User;
 import dom.model.user.tdg.UserTDG;;
 
@@ -63,7 +64,7 @@ public class UserMapper {
 		return user;
 	}
 	
-	public static void insert(User user) throws SQLException {
+	public static void insert(IUser user) throws SQLException {
 		UserTDG.insert(
 				user.getId(),
 				user.getVersion(),
@@ -72,7 +73,7 @@ public class UserMapper {
 		);
 	}
 	
-	public static void update(User user) throws SQLException {
+	public static void update(IUser user) throws SQLException {
 		UserTDG.update(
 				user.getId(),
 				user.getVersion(),
@@ -81,7 +82,7 @@ public class UserMapper {
 		);
 	}
 	
-	public static void delete(User user) throws SQLException {
+	public static void delete(IUser user) throws SQLException {
 		UserTDG.delete(
 				user.getId(),
 				user.getVersion()

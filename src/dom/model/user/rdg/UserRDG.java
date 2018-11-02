@@ -75,22 +75,22 @@ public class UserRDG {
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		ResultSet rs = ps.executeQuery();
 		
-		UserRDG user = null;
-		List<UserRDG> users = new ArrayList<UserRDG>();
+		UserRDG userRDG = null;
+		List<UserRDG> userRDGs = new ArrayList<UserRDG>();
 		while(rs.next()) {
-			user = new UserRDG(
+			userRDG = new UserRDG(
 					rs.getLong("id"),
 					rs.getInt("version"),
 					rs.getString("username"),
 					rs.getString("password")
 			);
-			users.add(user);
+			userRDGs.add(userRDG);
 		}
 		
 		rs.close();
 		ps.close();
 		
-		return users;
+		return userRDGs;
 	}
 	
 	public static UserRDG findById(long id) throws SQLException {
@@ -100,9 +100,9 @@ public class UserRDG {
 		ps.setLong(1, id);
 		ResultSet rs = ps.executeQuery();
 		
-		UserRDG user = null;
+		UserRDG userRDG = null;
 		if (rs.next()) {
-			user = new UserRDG(
+			userRDG = new UserRDG(
 					rs.getLong("id"),
 					rs.getInt("version"),
 					rs.getString("username"),
@@ -113,7 +113,7 @@ public class UserRDG {
 		rs.close();
 		ps.close();
 		
-		return user;
+		return userRDG;
 	}
 	
 	public static UserRDG findByUsername(String username) throws SQLException {
@@ -123,9 +123,9 @@ public class UserRDG {
 		ps.setString(1, username);
 		ResultSet rs = ps.executeQuery();
 		
-		UserRDG user = null;
+		UserRDG userRDG = null;
 		if (rs.next()) {
-			user = new UserRDG(
+			userRDG = new UserRDG(
 					rs.getLong("id"),
 					rs.getInt("version"),
 					rs.getString("username"),
@@ -136,7 +136,7 @@ public class UserRDG {
 		rs.close();
 		ps.close();
 		
-		return user;
+		return userRDG;
 	}
 	
 	public int insert() throws SQLException {
