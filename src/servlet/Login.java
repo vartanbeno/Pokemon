@@ -13,11 +13,11 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.user.rdg.UserRDG;
 
-@WebServlet("/Register")
-public class Register extends HttpServlet {
+@WebServlet("/Login")
+public class Login extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-	
+       
 	private static final String SUCCESS_JSP = "/WEB-INF/jsp/success.jsp";
 	private static final String FAILURE_JSP = "/WEB-INF/jsp/fail.jsp";
 		
@@ -32,8 +32,8 @@ public class Register extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-
-    public Register() {
+	
+    public Login() {
         super();
     }
 
@@ -46,18 +46,20 @@ public class Register extends HttpServlet {
 			String username = request.getParameter("user");
 			String password = request.getParameter("pass");
 			
+			UserRDG user = null;
+			
 			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				request.setAttribute("message", "Please enter both a username and a password.");
 				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
 			}
-			else if (UserRDG.findByUsername(username) != null) {
-				request.setAttribute("message", "This username is taken.");
-				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
+			else if ((user = UserRDG.findByUsernameAndPassword(username, password)) != null) {
+				request.setAttribute("message", "Successfully logged in.");
+				request.getSession(true).setAttribute("login", user.getUsername());
+				request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
 			}
 			else {
-				new UserRDG(UserRDG.getMaxId(), 1, username, password).insert();
-				request.setAttribute("message", "Successfully registered.");
-				request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
+				request.setAttribute("message", "Incorrect username and/or password.");
+				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
 			}
 			
 		}

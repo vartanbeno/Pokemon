@@ -187,6 +187,30 @@ public class UserRDG {
 		return userRDG;
 	}
 	
+	public static UserRDG findByUsernameAndPassword(String username, String password) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_BY_USERNAME_AND_PASSWORD);
+		ps.setString(1, username);
+		ps.setString(2, password);
+		ResultSet rs = ps.executeQuery();
+		
+		UserRDG userRDG = null;
+		if (rs.next()) {
+			userRDG = new UserRDG(
+					rs.getLong("id"),
+					rs.getInt("version"),
+					rs.getString("username"),
+					rs.getString("password")
+			);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return userRDG;
+	}
+	
 	public int insert() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
