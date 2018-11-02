@@ -13,7 +13,7 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
 /**
  * 
  * UserRDG: User Row Data Gateway.
- * Points to row(s) in users table.
+ * Points to row(s) in the users table.
  * Provides methods to find, insert, update, and delete users.
  * 
  * Usually bad practice to have create/truncate/drop queries in an RDG, but...
@@ -24,34 +24,37 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
  */
 public class UserRDG {
 	
-	private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS users("
+	private static final String TABLE_NAME = "users";
+	
+	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s("
 			+ "id BIGINT NOT NULL,"
 			+ "version INT NOT NULL,"
 			+ "username VARCHAR(30) NOT NULL,"
 			+ "password VARCHAR(30) NOT NULL,"
 			+ "PRIMARY KEY (id)"
-			+ ") ENGINE=InnoDB;";
+			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
-	private static final String TRUNCATE_TABLE = "TRUNCATE TABLE users";
+	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %s;", TABLE_NAME);
 	
-	private static final String DROP_TABLE = "DROP TABLE IF EXISTS users";
+	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %s;", TABLE_NAME);
 	
-	private static final String FIND_ALL = "SELECT id, version, username, password FROM users;";
+	private static final String FIND_ALL = String.format("SELECT id, version, username, password FROM %s;", TABLE_NAME);
 
-	private static final String FIND_BY_ID = "SELECT id, version, username, password FROM users WHERE id = ?;";
+	private static final String FIND_BY_ID = String.format("SELECT id, version, username, password "
+			+ "FROM %s WHERE id = ?;", TABLE_NAME);
 
-	private static final String FIND_BY_USERNAME = "SELECT id, version, username, password "
-			+ "FROM users WHERE username = ?;";
+	private static final String FIND_BY_USERNAME = String.format("SELECT id, version, username, password "
+			+ "FROM %s WHERE username = ?;", TABLE_NAME);
 		
-	private static final String INSERT = "INSERT INTO users (id, version, username, password) "
-			+ "VALUES (?, ?, ?, ?);";
+	private static final String INSERT = String.format("INSERT INTO %s (id, version, username, password) "
+			+ "VALUES (?, ?, ?, ?);", TABLE_NAME);
 	
-	private static final String UPDATE = "UPDATE users SET username = ?, password = ?, version = (version + 1) "
-			+ "WHERE id = ? AND version = ?";
+	private static final String UPDATE = String.format("UPDATE %s SET username = ?, password = ?, version = (version + 1) "
+			+ "WHERE id = ? AND version = ?", TABLE_NAME);
 	
-	private static final String DELETE = "DELETE FROM users WHERE id = ? AND version = ?;";
+	private static final String DELETE = String.format("DELETE FROM %s WHERE id = ? AND version = ?;", TABLE_NAME);
 	
-	private static final String GET_MAX_ID = "SELECT MAX(id) AS max_id FROM users;";
+	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %s;", TABLE_NAME);
 	private static long maxId = 0;
 		
 	private long id;
