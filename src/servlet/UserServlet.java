@@ -12,9 +12,7 @@ import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 
-import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
-import dom.model.user.tdg.UserTDG;
+import dom.model.user.rdg.UserRDG;
 
 /**
  * Servlet implementation class UserServlet
@@ -59,8 +57,8 @@ public class UserServlet extends HttpServlet {
 				System.out.println("Please enter both a username and a password.");
 			}
 			else {
-				User user = new User(UserTDG.getMaxId(), 1, username, password);
-				UserMapper.insert(user);
+				UserRDG userRDG = new UserRDG(UserRDG.getMaxId(), 1, username, password);
+				userRDG.insert();
 			}
 			
 		}

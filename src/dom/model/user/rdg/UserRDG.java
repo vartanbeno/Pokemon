@@ -4,12 +4,37 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
+/**
+ * 
+ * UserRDG: User Row Data Gateway.
+ * Points to row(s) in users table.
+ * Provides methods to find, insert, update, and delete users.
+ * 
+ * Usually bad practice to have create/truncate/drop queries in an RDG, but...
+ * Let's do this!
+ * 
+ * @author vartanbeno
+ *
+ */
 public class UserRDG {
+	
+	private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS users("
+			+ "id BIGINT NOT NULL,"
+			+ "version INT NOT NULL,"
+			+ "username VARCHAR(30) NOT NULL,"
+			+ "password VARCHAR(30) NOT NULL,"
+			+ "PRIMARY KEY (id)"
+			+ ") ENGINE=InnoDB;";
+	
+	private static final String TRUNCATE_TABLE = "TRUNCATE TABLE users";
+	
+	private static final String DROP_TABLE = "DROP TABLE IF EXISTS users";
 	
 	private static final String FIND_ALL = "SELECT id, version, username, password FROM users;";
 
@@ -67,6 +92,23 @@ public class UserRDG {
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public static void createTable() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		Statement s = con.createStatement();
+		s.execute(CREATE_TABLE);
+	}
+	
+	public static void dropTable() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		Statement s = con.createStatement();
+		s.execute(TRUNCATE_TABLE);
+		
+		s = con.createStatement();
+		s.execute(DROP_TABLE);
 	}
 	
 	public static List<UserRDG> findAll() throws SQLException {
