@@ -46,16 +46,20 @@ public class Register extends HttpServlet {
 			String username = request.getParameter("user");
 			String password = request.getParameter("pass");
 			
+			UserRDG userRDG = null;
+			
 			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				request.setAttribute("message", "Please enter both a username and a password.");
 				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
 			}
-			else if (UserRDG.findByUsername(username) != null) {
+			else if ((userRDG = UserRDG.findByUsername(username)) != null) {
 				request.setAttribute("message", "This username is taken.");
 				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
 			}
 			else {
-				new UserRDG(UserRDG.getMaxId(), 1, username, password).insert();
+				userRDG = new UserRDG(UserRDG.getMaxId(), 1, username, password);
+				userRDG.insert();
+				request.getSession(true).setAttribute("userid", userRDG.getId());
 				request.setAttribute("message", "Successfully registered.");
 				request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
 			}
