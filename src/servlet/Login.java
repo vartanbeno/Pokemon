@@ -46,15 +46,15 @@ public class Login extends HttpServlet {
 			String username = request.getParameter("user");
 			String password = request.getParameter("pass");
 			
-			UserRDG user = null;
+			UserRDG userRDG = null;
 			
 			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				request.setAttribute("message", "Please enter both a username and a password.");
 				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
 			}
-			else if ((user = UserRDG.findByUsernameAndPassword(username, password)) != null) {
+			else if ((userRDG = UserRDG.findByUsernameAndPassword(username, password)) != null) {
+				request.getSession(true).setAttribute("userid", userRDG.getId());
 				request.setAttribute("message", "Successfully logged in.");
-				request.getSession(true).setAttribute("login", user.getUsername());
 				request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
 			}
 			else {
