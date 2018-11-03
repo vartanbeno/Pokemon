@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
+import dom.model.challenge.ChallengeStatus;
 import dom.model.user.rdg.UserRDG;
 
 /**
@@ -50,6 +51,12 @@ public class ChallengeRDG {
 	private static final String FIND_BY_CHALLENGER = String.format("SELECT %1$s FROM %2$s WHERE challenger = ?;", COLUMNS, TABLE_NAME);
 
 	private static final String FIND_BY_CHALLENGEE = String.format("SELECT %1$s FROM %2$s WHERE challengee = ?;", COLUMNS, TABLE_NAME);
+	
+	private static final String FIND_OPEN_BY_CHALLENGER = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE challenger = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
+
+	private static final String FIND_OPEN_BY_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE challengee = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
 			
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
@@ -70,6 +77,13 @@ public class ChallengeRDG {
 		this.challenger = challenger;
 		this.challengee = challengee;
 		this.status = status;
+	}
+	
+	public ChallengeRDG(long id, long challenger, long challengee) {
+		this.id = id;
+		this.challenger = challenger;
+		this.challengee = challengee;
+		this.status = ChallengeStatus.open.ordinal();
 	}
 	
 	public long getId() {
@@ -222,6 +236,56 @@ public class ChallengeRDG {
 		return challengeRDGs;
 	}
 	
+	public static List<ChallengeRDG> findOpenByChallenger(long challenger) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGER);
+		ps.setLong(1, challenger);
+		ResultSet rs = ps.executeQuery();
+		
+		ChallengeRDG challengeRDG = null;
+		List<ChallengeRDG> challengeRDGs = new ArrayList<ChallengeRDG>();
+		if (rs.next()) {
+			challengeRDG = new ChallengeRDG(
+					rs.getLong("id"),
+					rs.getLong("challenger"),
+					rs.getLong("challengee"),
+					rs.getInt("status")
+			);
+			challengeRDGs.add(challengeRDG);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return challengeRDGs;
+	}
+	
+	public static List<ChallengeRDG> findOpenByChallengee(long challengee) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGEE);
+		ps.setLong(1, challengee);
+		ResultSet rs = ps.executeQuery();
+		
+		ChallengeRDG challengeRDG = null;
+		List<ChallengeRDG> challengeRDGs = new ArrayList<ChallengeRDG>();
+		if (rs.next()) {
+			challengeRDG = new ChallengeRDG(
+					rs.getLong("id"),
+					rs.getLong("challenger"),
+					rs.getLong("challengee"),
+					rs.getInt("status")
+			);
+			challengeRDGs.add(challengeRDG);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return challengeRDGs;
+	}
+	
 	public int insert() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
@@ -229,7 +293,7 @@ public class ChallengeRDG {
 		ps.setLong(1, id);
 		ps.setLong(2, challenger);
 		ps.setLong(3, challengee);
-		ps.setInt(4, status);
+		ps.setInt(4, ChallengeStatus.open.ordinal());
 		
 		int result = ps.executeUpdate();
 		ps.close();
