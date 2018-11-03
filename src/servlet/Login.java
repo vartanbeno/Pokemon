@@ -18,6 +18,8 @@ public class Login extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
        
+	private static final String LOGIN_FORM_JSP = "/WEB-INF/jsp/login-form.jsp";
+
 	private static final String SUCCESS_JSP = "/WEB-INF/jsp/success.jsp";
 	private static final String FAILURE_JSP = "/WEB-INF/jsp/fail.jsp";
 		
@@ -38,6 +40,12 @@ public class Login extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		request.getRequestDispatcher(LOGIN_FORM_JSP).forward(request, response);
+		
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
@@ -67,10 +75,6 @@ public class Login extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
 	}
 
 }
