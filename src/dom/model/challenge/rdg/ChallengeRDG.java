@@ -287,6 +287,14 @@ public class ChallengeRDG {
 	}
 	
 	public int insert() throws SQLException {
+		
+		if (challenger == challengee) {
+			System.err.println("The challenger and challengee cannot be the same.\n"
+					+ "One cannot challenge him/herself.");
+			
+			return 0;
+		}
+		
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
