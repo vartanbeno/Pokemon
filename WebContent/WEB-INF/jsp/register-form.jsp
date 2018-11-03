@@ -10,7 +10,7 @@
 
 <h2>Register</h2>
 
-<form method="POST">
+<form method="POST" autocomplete="off">
 	<label for="user">Username: </label>
 	<input type="text" name="user" />
 	

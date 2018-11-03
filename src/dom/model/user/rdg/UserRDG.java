@@ -26,7 +26,9 @@ public class UserRDG {
 	
 	private static final String TABLE_NAME = "users";
 	
-	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s("
+	private static final String COLUMNS = "id, version, username, password";
+	
+	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
 			+ "version INT NOT NULL,"
 			+ "username VARCHAR(30) NOT NULL,"
@@ -34,30 +36,27 @@ public class UserRDG {
 			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
-	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %s;", TABLE_NAME);
+	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
-	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %s;", TABLE_NAME);
+	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
 	
-	private static final String FIND_ALL = String.format("SELECT id, version, username, password FROM %s;", TABLE_NAME);
+	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", COLUMNS, TABLE_NAME);
 
-	private static final String FIND_BY_ID = String.format("SELECT id, version, username, password "
-			+ "FROM %s WHERE id = ?;", TABLE_NAME);
+	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s WHERE id = ?;", COLUMNS, TABLE_NAME);
 
-	private static final String FIND_BY_USERNAME = String.format("SELECT id, version, username, password "
-			+ "FROM %s WHERE username = ?;", TABLE_NAME);
+	private static final String FIND_BY_USERNAME = String.format("SELECT %1$s FROM %2$s WHERE username = ?;", COLUMNS, TABLE_NAME);
 	
-	private static final String FIND_BY_USERNAME_AND_PASSWORD = String.format("SELECT id, version, username, password "
-			+ "FROM %s WHERE username = ? AND password = SHA2(?, 256);", TABLE_NAME);
+	private static final String FIND_BY_USERNAME_AND_PASSWORD = String.format("SELECT %1$s "
+			+ "FROM %2$s WHERE username = ? AND password = SHA2(?, 256);", COLUMNS, TABLE_NAME);
 		
-	private static final String INSERT = String.format("INSERT INTO %s (id, version, username, password) "
-			+ "VALUES (?, ?, ?, SHA2(?, 256));", TABLE_NAME);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, SHA2(?, 256));", TABLE_NAME, COLUMNS);
 	
-	private static final String UPDATE = String.format("UPDATE %s SET username = ?, password = SHA2(?, 256), version = (version + 1) "
-			+ "WHERE id = ? AND version = ?", TABLE_NAME);
+	private static final String UPDATE = String.format("UPDATE %1$s SET username = ?, password = SHA2(?, 256), version = (version + 1) "
+			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
 	
-	private static final String DELETE = String.format("DELETE FROM %s WHERE id = ? AND version = ?;", TABLE_NAME);
+	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
 	
-	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %s;", TABLE_NAME);
+	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
 	private static long maxId = 0;
 		
 	private long id;
@@ -98,6 +97,10 @@ public class UserRDG {
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public static String getTableName() {
+		return TABLE_NAME;
 	}
 	
 	public static void createTable() throws SQLException {

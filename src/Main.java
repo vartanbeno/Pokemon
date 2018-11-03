@@ -1,6 +1,7 @@
 import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
+import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.user.rdg.UserRDG;
 
 public class Main {
@@ -17,6 +18,7 @@ public class Main {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 			
 			UserRDG.createTable();
+			ChallengeRDG.createTable();
 			
 		} catch (Exception e) {
 			
