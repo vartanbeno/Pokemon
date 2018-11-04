@@ -6,32 +6,16 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.dsrg.soenea.service.MySQLConnectionFactory;
-import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.user.rdg.UserRDG;
 
 @WebServlet("/ChallengePlayer")
-public class ChallengePlayer extends HttpServlet {
+public class ChallengePlayer extends PageController {
 	
 	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public void init(javax.servlet.ServletConfig config) throws ServletException {
-		try {
-			String key = "";
-			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(null, null, null, null);
-			connectionFactory.defaultInitialization();
-			DbRegistry.setConFactory(key, connectionFactory);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
     public ChallengePlayer() {
         super();
@@ -40,31 +24,32 @@ public class ChallengePlayer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-			
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			
-			long challenger = 0;
+						
+			Long challenger = null;
 			try {
 				challenger = (long) request.getSession(true).getAttribute("userid");
+				
+				List<UserRDG> userRDGs = UserRDG.findAll();
+				List<String> usernames = new ArrayList<String>();
+				for (UserRDG userRDG : userRDGs) {
+					if (userRDG.getId() != challenger) {
+						usernames.add(userRDG.getUsername());
+					}
+				}
+				
+				request.setAttribute("usernames", usernames);
+				request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
 			}
 			catch (NullPointerException e) {
 				response.sendRedirect(request.getContextPath() + "/Login");
 			}
 			
-			List<UserRDG> userRDGs = UserRDG.findAll();
-			List<String> usernames = new ArrayList<String>();
-			for (UserRDG userRDG : userRDGs) {
-				if (userRDG.getId() != challenger) {
-					usernames.add(userRDG.getUsername());
-				}
-			}
-			
-			request.setAttribute("usernames", usernames);
-			request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
-			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		}
+		finally {
+			closeDb();
 		}
 
 	}
@@ -72,29 +57,27 @@ public class ChallengePlayer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-			
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			
+						
 			String username = request.getParameter("user");
 			
 			long challenger = (long) request.getSession(true).getAttribute("userid");
 			UserRDG challengee = UserRDG.findByUsername(username);
 			
 			if (challenger == challengee.getId()) {
-				request.setAttribute("message", "You have challenged yourself. You are not allowed to do that");
-				request.getRequestDispatcher(Global.FAILURE).forward(request, response);
+				failure(request, response, "You have challenged yourself. You are not allowed to do that");
 			}
 			else {
 				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee.getId());
 				challengeRDG.insert();
-				
-				request.setAttribute("message", String.format("You have successfuly challenged %s to a match.", challengee.getUsername()));
-				request.getRequestDispatcher(Global.SUCCESS).forward(request, response);
+				success(request, response, String.format("You have successfuly challenged %s to a match.", challengee.getUsername()));
 			}
 			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		}
+		finally {
+			closeDb();
 		}
 		
 	}

@@ -1,8 +1,6 @@
-import org.dsrg.soenea.service.MySQLConnectionFactory;
-import org.dsrg.soenea.service.threadLocal.DbRegistry;
-
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.user.rdg.UserRDG;
+import servlet.PageController;
 
 public class Main {
 
@@ -10,20 +8,14 @@ public class Main {
 				
 		try {
 			
-			String key = "";
-			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(null, null, null, null);
-			connectionFactory.defaultInitialization();
-			DbRegistry.setConFactory(key, connectionFactory);
-			
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			
+			PageController.initDb();
+						
 			UserRDG.createTable();
 			ChallengeRDG.createTable();
 			
-		} catch (Exception e) {
-			
+		}
+		catch (Exception e) {
 			e.printStackTrace();
-			
 		}
 		
 	}
