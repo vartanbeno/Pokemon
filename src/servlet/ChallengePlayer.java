@@ -64,12 +64,16 @@ public class ChallengePlayer extends PageController {
 			long challenger = (long) request.getSession(true).getAttribute("userid");
 			long challengee = Long.parseLong(request.getParameter("challengee"));
 			UserRDG userRDG = UserRDG.findById(challengee);
+			ChallengeRDG challengeRDG = null;
 			
 			if (challenger == challengee) {
 				failure(request, response, "You have challenged yourself. You are not allowed to do that");
 			}
+			else if ((challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challenger, challengee)) != null) {
+				failure(request, response, String.format("You already have an open challenge against %s.", userRDG.getUsername()));
+			}
 			else {
-				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
+				challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
 				challengeRDG.insert();
 				success(request, response, String.format("You have successfully challenged %s to a game.", userRDG.getUsername()));
 			}
