@@ -1,3 +1,4 @@
+import dom.model.card.rdg.CardRDG;
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.user.rdg.UserRDG;
 import servlet.PageController;
@@ -12,6 +13,7 @@ public class Main {
 						
 			UserRDG.createTable();
 			ChallengeRDG.createTable();
+			CardRDG.createTable();
 			
 		}
 		catch (Exception e) {
