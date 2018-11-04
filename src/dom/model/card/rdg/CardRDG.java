@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
+import dom.model.card.CardType;
+
 /**
  * 
  * Card RDG: Card Row Data Gateway.
@@ -121,31 +123,31 @@ public class CardRDG {
 	}
 	
 	private static void insertCards() throws SQLException {
-		new CardRDG(getMaxId(), "e", "Fire").insert();
-		new CardRDG(getMaxId(), "p", "Charizard").insert();
-		new CardRDG(getMaxId(), "p", "Meowth").insert();
-		new CardRDG(getMaxId(), "t", "Misty").insert();
-		new CardRDG(getMaxId(), "e", "Water").insert();
-		new CardRDG(getMaxId(), "t", "Brock").insert();
-		new CardRDG(getMaxId(), "p", "Pikachu").insert();
-		new CardRDG(getMaxId(), "e", "Electric").insert();
-		new CardRDG(getMaxId(), "t", "Ash").insert();
-		new CardRDG(getMaxId(), "e", "Grass").insert();
-		new CardRDG(getMaxId(), "p", "Blaziken").insert();
-		new CardRDG(getMaxId(), "p", "Bulbasaur").insert();
-		new CardRDG(getMaxId(), "p", "Magikarp").insert();
-		new CardRDG(getMaxId(), "e", "Poison").insert();
-		new CardRDG(getMaxId(), "e", "Flying").insert();
-		new CardRDG(getMaxId(), "e", "Dragon").insert();
-		new CardRDG(getMaxId(), "p", "Groudon").insert();
-		new CardRDG(getMaxId(), "p", "Snorlax").insert();
-		new CardRDG(getMaxId(), "t", "Jessie").insert();
-		new CardRDG(getMaxId(), "t", "James").insert();
-		new CardRDG(getMaxId(), "t", "Jessie").insert();
-		new CardRDG(getMaxId(), "p", "Onyx").insert();
-		new CardRDG(getMaxId(), "p", "Eevee").insert();
-		new CardRDG(getMaxId(), "p", "Mew").insert();
-		new CardRDG(getMaxId(), "p", "Mewtwo").insert();
+		new CardRDG(getMaxId(), CardType.e.name(), "Fire").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Charizard").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Meowth").insert();
+		new CardRDG(getMaxId(), CardType.t.name(), "Misty").insert();
+		new CardRDG(getMaxId(), CardType.e.name(), "Water").insert();
+		new CardRDG(getMaxId(), CardType.t.name(), "Brock").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Pikachu").insert();
+		new CardRDG(getMaxId(), CardType.e.name(), "Electric").insert();
+		new CardRDG(getMaxId(), CardType.t.name(), "Ash").insert();
+		new CardRDG(getMaxId(), CardType.e.name(), "Grass").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Blaziken").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Bulbasaur").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Magikarp").insert();
+		new CardRDG(getMaxId(), CardType.e.name(), "Poison").insert();
+		new CardRDG(getMaxId(), CardType.e.name(), "Flying").insert();
+		new CardRDG(getMaxId(), CardType.e.name(), "Dragon").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Groudon").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Snorlax").insert();
+		new CardRDG(getMaxId(), CardType.t.name(), "Jessie").insert();
+		new CardRDG(getMaxId(), CardType.t.name(), "James").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Jigglypuff").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Onyx").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Eevee").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Mew").insert();
+		new CardRDG(getMaxId(), CardType.p.name(), "Mewtwo").insert();
 	}
 	
 	public static List<CardRDG> findAll() throws SQLException {
