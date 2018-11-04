@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Challenge a Player</title>
 </head>
 <body>
 
@@ -14,7 +14,7 @@
 <form method="POST" autocomplete="off">
 	<label for="challengee">Challengee: </label>
 	<select name="challengee" required>
-		<option value="" selected disabled>Choose a user</option>
+		<option value="" selected disabled>Choose a player</option>
 		<c:forEach items="${users}" var="user">
 			<option value="${user.id}">${user.username}</option>
 		</c:forEach>
