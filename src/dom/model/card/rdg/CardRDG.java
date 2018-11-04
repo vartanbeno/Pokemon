@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
-import com.mysql.cj.jdbc.DatabaseMetaData;
-
 /**
  * 
  * Card RDG: Card Row Data Gateway.
@@ -36,7 +34,7 @@ public class CardRDG {
 			+ "id BIGINT NOT NULL,"
 			+ "type VARCHAR(1) NOT NULL,"
 			+ "name VARCHAR(30) NOT NULL,"
-			+ "PRIMARY KEY (type, name)"
+			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
@@ -104,8 +102,15 @@ public class CardRDG {
 	public static void createTable() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
+		ResultSet rs = con.getMetaData().getTables(null, null, TABLE_NAME, null);
+		boolean tableExists = rs.next();
+		
 		Statement s = con.createStatement();
 		s.execute(CREATE_TABLE);
+		
+		if (!tableExists) {
+			insertCards();
+		}
 	}
 	
 	public static void dropTable() throws SQLException {
@@ -116,6 +121,34 @@ public class CardRDG {
 		
 		s = con.createStatement();
 		s.execute(DROP_TABLE);
+	}
+	
+	private static void insertCards() throws SQLException {
+		new CardRDG(getMaxId(), "e", "Fire").insert();
+		new CardRDG(getMaxId(), "p", "Charizard").insert();
+		new CardRDG(getMaxId(), "p", "Meowth").insert();
+		new CardRDG(getMaxId(), "t", "Misty").insert();
+		new CardRDG(getMaxId(), "e", "Water").insert();
+		new CardRDG(getMaxId(), "t", "Brock").insert();
+		new CardRDG(getMaxId(), "p", "Pikachu").insert();
+		new CardRDG(getMaxId(), "e", "Electric").insert();
+		new CardRDG(getMaxId(), "t", "Ash").insert();
+		new CardRDG(getMaxId(), "e", "Grass").insert();
+		new CardRDG(getMaxId(), "p", "Blaziken").insert();
+		new CardRDG(getMaxId(), "p", "Bulbasaur").insert();
+		new CardRDG(getMaxId(), "p", "Magikarp").insert();
+		new CardRDG(getMaxId(), "e", "Poison").insert();
+		new CardRDG(getMaxId(), "e", "Flying").insert();
+		new CardRDG(getMaxId(), "e", "Dragon").insert();
+		new CardRDG(getMaxId(), "p", "Groudon").insert();
+		new CardRDG(getMaxId(), "p", "Snorlax").insert();
+		new CardRDG(getMaxId(), "t", "Jessie").insert();
+		new CardRDG(getMaxId(), "t", "James").insert();
+		new CardRDG(getMaxId(), "t", "Jessie").insert();
+		new CardRDG(getMaxId(), "p", "Onyx").insert();
+		new CardRDG(getMaxId(), "p", "Eevee").insert();
+		new CardRDG(getMaxId(), "p", "Mew").insert();
+		new CardRDG(getMaxId(), "p", "Mewtwo").insert();
 	}
 	
 	public static List<CardRDG> findAll() throws SQLException {
