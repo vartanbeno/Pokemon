@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -24,20 +23,14 @@ public class ChallengePlayer extends PageController {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-						
-			Long challenger = null;
+			
 			try {
-				challenger = (long) request.getSession(true).getAttribute("userid");
+				final long challenger = (long) request.getSession(true).getAttribute("userid");
 				
 				List<UserRDG> userRDGs = UserRDG.findAll();
-				List<String> usernames = new ArrayList<String>();
-				for (UserRDG userRDG : userRDGs) {
-					if (userRDG.getId() != challenger) {
-						usernames.add(userRDG.getUsername());
-					}
-				}
+				userRDGs.removeIf(userRDG -> userRDG.getId() == challenger);
 				
-				request.setAttribute("usernames", usernames);
+				request.setAttribute("users", userRDGs);
 				request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
 			}
 			catch (NullPointerException e) {
@@ -57,19 +50,18 @@ public class ChallengePlayer extends PageController {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-						
-			String username = request.getParameter("user");
-			
+									
 			long challenger = (long) request.getSession(true).getAttribute("userid");
-			UserRDG challengee = UserRDG.findByUsername(username);
+			long challengee = Long.parseLong(request.getParameter("challengee"));
+			UserRDG userRDG = UserRDG.findById(challengee);
 			
-			if (challenger == challengee.getId()) {
+			if (challenger == challengee) {
 				failure(request, response, "You have challenged yourself. You are not allowed to do that");
 			}
 			else {
-				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee.getId());
+				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
 				challengeRDG.insert();
-				success(request, response, String.format("You have successfuly challenged %s to a match.", challengee.getUsername()));
+				success(request, response, String.format("You have successfuly challenged %s to a match.", userRDG.getUsername()));
 			}
 			
 		}

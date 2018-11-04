@@ -29,9 +29,8 @@ public class Logout extends PageController {
 		
 		try {
 						
-			Long id = null;
 			try {
-				id = (long) request.getSession(true).getAttribute("userid");
+				long id = (long) request.getSession(true).getAttribute("userid");
 				
 				UserRDG userRDG = UserRDG.findById(id);
 				
