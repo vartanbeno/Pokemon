@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -8,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
 
 @WebServlet("/ListPlayers")
@@ -25,7 +27,14 @@ public class ListPlayers extends PageController {
 						
 			List<UserRDG> userRDGs = UserRDG.findAll();
 			
-			request.setAttribute("players", userRDGs);
+			List<UserHelper> users = new ArrayList<UserHelper>();
+			for (UserRDG userRDG : userRDGs) {
+				users.add(
+					new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
+				);
+			}
+			
+			request.setAttribute("players", users);
 			request.getRequestDispatcher(Global.LIST_PLAYERS).forward(request, response);
 			
 		}

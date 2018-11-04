@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.rdg.ChallengeRDG;
+import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
 
 @WebServlet("/ChallengePlayer")
@@ -28,9 +30,17 @@ public class ChallengePlayer extends PageController {
 				final long challenger = (long) request.getSession(true).getAttribute("userid");
 				
 				List<UserRDG> userRDGs = UserRDG.findAll();
-				userRDGs.removeIf(userRDG -> userRDG.getId() == challenger);
 				
-				request.setAttribute("users", userRDGs);
+				List<UserHelper> users = new ArrayList<UserHelper>();
+				for (UserRDG userRDG : userRDGs) {
+					users.add(
+						new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
+					);
+				}
+				
+				users.removeIf(user -> user.getId() == challenger);
+				
+				request.setAttribute("users", users);
 				request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
 			}
 			catch (NullPointerException e) {
@@ -61,7 +71,7 @@ public class ChallengePlayer extends PageController {
 			else {
 				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
 				challengeRDG.insert();
-				success(request, response, String.format("You have successfuly challenged %s to a match.", userRDG.getUsername()));
+				success(request, response, String.format("You have successfully challenged %s to a match.", userRDG.getUsername()));
 			}
 			
 		}
