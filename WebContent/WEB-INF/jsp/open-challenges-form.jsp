@@ -14,10 +14,16 @@
 <h4>You have ${fn:length(challenges)} open challenges.</h4>
 
 <c:forEach items="${challenges}" var="challenge">
-	<form method="POST">
-		<span>${challenge.challenger.username}</span>
+	<span>${challenge.challenger.username}</span>
+	
+	<form method="POST" action="${pageContext.request.contextPath}/AcceptChallenge">
 		<input type="hidden" name="challenger" value="${challenge.challenger.id}" />
 		<button type="submit">Accept</button>
+	</form>
+	
+	<form method="POST" action="${pageContext.request.contextPath}/RefuseChallenge">
+		<input type="hidden" name="challenger" value="${challenge.challenger.id}" />
+		<button type="submit">Refuse</button>
 	</form>
 </c:forEach>
 

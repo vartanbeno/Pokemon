@@ -11,17 +11,17 @@ import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.user.rdg.UserRDG;
 
-@WebServlet("/AcceptChallenge")
-public class AcceptChallenge extends PageController {
+@WebServlet("/RefuseChallenge")
+public class RefuseChallenge extends PageController {
 	
 	private static final long serialVersionUID = 1L;
-
-    public AcceptChallenge() {
+       
+    public RefuseChallenge() {
         super();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	response.sendRedirect(request.getContextPath() + "/OpenChallenges");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.sendRedirect(request.getContextPath() + "/OpenChallenges");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,15 +35,15 @@ public class AcceptChallenge extends PageController {
 			ChallengeRDG challenge = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
 			
 			if (challengerId == challengeeId) {
-				failure(request, response, "You have accepted a challenge against yourself. You are not allowed to do that");
+				failure(request, response, "You have refused a challenge against yourself. You are not allowed to do that");
 			}
 			else if (challenge == null) {
 				failure(request, response, String.format("An open challenge against %s does not exist.", challenger.getUsername()));
 			}
 			else {
-				challenge.setStatus(ChallengeStatus.accepted.ordinal());
+				challenge.setStatus(ChallengeStatus.refused.ordinal());
 				challenge.update();
-				success(request, response, String.format("You have successfully accepted %s's challenge.", challenger.getUsername()));
+				success(request, response, String.format("You have successfully reefused %s's challenge.", challenger.getUsername()));
 			}
 			
 		}
