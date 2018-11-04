@@ -19,8 +19,6 @@ public class ListChallenges extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String LIST_CHALLENGES_JSP = "/WEB-INF/jsp/list-challenges.jsp";
-
 	@Override
 	public void init(javax.servlet.ServletConfig config) throws ServletException {
 		try {
@@ -46,7 +44,7 @@ public class ListChallenges extends HttpServlet {
 			List<ChallengeRDG> challengeRDGs = ChallengeRDG.findAll();
 			
 			request.setAttribute("challenges", challengeRDGs);
-			request.getRequestDispatcher(LIST_CHALLENGES_JSP).forward(request, response);
+			request.getRequestDispatcher(Global.LIST_CHALLENGES).forward(request, response);
 			
 		}
 		catch (Exception e) {

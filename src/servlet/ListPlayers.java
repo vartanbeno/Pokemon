@@ -19,8 +19,6 @@ public class ListPlayers extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String LIST_PLAYERS_JSP = "/WEB-INF/jsp/list-players.jsp";
-
 	@Override
 	public void init(javax.servlet.ServletConfig config) throws ServletException {
 		try {
@@ -46,7 +44,7 @@ public class ListPlayers extends HttpServlet {
 			List<UserRDG> userRDGs = UserRDG.findAll();
 			
 			request.setAttribute("players", userRDGs);
-			request.getRequestDispatcher(LIST_PLAYERS_JSP).forward(request, response);
+			request.getRequestDispatcher(Global.LIST_PLAYERS).forward(request, response);
 			
 		}
 		catch (Exception e) {

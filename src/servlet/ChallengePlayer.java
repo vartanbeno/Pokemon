@@ -21,10 +21,6 @@ public class ChallengePlayer extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String SUCCESS_JSP = "/WEB-INF/jsp/success.jsp";
-	private static final String FAILURE_JSP = "/WEB-INF/jsp/fail.jsp";
-	private static final String CHALLENGE_FORM_JSP = "/WEB-INF/jsp/challenge-form.jsp";
-	
 	@Override
 	public void init(javax.servlet.ServletConfig config) throws ServletException {
 		try {
@@ -64,7 +60,7 @@ public class ChallengePlayer extends HttpServlet {
 			}
 			
 			request.setAttribute("usernames", usernames);
-			request.getRequestDispatcher(CHALLENGE_FORM_JSP).forward(request, response);
+			request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
 			
 		}
 		catch (Exception e) {
@@ -82,18 +78,18 @@ public class ChallengePlayer extends HttpServlet {
 			String username = request.getParameter("user");
 			
 			long challenger = (long) request.getSession(true).getAttribute("userid");
-			long challengee = UserRDG.findByUsername(username).getId();
+			UserRDG challengee = UserRDG.findByUsername(username);
 			
-			if (challenger == challengee) {
+			if (challenger == challengee.getId()) {
 				request.setAttribute("message", "You have challenged yourself. You are not allowed to do that");
-				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
+				request.getRequestDispatcher(Global.FAILURE).forward(request, response);
 			}
 			else {
-				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
+				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee.getId());
 				challengeRDG.insert();
 				
-				request.setAttribute("message", String.format("You have successfuly challenged %s to a match.", username));
-				request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
+				request.setAttribute("message", String.format("You have successfuly challenged %s to a match.", challengee.getUsername()));
+				request.getRequestDispatcher(Global.SUCCESS).forward(request, response);
 			}
 			
 		}

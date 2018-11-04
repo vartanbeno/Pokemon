@@ -14,8 +14,6 @@ public class Logout extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String SUCCESS_JSP = "/WEB-INF/jsp/success.jsp";
-
     public Logout() {
         super();
     }
@@ -31,7 +29,7 @@ public class Logout extends HttpServlet {
 			
 			request.getSession(true).invalidate();
 			request.setAttribute("message", String.format("User %s has successfully logged out.", userRDG.getUsername()));
-			request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
+			request.getRequestDispatcher(Global.SUCCESS).forward(request, response);
 			
 		}
 		catch (Exception e) {

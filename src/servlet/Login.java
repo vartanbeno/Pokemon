@@ -17,11 +17,6 @@ import dom.model.user.rdg.UserRDG;
 public class Login extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-       
-	private static final String LOGIN_FORM_JSP = "/WEB-INF/jsp/login-form.jsp";
-
-	private static final String SUCCESS_JSP = "/WEB-INF/jsp/success.jsp";
-	private static final String FAILURE_JSP = "/WEB-INF/jsp/fail.jsp";
 		
 	@Override
 	public void init(javax.servlet.ServletConfig config) throws ServletException {
@@ -41,7 +36,7 @@ public class Login extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		request.getRequestDispatcher(LOGIN_FORM_JSP).forward(request, response);
+		request.getRequestDispatcher(Global.LOGIN_FORM).forward(request, response);
 		
 	}
 
@@ -58,16 +53,16 @@ public class Login extends HttpServlet {
 			
 			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				request.setAttribute("message", "Please enter both a username and a password.");
-				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
+				request.getRequestDispatcher(Global.FAILURE).forward(request, response);
 			}
 			else if ((userRDG = UserRDG.findByUsernameAndPassword(username, password)) != null) {
 				request.getSession(true).setAttribute("userid", userRDG.getId());
 				request.setAttribute("message", "Successfully logged in.");
-				request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
+				request.getRequestDispatcher(Global.SUCCESS).forward(request, response);
 			}
 			else {
 				request.setAttribute("message", "Incorrect username and/or password.");
-				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
+				request.getRequestDispatcher(Global.FAILURE).forward(request, response);
 			}
 			
 		}

@@ -18,11 +18,6 @@ public class Register extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String REGISTER_FORM_JSP = "/WEB-INF/jsp/register-form.jsp";
-	
-	private static final String SUCCESS_JSP = "/WEB-INF/jsp/success.jsp";
-	private static final String FAILURE_JSP = "/WEB-INF/jsp/fail.jsp";
-		
 	@Override
 	public void init(javax.servlet.ServletConfig config) throws ServletException {
 		try {
@@ -41,7 +36,7 @@ public class Register extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		request.getRequestDispatcher(REGISTER_FORM_JSP).forward(request, response);
+		request.getRequestDispatcher(Global.REGISTER_FORM).forward(request, response);
 		
 	}
 
@@ -58,18 +53,18 @@ public class Register extends HttpServlet {
 			
 			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				request.setAttribute("message", "Please enter both a username and a password.");
-				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
+				request.getRequestDispatcher(Global.FAILURE).forward(request, response);
 			}
 			else if ((userRDG = UserRDG.findByUsername(username)) != null) {
 				request.setAttribute("message", "This username is taken.");
-				request.getRequestDispatcher(FAILURE_JSP).forward(request, response);
+				request.getRequestDispatcher(Global.FAILURE).forward(request, response);
 			}
 			else {
 				userRDG = new UserRDG(UserRDG.getMaxId(), 1, username, password);
 				userRDG.insert();
 				request.getSession(true).setAttribute("userid", userRDG.getId());
 				request.setAttribute("message", "Successfully registered.");
-				request.getRequestDispatcher(SUCCESS_JSP).forward(request, response);
+				request.getRequestDispatcher(Global.SUCCESS).forward(request, response);
 			}
 			
 		}
