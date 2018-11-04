@@ -128,7 +128,7 @@ public class UserRDG {
 		
 		UserRDG userRDG = null;
 		List<UserRDG> userRDGs = new ArrayList<UserRDG>();
-		while(rs.next()) {
+		while (rs.next()) {
 			userRDG = new UserRDG(
 					rs.getLong("id"),
 					rs.getInt("version"),

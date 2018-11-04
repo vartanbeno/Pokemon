@@ -147,7 +147,7 @@ public class ChallengeRDG {
 		
 		ChallengeRDG challengeRDG = null;
 		List<ChallengeRDG> challengeRDGs = new ArrayList<ChallengeRDG>();
-		while(rs.next()) {
+		while (rs.next()) {
 			challengeRDG = new ChallengeRDG(
 					rs.getLong("id"),
 					rs.getLong("challenger"),
@@ -195,7 +195,7 @@ public class ChallengeRDG {
 		
 		ChallengeRDG challengeRDG = null;
 		List<ChallengeRDG> challengeRDGs = new ArrayList<ChallengeRDG>();
-		if (rs.next()) {
+		while (rs.next()) {
 			challengeRDG = new ChallengeRDG(
 					rs.getLong("id"),
 					rs.getLong("challenger"),
@@ -220,7 +220,7 @@ public class ChallengeRDG {
 		
 		ChallengeRDG challengeRDG = null;
 		List<ChallengeRDG> challengeRDGs = new ArrayList<ChallengeRDG>();
-		if (rs.next()) {
+		while (rs.next()) {
 			challengeRDG = new ChallengeRDG(
 					rs.getLong("id"),
 					rs.getLong("challenger"),
@@ -245,7 +245,7 @@ public class ChallengeRDG {
 		
 		ChallengeRDG challengeRDG = null;
 		List<ChallengeRDG> challengeRDGs = new ArrayList<ChallengeRDG>();
-		if (rs.next()) {
+		while (rs.next()) {
 			challengeRDG = new ChallengeRDG(
 					rs.getLong("id"),
 					rs.getLong("challenger"),
@@ -270,7 +270,7 @@ public class ChallengeRDG {
 		
 		ChallengeRDG challengeRDG = null;
 		List<ChallengeRDG> challengeRDGs = new ArrayList<ChallengeRDG>();
-		if (rs.next()) {
+		while (rs.next()) {
 			challengeRDG = new ChallengeRDG(
 					rs.getLong("id"),
 					rs.getLong("challenger"),
