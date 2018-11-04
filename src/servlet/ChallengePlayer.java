@@ -26,8 +26,16 @@ public class ChallengePlayer extends PageController {
 		
 		try {
 			
+			Long challenger = null;
 			try {
-				final long challenger = (long) request.getSession(true).getAttribute("userid");
+				challenger = (long) request.getSession(true).getAttribute("userid");
+			}
+			catch (NullPointerException e) {
+				failure(request, response, "You must be logged in to issue a challenge to a player.");
+			}
+			
+			if (challenger != null) {
+				final long id = challenger;
 				
 				List<UserRDG> userRDGs = UserRDG.findAll();
 				
@@ -38,15 +46,12 @@ public class ChallengePlayer extends PageController {
 					);
 				}
 				
-				users.removeIf(user -> user.getId() == challenger);
+				users.removeIf(user -> user.getId() == id);
 				
 				request.setAttribute("users", users);
 				request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
 			}
-			catch (NullPointerException e) {
-				response.sendRedirect(request.getContextPath() + "/Login");
-			}
-			
+				
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -60,22 +65,31 @@ public class ChallengePlayer extends PageController {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-									
-			long challenger = (long) request.getSession(true).getAttribute("userid");
-			long challengee = Long.parseLong(request.getParameter("challengee"));
-			UserRDG userRDG = UserRDG.findById(challengee);
-			ChallengeRDG challengeRDG = null;
 			
-			if (challenger == challengee) {
-				failure(request, response, "You have challenged yourself. You are not allowed to do that");
+			Long challenger = null;
+			try {
+				challenger = (long) request.getSession(true).getAttribute("userid");
 			}
-			else if ((challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challenger, challengee)) != null) {
-				failure(request, response, String.format("You already have an open challenge against %s.", userRDG.getUsername()));
+			catch (NullPointerException e) {
+				failure(request, response, "You must be logged in to issue a challenge to a player.");
 			}
-			else {
-				challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
-				challengeRDG.insert();
-				success(request, response, String.format("You have successfully challenged %s to a game.", userRDG.getUsername()));
+
+			if (challenger != null) {
+				long challengee = Long.parseLong(request.getParameter("challengee"));
+				UserRDG userRDG = UserRDG.findById(challengee);
+				ChallengeRDG challengeRDG = null;
+				
+				if (challenger == challengee) {
+					failure(request, response, "You have challenged yourself. You are not allowed to do that");
+				}
+				else if ((challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challenger, challengee)) != null) {
+					failure(request, response, String.format("You already have an open challenge against %s.", userRDG.getUsername()));
+				}
+				else {
+					challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
+					challengeRDG.insert();
+					success(request, response, String.format("You have successfully challenged %s to a game.", userRDG.getUsername()));
+				}
 			}
 			
 		}

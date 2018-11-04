@@ -28,22 +28,31 @@ public class RefuseChallenge extends PageController {
 		
 		try {
 			
-			long challengeeId = (long) request.getSession(true).getAttribute("userid");
-			long challengerId = Long.parseLong(request.getParameter("challenger"));
-			UserRDG challenger = UserRDG.findById(challengerId);
-			
-			ChallengeRDG challenge = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
-			
-			if (challengerId == challengeeId) {
-				failure(request, response, "You have refused a challenge against yourself. You are not allowed to do that");
+			Long challengeeId = null;
+			try {
+				challengeeId = (long) request.getSession(true).getAttribute("userid");
 			}
-			else if (challenge == null) {
-				failure(request, response, String.format("An open challenge against %s does not exist.", challenger.getUsername()));
+			catch (NullPointerException e) {
+				failure(request, response, "You must be logged in to refuse a challenge.");
 			}
-			else {
-				challenge.setStatus(ChallengeStatus.refused.ordinal());
-				challenge.update();
-				success(request, response, String.format("You have successfully reefused %s's challenge.", challenger.getUsername()));
+			
+			if (challengeeId != null) {
+				long challengerId = Long.parseLong(request.getParameter("challenger"));
+				UserRDG challenger = UserRDG.findById(challengerId);
+				
+				ChallengeRDG challenge = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
+				
+				if (challengerId == challengeeId) {
+					failure(request, response, "You have refused a challenge against yourself. You are not allowed to do that");
+				}
+				else if (challenge == null) {
+					failure(request, response, String.format("An open challenge against %s does not exist.", challenger.getUsername()));
+				}
+				else {
+					challenge.setStatus(ChallengeStatus.refused.ordinal());
+					challenge.update();
+					success(request, response, String.format("You have successfully refused %s's challenge.", challenger.getUsername()));
+				}
 			}
 			
 		}

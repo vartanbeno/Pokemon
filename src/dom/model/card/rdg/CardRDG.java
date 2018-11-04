@@ -16,9 +16,6 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
  * Points to row(s) in the cards table.
  * Provides methods to find, insert, update, and delete cards.
  * 
- * Primary key is (type, name).
- * We still have an id attribute to easily choose which one to update/delete.
- * 
  * Also includes create/truncate/drop queries.
  * 
  * @author vartanbeno

@@ -70,7 +70,7 @@ public class OpenChallenges extends PageController {
 				request.getRequestDispatcher(Global.OPEN_CHALLENGES_FORM).forward(request, response);
 			}
 			catch (NullPointerException e) {
-				response.sendRedirect(request.getContextPath() + "/Login");
+				failure(request, response, "You must be logged in to view your open challenges.");
 			}
     		
     	}
