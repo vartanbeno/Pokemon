@@ -57,10 +57,13 @@ public class ChallengeRDG {
 
 	private static final String FIND_OPEN_BY_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE challengee = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
+	
+	private static final String FIND_OPEN_BY_CHALLENGER_AND_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE challenger = ? AND challengee = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
 			
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
-	private static final String UPDATE = String.format("UPDATE %1$s SET status = ? WHERE id = ? AND;", TABLE_NAME);
+	private static final String UPDATE = String.format("UPDATE %1$s SET status = ? WHERE id = ?;", TABLE_NAME);
 	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ?;", TABLE_NAME);
 	
@@ -284,6 +287,30 @@ public class ChallengeRDG {
 		ps.close();
 		
 		return challengeRDGs;
+	}
+	
+	public static ChallengeRDG findOpenByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGER_AND_CHALLENGEE);
+		ps.setLong(1, challenger);
+		ps.setLong(2, challengee);
+		ResultSet rs = ps.executeQuery();
+		
+		ChallengeRDG challengeRDG = null;
+		if (rs.next()) {
+			challengeRDG = new ChallengeRDG(
+					rs.getLong("id"),
+					rs.getLong("challenger"),
+					rs.getLong("challengee"),
+					rs.getInt("status")
+			);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return challengeRDG;
 	}
 	
 	public int insert() throws SQLException {

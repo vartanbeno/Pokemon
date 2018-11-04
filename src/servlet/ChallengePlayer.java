@@ -71,7 +71,7 @@ public class ChallengePlayer extends PageController {
 			else {
 				ChallengeRDG challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challenger, challengee);
 				challengeRDG.insert();
-				success(request, response, String.format("You have successfully challenged %s to a match.", userRDG.getUsername()));
+				success(request, response, String.format("You have successfully challenged %s to a game.", userRDG.getUsername()));
 			}
 			
 		}
