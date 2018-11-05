@@ -15,5 +15,7 @@ public class Global {
 	
 	public static final String CHALLENGE_FORM = PATH_TO_JSP + "challenge-form.jsp";
 	public static final String OPEN_CHALLENGES_FORM = PATH_TO_JSP + "open-challenges-form.jsp";
-
+	
+	public static final String DECK = PATH_TO_JSP + "deck.jsp";
+	
 }
