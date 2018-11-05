@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
@@ -71,6 +70,10 @@ public class CardsInDeckRDG {
 		return TABLE_NAME;
 	}
 	
+	public static int getCardsPerDeck() {
+		return CARDS_PER_DECK;
+	}
+	
 	public static void createTable() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
@@ -132,16 +135,6 @@ public class CardsInDeckRDG {
 		ps.close();
 		
 		return result;
-	}
-	
-	public static void createDeck(long deck) throws SQLException {		
-		List<CardRDG> cards = CardRDG.findAll();
-		
-		Random random = new Random();
-		for (int i = 0; i < CARDS_PER_DECK; i++) {
-			CardRDG cardRDG = cards.get(random.nextInt(cards.size()));
-			new CardsInDeckRDG(deck, cardRDG.getId()).insert();
-		}
 	}
 	
 }

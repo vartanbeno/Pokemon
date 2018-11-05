@@ -11,6 +11,15 @@ import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 
+/**
+ * 
+ * Some of this code, like the initDb() and closeDb() methods, are taken from
+ * Stuart Thiel's thesis, Enterprise Application Design Patterns: Improved and Applied.
+ * Using the DbRegistry class from his SoenEA2 framework to establish a database connection.
+ * 
+ * @author vartanbeno
+ *
+ */
 @WebServlet("/PageController")
 public class PageController extends HttpServlet {
 	

@@ -71,9 +71,9 @@ public class GetDeck extends PageController {
 				DeckRDG deckRDG = DeckRDG.findByPlayer(player);
 				
 				if (deckRDG == null) {
-					deckRDG = new DeckRDG(DeckRDG.getMaxId(), player);
-					deckRDG.insert();
-					CardsInDeckRDG.createDeck(deckRDG.getId());
+					
+					// TODO
+					
 				}
 				
 				doGet(request, response);
