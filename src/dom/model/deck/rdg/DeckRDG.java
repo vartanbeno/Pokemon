@@ -71,6 +71,10 @@ public class DeckRDG {
 		return player;
 	}
 	
+	public static String getTableName() {
+		return TABLE_NAME;
+	}
+	
 	public static void createTable() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
