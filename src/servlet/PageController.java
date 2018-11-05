@@ -60,11 +60,15 @@ public class PageController extends HttpServlet {
 		request.getRequestDispatcher(Global.FAILURE).forward(request, response);
 	}
 	
-	protected boolean loggedIn(HttpServletRequest request, HttpServletResponse response) {
+	protected long getUserId(HttpServletRequest request) {
+		return (long) request.getSession(true).getAttribute("userid");
+	}
+	
+	protected boolean loggedIn(HttpServletRequest request) {
 		
 		Long userId;
 		try {
-			userId = (long) request.getSession(true).getAttribute("userid");
+			userId = getUserId(request);
 		}
 		catch (NullPointerException e) {
 			userId = null;
@@ -73,5 +77,5 @@ public class PageController extends HttpServlet {
 		return userId != null;
 		
 	}
-
+	
 }

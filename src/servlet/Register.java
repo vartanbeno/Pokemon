@@ -23,9 +23,9 @@ public class Register extends PageController {
 		
 		try {
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				long userId = (long) request.getSession(true).getAttribute("userid");
+				long userId = getUserId(request);
 				
 				UserRDG userRDG = UserRDG.findById(userId);
 				
@@ -53,9 +53,9 @@ public class Register extends PageController {
 			
 			UserRDG userRDG;
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				long userId = (long) request.getSession(true).getAttribute("userid");
+				long userId = getUserId(request);
 				
 				userRDG = UserRDG.findById(userId);
 				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");

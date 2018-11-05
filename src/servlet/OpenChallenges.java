@@ -27,9 +27,9 @@ public class OpenChallenges extends PageController {
 		
 		try {
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				long challengee = (long) request.getSession(true).getAttribute("userid");
+				long challengee = getUserId(request);
 				
 				List<ChallengeRDG> challengeRDGs = ChallengeRDG.findOpenByChallengee(challengee);
 				

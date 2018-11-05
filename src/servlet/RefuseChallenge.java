@@ -28,9 +28,9 @@ public class RefuseChallenge extends PageController {
 		
 		try {
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				long challengeeId = (long) request.getSession(true).getAttribute("userid");
+				long challengeeId = getUserId(request);
 				long challengerId = Long.parseLong(request.getParameter("challenger"));
 				
 				UserRDG challenger = UserRDG.findById(challengerId);

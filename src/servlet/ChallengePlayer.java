@@ -26,9 +26,9 @@ public class ChallengePlayer extends PageController {
 					
 		try {
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				final long challenger = (long) request.getSession(true).getAttribute("userid");
+				final long challenger = getUserId(request);
 				
 				List<UserRDG> userRDGs = UserRDG.findAll();
 				
@@ -63,9 +63,9 @@ public class ChallengePlayer extends PageController {
 		
 		try {
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				long challenger = (long) request.getSession(true).getAttribute("userid");
+				long challenger = getUserId(request);
 				long challengee = Long.parseLong(request.getParameter("challengee"));
 				
 				UserRDG userRDG = UserRDG.findById(challengee);

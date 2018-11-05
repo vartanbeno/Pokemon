@@ -26,11 +26,11 @@ public class GetDeck extends PageController {
 		
 		try {
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				long player = (long) request.getSession(true).getAttribute("userid");
-				
+				long player = getUserId(request);
 				DeckRDG deckRDG = DeckRDG.findByPlayer(player);
+				
 				if (deckRDG == null) {
 					request.getRequestDispatcher(Global.CREATE_DECK_FORM).forward(request, response);
 				}
@@ -65,9 +65,9 @@ public class GetDeck extends PageController {
 		
 		try {
 			
-			if (loggedIn(request, response)) {
+			if (loggedIn(request)) {
 				
-				long player = (long) request.getSession(true).getAttribute("userid");
+				long player = getUserId(request);
 				DeckRDG deckRDG = DeckRDG.findByPlayer(player);
 				
 				if (deckRDG == null) {
