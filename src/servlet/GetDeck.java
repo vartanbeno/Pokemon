@@ -3,7 +3,6 @@ package servlet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.card.rdg.CardRDG;
+import dom.model.cardsindeck.rdg.CardsInDeckRDG;
+import dom.model.deck.rdg.DeckRDG;
 
 @WebServlet("/GetDeck")
 public class GetDeck extends PageController {
@@ -26,18 +27,24 @@ public class GetDeck extends PageController {
 		try {
 			
 			if (loggedIn(request, response)) {
-								
-				List<CardRDG> cards = CardRDG.findAll();
-				List<CardRDG> deck = new ArrayList<CardRDG>();
 				
-				Random random = new Random();
-				for (int i = 0; i < 40; i++) {
-					CardRDG card = cards.get(random.nextInt(cards.size()));
-					deck.add(card);
+				long player = (long) request.getSession(true).getAttribute("userid");
+				
+				DeckRDG deckRDG = DeckRDG.findByPlayer(player);
+				if (deckRDG == null) {
+					request.getRequestDispatcher(Global.CREATE_DECK_FORM).forward(request, response);
 				}
-				
-				request.setAttribute("cards", deck);
-				request.getRequestDispatcher(Global.DECK).forward(request, response);
+				else {
+					List<CardsInDeckRDG> cardsInDeckRDGs = CardsInDeckRDG.findByDeck(deckRDG.getId());
+					List<CardRDG> deck = new ArrayList<CardRDG>();
+					
+					for (CardsInDeckRDG cardsInDeckRDG : cardsInDeckRDGs) {
+						deck.add(CardRDG.findById(cardsInDeckRDG.getCard()));
+					}
+					
+					request.setAttribute("cards", deck);
+					request.getRequestDispatcher(Global.DECK).forward(request, response);
+				}
 				
 			}
 			else {
@@ -55,7 +62,35 @@ public class GetDeck extends PageController {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		
+		try {
+			
+			if (loggedIn(request, response)) {
+				
+				long player = (long) request.getSession(true).getAttribute("userid");
+				DeckRDG deckRDG = DeckRDG.findByPlayer(player);
+				
+				if (deckRDG == null) {
+					deckRDG = new DeckRDG(DeckRDG.getMaxId(), player);
+					deckRDG.insert();
+					CardsInDeckRDG.createDeck(deckRDG.getId());
+				}
+				
+				doGet(request, response);
+				
+			}
+			else {
+				failure(request, response, "You must be logged in to create a deck.");
+			}
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeDb();
+		}
+		
 	}
 
 }

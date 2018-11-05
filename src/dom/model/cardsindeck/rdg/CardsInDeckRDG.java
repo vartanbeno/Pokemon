@@ -97,7 +97,7 @@ public class CardsInDeckRDG {
 		
 		CardsInDeckRDG cardsInDeckRDG = null;
 		List<CardsInDeckRDG> cardsInDeckRDGs = new ArrayList<CardsInDeckRDG>();
-		if (rs.next()) {
+		while (rs.next()) {
 			cardsInDeckRDG = new CardsInDeckRDG(rs.getLong("deck"), rs.getLong("card"));
 			cardsInDeckRDGs.add(cardsInDeckRDG);
 		}
