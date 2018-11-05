@@ -51,9 +51,6 @@ public class CardsInDeckRDG {
 	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE deck = ?;", TABLE_NAME);
 	
-	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
-	private static long maxId = 0;
-	
 	private long deck;
 	private long card;
 	
@@ -145,20 +142,6 @@ public class CardsInDeckRDG {
 			CardRDG cardRDG = cards.get(random.nextInt(cards.size()));
 			new CardsInDeckRDG(deck, cardRDG.getId()).insert();
 		}
-	}
-	
-	public static synchronized long getMaxId() throws SQLException {
-		if (maxId == 0) {
-			Connection con = DbRegistry.getDbConnection();
-			
-			PreparedStatement ps = con.prepareStatement(GET_MAX_ID);
-			ResultSet rs = ps.executeQuery();
-			
-			maxId = rs.next() ? rs.getLong("max_id") : 1;
-			rs.close();
-		}
-		
-		return ++maxId;
 	}
 	
 }
