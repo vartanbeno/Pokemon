@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
-import dom.model.card.rdg.CardRDG;
 import dom.model.deck.rdg.DeckRDG;
 
 /**
@@ -28,16 +27,16 @@ public class CardsInDeckRDG {
 	
 	private static final String TABLE_NAME = "cards_in_deck";
 	
-	private static final String COLUMNS = "deck, card";
+	private static final String COLUMNS = "deck, type, name";
 	
 	private static final int CARDS_PER_DECK = 40;
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "deck BIGINT NOT NULL,"
-			+ "card BIGINT NOT NULL,"
-			+ "FOREIGN KEY (deck) REFERENCES %2$s (id),"
-			+ "FOREIGN KEY (card) REFERENCES %3$s (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, DeckRDG.getTableName(), CardRDG.getTableName());
+			+ "type VARCHAR(1) NOT NULL,"
+			+ "name VARCHAR(30) NOT NULL,"
+			+ "FOREIGN KEY (deck) REFERENCES %2$s (id)"
+			+ ") ENGINE=InnoDB;", TABLE_NAME, DeckRDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
@@ -46,26 +45,40 @@ public class CardsInDeckRDG {
 	private static final String FIND_BY_DECK = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE deck = ?;", COLUMNS, TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?);", TABLE_NAME, COLUMNS);
 	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE deck = ?;", TABLE_NAME);
 	
 	private long deck;
-	private long card;
+	private String type;
+	private String name;
 	
-	public CardsInDeckRDG(long deck, long card) {
+	public CardsInDeckRDG(long deck, String type, String name) {
 		this.deck = deck;
-		this.card = card;
+		this.type = type;
+		this.name = name;
 	}
 	
 	public long getDeck() {
 		return deck;
 	}
 	
-	public long getCard() {
-		return card;
+	public String getType() {
+		return type;
 	}
-	
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public static String getTableName() {
 		return TABLE_NAME;
 	}
@@ -101,7 +114,11 @@ public class CardsInDeckRDG {
 		CardsInDeckRDG cardsInDeckRDG = null;
 		List<CardsInDeckRDG> cardsInDeckRDGs = new ArrayList<CardsInDeckRDG>();
 		while (rs.next()) {
-			cardsInDeckRDG = new CardsInDeckRDG(rs.getLong("deck"), rs.getLong("card"));
+			cardsInDeckRDG = new CardsInDeckRDG(
+					rs.getLong("deck"),
+					rs.getString("type"),
+					rs.getString("name")
+			);
 			cardsInDeckRDGs.add(cardsInDeckRDG);
 		}
 		
@@ -116,7 +133,8 @@ public class CardsInDeckRDG {
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
 		ps.setLong(1, deck);
-		ps.setLong(2, card);
+		ps.setString(2, type);
+		ps.setString(3, name);
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -129,7 +147,6 @@ public class CardsInDeckRDG {
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
 		ps.setLong(1, deck);
-		ps.setLong(2, card);
 		
 		int result = ps.executeUpdate();
 		ps.close();
