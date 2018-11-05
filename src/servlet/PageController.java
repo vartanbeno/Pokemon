@@ -50,14 +50,28 @@ public class PageController extends HttpServlet {
     	}
     }
 
-	public void success(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+	protected void success(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("message", message);
 		request.getRequestDispatcher(Global.SUCCESS).forward(request, response);
 	}
 	
-	public void failure(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+	protected void failure(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("message", message);
 		request.getRequestDispatcher(Global.FAILURE).forward(request, response);
+	}
+	
+	protected boolean loggedIn(HttpServletRequest request, HttpServletResponse response) {
+		
+		Long userId;
+		try {
+			userId = (long) request.getSession(true).getAttribute("userid");
+		}
+		catch (NullPointerException e) {
+			userId = null;
+		}
+		
+		return userId != null;
+		
 	}
 
 }

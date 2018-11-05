@@ -20,14 +20,11 @@ public class ListChallenges extends PageController {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
 		try {
-						
 			List<ChallengeRDG> challengeRDGs = ChallengeRDG.findAll();
-			
 			request.setAttribute("challenges", challengeRDGs);
 			request.getRequestDispatcher(Global.LIST_CHALLENGES).forward(request, response);
-			
 		}
 		catch (Exception e) {
 			e.printStackTrace();

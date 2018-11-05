@@ -26,8 +26,9 @@ public class OpenChallenges extends PageController {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-    		
-    		try {
+			
+			if (loggedIn(request, response)) {
+				
 				long challengee = (long) request.getSession(true).getAttribute("userid");
 				
 				List<ChallengeRDG> challengeRDGs = ChallengeRDG.findOpenByChallengee(challengee);
@@ -68,8 +69,9 @@ public class OpenChallenges extends PageController {
 								
 				request.setAttribute("challenges", challenges);
 				request.getRequestDispatcher(Global.OPEN_CHALLENGES_FORM).forward(request, response);
+				
 			}
-			catch (NullPointerException e) {
+			else {
 				failure(request, response, "You must be logged in to view your open challenges.");
 			}
     		

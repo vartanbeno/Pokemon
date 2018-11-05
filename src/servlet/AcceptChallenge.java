@@ -28,18 +28,12 @@ public class AcceptChallenge extends PageController {
 		
 		try {
 			
-			Long challengeeId = null;
-			try {
-				challengeeId = (long) request.getSession(true).getAttribute("userid");
-			}
-			catch (NullPointerException e) {
-				failure(request, response, "You must be logged in to accept a challenge.");
-			}
-			
-			if (challengeeId != null) {
-				long challengerId = Long.parseLong(request.getParameter("challenger"));
-				UserRDG challenger = UserRDG.findById(challengerId);
+			if (loggedIn(request, response)) {
 				
+				long challengeeId = (long) request.getSession(true).getAttribute("userid");
+				long challengerId = Long.parseLong(request.getParameter("challenger"));
+				
+				UserRDG challenger = UserRDG.findById(challengerId);
 				ChallengeRDG challenge = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
 				
 				if (challengerId == challengeeId) {
@@ -53,6 +47,10 @@ public class AcceptChallenge extends PageController {
 					challenge.update();
 					success(request, response, String.format("You have successfully accepted %s's challenge.", challenger.getUsername()));
 				}
+				
+			}
+			else {
+				failure(request, response, "You must be logged in to accept a challenge.");
 			}
 			
 		}

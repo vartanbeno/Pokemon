@@ -23,19 +23,12 @@ public class ChallengePlayer extends PageController {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+					
 		try {
 			
-			Long challenger = null;
-			try {
-				challenger = (long) request.getSession(true).getAttribute("userid");
-			}
-			catch (NullPointerException e) {
-				failure(request, response, "You must be logged in to issue a challenge to a player.");
-			}
-			
-			if (challenger != null) {
-				final long id = challenger;
+			if (loggedIn(request, response)) {
+				
+				final long challenger = (long) request.getSession(true).getAttribute("userid");
 				
 				List<UserRDG> userRDGs = UserRDG.findAll();
 				
@@ -46,12 +39,16 @@ public class ChallengePlayer extends PageController {
 					);
 				}
 				
-				users.removeIf(user -> user.getId() == id);
+				users.removeIf(user -> user.getId() == challenger);
 				
 				request.setAttribute("users", users);
 				request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
+
 			}
-				
+			else {
+				failure(request, response, "You must be logged in to issue a challenge to a player.");
+			}
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -66,23 +63,18 @@ public class ChallengePlayer extends PageController {
 		
 		try {
 			
-			Long challenger = null;
-			try {
-				challenger = (long) request.getSession(true).getAttribute("userid");
-			}
-			catch (NullPointerException e) {
-				failure(request, response, "You must be logged in to issue a challenge to a player.");
-			}
-
-			if (challenger != null) {
+			if (loggedIn(request, response)) {
+				
+				long challenger = (long) request.getSession(true).getAttribute("userid");
 				long challengee = Long.parseLong(request.getParameter("challengee"));
+				
 				UserRDG userRDG = UserRDG.findById(challengee);
-				ChallengeRDG challengeRDG = null;
+				ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challenger, challengee);
 				
 				if (challenger == challengee) {
 					failure(request, response, "You have challenged yourself. You are not allowed to do that");
 				}
-				else if ((challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challenger, challengee)) != null) {
+				else if (challengeRDG != null) {
 					failure(request, response, String.format("You already have an open challenge against %s.", userRDG.getUsername()));
 				}
 				else {
@@ -90,6 +82,10 @@ public class ChallengePlayer extends PageController {
 					challengeRDG.insert();
 					success(request, response, String.format("You have successfully challenged %s to a game.", userRDG.getUsername()));
 				}
+				
+			}
+			else {
+				failure(request, response, "You must be logged in to issue a challenge to a player.");
 			}
 			
 		}

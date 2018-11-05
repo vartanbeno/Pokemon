@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +29,8 @@ public class Logout extends PageController {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-						
-			try {
+			
+			if (loggedIn(request, response)) {
 				long id = (long) request.getSession(true).getAttribute("userid");
 				
 				UserRDG userRDG = UserRDG.findById(id);
@@ -37,7 +38,7 @@ public class Logout extends PageController {
 				request.getSession(true).invalidate();
 				success(request, response, String.format("User %s has successfully logged out.", userRDG.getUsername()));
 			}
-			catch (NullPointerException e) {
+			else {
 				failure(request, response, "You must be logged in to log out.");
 			}
 			

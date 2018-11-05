@@ -21,27 +21,28 @@ public class Login extends PageController {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		Long userId = null;
-		
 		try {
 			
-			userId = (long) request.getSession(true).getAttribute("userid");
-			
-			UserRDG userRDG = null;
+			if (loggedIn(request, response)) {
+				
+				long userId = (long) request.getSession(true).getAttribute("userid");
+				
+				UserRDG userRDG = UserRDG.findById(userId);
+				
+				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
+				failure(request, response, String.format("You are already logged in as %s.", user.getUsername()));
 
-			try {
-				userRDG = UserRDG.findById(userId);
 			}
-			catch (Exception e) {
-				e.printStackTrace();
+			else {
+				request.getRequestDispatcher(Global.LOGIN_FORM).forward(request, response);
 			}
 			
-			UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-			failure(request, response, String.format("You are already logged in as %s.", user.getUsername()));
-		
 		}
-		catch (NullPointerException e) {
-			request.getRequestDispatcher(Global.LOGIN_FORM).forward(request, response);
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeDb();
 		}
 		
 	}
@@ -50,20 +51,19 @@ public class Login extends PageController {
 		
 		try {
 			
-			Long userId = null;
-			UserRDG userRDG = null;
+			UserRDG userRDG;
 			
-			try {
+			if (loggedIn(request, response)) {
 				
-				userId = (long) request.getSession(true).getAttribute("userid");
+				long userId = (long) request.getSession(true).getAttribute("userid");
 				
 				userRDG = UserRDG.findById(userId);
 				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
 				
 				failure(request, response, String.format("You are already logged in as %s.", user.getUsername()));
-				
+
 			}
-			catch (NullPointerException e) {
+			else {
 				
 				String username = request.getParameter("user");
 				String password = request.getParameter("pass");

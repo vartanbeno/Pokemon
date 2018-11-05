@@ -24,7 +24,7 @@ public class ListPlayers extends PageController {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-						
+			
 			List<UserRDG> userRDGs = UserRDG.findAll();
 			
 			List<UserHelper> users = new ArrayList<UserHelper>();
