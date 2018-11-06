@@ -265,7 +265,9 @@ public class UserRDG {
 			ResultSet rs = ps.executeQuery();
 			
 			maxId = rs.next() ? rs.getLong("max_id") : 1;
+			
 			rs.close();
+			ps.close();
 		}
 		
 		return ++maxId;
