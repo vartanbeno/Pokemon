@@ -4,7 +4,7 @@
 
 {
 	"deck": {
-		"id": ${sessionScope.userid},
+		"id": ${cards[0].deck},
 		"cards": [
 			<c:forEach items="${cards}" var="card" varStatus="loop">
 				{
