@@ -1,9 +1,9 @@
+import app.PageController;
 import dom.model.card.rdg.CardRDG;
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.rdg.GameRDG;
 import dom.model.user.rdg.UserRDG;
-import servlet.PageController;
 
 public class Main {
 

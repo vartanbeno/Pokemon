@@ -1,4 +1,4 @@
-package servlet;
+package app;
 
 import java.io.IOException;
 
@@ -10,18 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
 
-@WebServlet("/Register")
-public class Register extends PageController {
+@WebServlet("/Login")
+public class Login extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private static final String ALREADY_LOGGED_IN = "You are already logged in as %s.";
 	private static final String ENTER_USER_AND_PASS = "Please enter both a username and a password.";
-	private static final String USERNAME_TAKEN = "The username %s is taken.";
+	private static final String INVALID_CREDENTIALS = "Incorrect username and/or password.";
 	
-	private static final String REGISTRATION_SUCCESS = "Successfully registered.";
-
-    public Register() {
+	private static final String LOGIN_SUCCESS = "Successfully logged in.";
+	
+    public Login() {
         super();
     }
 
@@ -30,10 +30,14 @@ public class Register extends PageController {
 		try {
 			
 			if (loggedIn(request)) {
-				doPost(request, response);
+								
+				UserRDG userRDG = UserRDG.findById(getUserId(request));
+				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
+				failure(request, response, String.format(ALREADY_LOGGED_IN, user.getUsername()));
+
 			}
 			else {
-				request.getRequestDispatcher(Global.REGISTER_FORM).forward(request, response);
+				request.getRequestDispatcher(Global.LOGIN_FORM).forward(request, response);
 			}
 			
 		}
@@ -50,31 +54,25 @@ public class Register extends PageController {
 		
 		try {
 			
-			UserRDG userRDG;
-			
 			if (loggedIn(request)) {
-				
-				userRDG = UserRDG.findById(getUserId(request));
-				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-				failure(request, response, String.format(ALREADY_LOGGED_IN, user.getUsername()));
-				
+				doGet(request, response);
 			}
 			else {
+				
+				UserRDG userRDG = null;
 				
 				String username = request.getParameter("user");
 				String password = request.getParameter("pass");
 				
-				if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
+				if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 					failure(request, response, ENTER_USER_AND_PASS);
 				}
-				else if ((userRDG = UserRDG.findByUsername(username)) != null) {
-					failure(request, response, String.format(USERNAME_TAKEN, username));
+				else if ((userRDG = UserRDG.findByUsernameAndPassword(username, password)) != null) {
+					request.getSession(true).setAttribute("userid", userRDG.getId());
+					success(request, response, LOGIN_SUCCESS);
 				}
 				else {
-					userRDG = new UserRDG(UserRDG.getMaxId(), 1, username, password);
-					userRDG.insert();
-					request.getSession(true).setAttribute("userid", userRDG.getId());
-					success(request, response, REGISTRATION_SUCCESS);
+					failure(request, response, INVALID_CREDENTIALS);
 				}
 				
 			}

@@ -1,4 +1,4 @@
-package servlet;
+package app;
 
 public class Global {
 	
