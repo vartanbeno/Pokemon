@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
 
 @WebServlet("/Logout")
@@ -14,32 +15,48 @@ public class Logout extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private static final String LOGOUT_FAIL = "You must be logged in to log out.";
+	
+	/**
+	 * While testing, I registered/logged in as a user at some point.
+	 * Pretty normal, right?
+	 * Before logging out, I manually deleted the user I was currently logged in as from the database.
+	 * I couldn't visit any of the pages anymore, much less log out.
+	 * Gotta do some more error handling.
+	 */
+	private static final String MAJOR_FAIL = "Something went horribly wrong.";
+	
+	private static final String LOGOUT_SUCCESS = "User %s has successfully logged out.";
+	
     public Logout() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
+		doPost(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
-	}
-	
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
 			if (loggedIn(request)) {
-				long id = getUserId(request);
 				
-				UserRDG userRDG = UserRDG.findById(id);
+				UserRDG userRDG = UserRDG.findById(getUserId(request));
 				
-				request.getSession(true).invalidate();
-				success(request, response, String.format("User %s has successfully logged out.", userRDG.getUsername()));
+				try {
+					UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
+					request.getSession(true).invalidate();
+					success(request, response, String.format(LOGOUT_SUCCESS, user.getUsername()));
+				}
+				catch (NullPointerException e) {
+					request.getSession(true).invalidate();
+					success(request, response, MAJOR_FAIL);
+				}
+				
 			}
 			else {
-				failure(request, response, "You must be logged in to log out.");
+				failure(request, response, LOGOUT_FAIL);
 			}
 			
 		}

@@ -11,7 +11,7 @@
 <body>
 
 <h2>Open Challenges</h2>
-<h4>You have ${fn:length(challenges)} open challenges.</h4>
+<h4>You have ${fn:length(challenges)} open challenge(s).</h4>
 
 <c:forEach items="${challenges}" var="challenge">
 	<span>${challenge.challenger.username}</span>

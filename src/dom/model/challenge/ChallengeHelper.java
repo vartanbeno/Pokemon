@@ -16,13 +16,6 @@ public class ChallengeHelper {
 		this.status = status;
 	}
 	
-	public ChallengeHelper(long id, UserHelper challenger, UserHelper challengee) {
-		this.id = id;
-		this.challenger = challenger;
-		this.challengee = challengee;
-		this.status = ChallengeStatus.open.ordinal();
-	}
-	
 	public long getId() {
 		return id;
 	}

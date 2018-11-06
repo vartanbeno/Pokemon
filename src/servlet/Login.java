@@ -15,6 +15,12 @@ public class Login extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private static final String ALREADY_LOGGED_IN = "You are already logged in as %s.";
+	private static final String ENTER_USER_AND_PASS = "Please enter both a username and a password.";
+	private static final String INVALID_CREDENTIALS = "Incorrect username and/or password.";
+	
+	private static final String LOGIN_SUCCESS = "Successfully logged in.";
+	
     public Login() {
         super();
     }
@@ -24,13 +30,10 @@ public class Login extends PageController {
 		try {
 			
 			if (loggedIn(request)) {
-				
-				long userId = getUserId(request);
-				
-				UserRDG userRDG = UserRDG.findById(userId);
-				
+								
+				UserRDG userRDG = UserRDG.findById(getUserId(request));
 				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-				failure(request, response, String.format("You are already logged in as %s.", user.getUsername()));
+				failure(request, response, String.format(ALREADY_LOGGED_IN, user.getUsername()));
 
 			}
 			else {
@@ -51,32 +54,25 @@ public class Login extends PageController {
 		
 		try {
 			
-			UserRDG userRDG;
-			
 			if (loggedIn(request)) {
-				
-				long userId = getUserId(request);
-				
-				userRDG = UserRDG.findById(userId);
-				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-				
-				failure(request, response, String.format("You are already logged in as %s.", user.getUsername()));
-
+				doGet(request, response);
 			}
 			else {
+				
+				UserRDG userRDG = null;
 				
 				String username = request.getParameter("user");
 				String password = request.getParameter("pass");
 				
 				if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
-					failure(request, response, "Please enter both a username and a password.");
+					failure(request, response, ENTER_USER_AND_PASS);
 				}
 				else if ((userRDG = UserRDG.findByUsernameAndPassword(username, password)) != null) {
 					request.getSession(true).setAttribute("userid", userRDG.getId());
-					success(request, response, "Successfully logged in.");
+					success(request, response, LOGIN_SUCCESS);
 				}
 				else {
-					failure(request, response, "Incorrect username and/or password.");
+					failure(request, response, INVALID_CREDENTIALS);
 				}
 				
 			}

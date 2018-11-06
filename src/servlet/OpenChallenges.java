@@ -18,6 +18,8 @@ import dom.model.user.rdg.UserRDG;
 public class OpenChallenges extends PageController {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final String NOT_LOGGED_IN = "You must be logged in to view your open challenges.";
        
     public OpenChallenges() {
         super();
@@ -72,7 +74,7 @@ public class OpenChallenges extends PageController {
 				
 			}
 			else {
-				failure(request, response, "You must be logged in to view your open challenges.");
+				failure(request, response, NOT_LOGGED_IN);
 			}
     		
     	}

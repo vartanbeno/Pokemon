@@ -28,10 +28,11 @@ public class ListPlayers extends PageController {
 			List<UserRDG> userRDGs = UserRDG.findAll();
 			
 			List<UserHelper> users = new ArrayList<UserHelper>();
+			UserHelper user = null;
+			
 			for (UserRDG userRDG : userRDGs) {
-				users.add(
-					new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
-				);
+				user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
+				users.add(user);
 			}
 			
 			request.setAttribute("players", users);

@@ -14,9 +14,9 @@ import dom.model.deck.rdg.DeckRDG;
 
 /**
  * 
- * CardsInDeckRDG: Cards in Deck Row Data Gateway.
- * Points to row(s) in the cards_in_deck table.
- * Provides methods to find, insert, and delete cards_in_deck rows.
+ * CardRDG: Card Row Data Gateway.
+ * Points to row(s) in the cards table.
+ * Provides methods to find, insert, and delete cards.
  * 
  * Also includes create/truncate/drop queries.
  * 
@@ -83,7 +83,7 @@ public class CardRDG {
 		return TABLE_NAME;
 	}
 	
-	public static int getCardsPerDeck() {
+	public static int getNumberOfCardsPerDeck() {
 		return CARDS_PER_DECK;
 	}
 	
@@ -111,21 +111,21 @@ public class CardRDG {
 		ps.setLong(1, deck);
 		ResultSet rs = ps.executeQuery();
 		
-		CardRDG cardsInDeckRDG = null;
-		List<CardRDG> cardsInDeckRDGs = new ArrayList<CardRDG>();
+		CardRDG cardRDG = null;
+		List<CardRDG> cardRDGs = new ArrayList<CardRDG>();
 		while (rs.next()) {
-			cardsInDeckRDG = new CardRDG(
+			cardRDG = new CardRDG(
 					rs.getLong("deck"),
 					rs.getString("type"),
 					rs.getString("name")
 			);
-			cardsInDeckRDGs.add(cardsInDeckRDG);
+			cardRDGs.add(cardRDG);
 		}
 		
 		rs.close();
 		ps.close();
 		
-		return cardsInDeckRDGs;
+		return cardRDGs;
 	}
 	
 	public int insert() throws SQLException {

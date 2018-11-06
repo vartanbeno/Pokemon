@@ -14,6 +14,8 @@ import dom.model.user.rdg.UserRDG;
 public class Register extends PageController {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private static final String ALREADY_LOGGED_IN = "You are already logged in as %s.";
 
     public Register() {
         super();
@@ -24,14 +26,7 @@ public class Register extends PageController {
 		try {
 			
 			if (loggedIn(request)) {
-				
-				long userId = getUserId(request);
-				
-				UserRDG userRDG = UserRDG.findById(userId);
-				
-				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-				failure(request, response, String.format("You are already logged in as %s.", user.getUsername()));
-				
+				doPost(request, response);
 			}
 			else {
 				request.getRequestDispatcher(Global.REGISTER_FORM).forward(request, response);
@@ -55,12 +50,9 @@ public class Register extends PageController {
 			
 			if (loggedIn(request)) {
 				
-				long userId = getUserId(request);
-				
-				userRDG = UserRDG.findById(userId);
+				userRDG = UserRDG.findById(getUserId(request));
 				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-				
-				failure(request, response, String.format("You are already logged in as %s.", user.getUsername()));
+				failure(request, response, String.format(ALREADY_LOGGED_IN, user.getUsername()));
 				
 			}
 			else {
@@ -68,7 +60,7 @@ public class Register extends PageController {
 				String username = request.getParameter("user");
 				String password = request.getParameter("pass");
 				
-				if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
+				if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
 					failure(request, response, "Please enter both a username and a password.");
 				}
 				else if ((userRDG = UserRDG.findByUsername(username)) != null) {
