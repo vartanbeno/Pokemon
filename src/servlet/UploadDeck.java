@@ -1,9 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,7 +17,7 @@ public class UploadDeck extends PageController {
 	
 	private static final String LOGIN_FAIL_MESSAGE = "You must be logged in to upload a deck.";
 	private static final String DECK_FAIL_MESSAGE = "You already have a deck.";
-	private static final String CARDS_FAIL_MESSAGE = "You have %1$d cards in your deck. You must have %2$d.";
+	private static final String CARDS_FAIL_MESSAGE = "You have %1$d card(s) in your deck. You must have %2$d.";
 	
 	private static final String DECK_SUCCESS_MESSAGE = "You have successfully uploaded your deck.";
 	
@@ -66,20 +63,45 @@ public class UploadDeck extends PageController {
 			
 			if (loggedIn(request)) {
 				
-				/**
-				 * We delete carriage returns (\r).
-				 * We make sure to trim the String, i.e. delete leftmost and rightmost spaces/newlines.
-				 * Then, we get the cards by splitting by newline.
-				 */
-				String cards[] = request.getParameter("deck").replace("\r", "").trim().split("\n");
-				System.out.println(Arrays.toString(cards));
+				long player = getUserId(request);
 				
-				if (cards.length != CardsInDeckRDG.getCardsPerDeck()) {
-					failure(request, response, String.format(CARDS_FAIL_MESSAGE, cards.length, CardsInDeckRDG.getCardsPerDeck()));
+				DeckRDG deck = DeckRDG.findByPlayer(player);
+				
+				if (deck != null) {
+					failure(request, response, DECK_FAIL_MESSAGE);
 				}
 				else {
 					
-					// TODO
+					/**
+					 * We delete carriage returns (\r) by replacing them with an empty String "".
+					 * We make sure to trim the String, i.e. delete leftmost and rightmost spaces/newlines.
+					 * Then, we get the cards by splitting by newline.
+					 */
+					String cards[] = request.getParameter("deck").replace("\r", "").trim().split("\n");
+					
+					if (cards.length != CardsInDeckRDG.getCardsPerDeck()) {
+						failure(request, response, String.format(CARDS_FAIL_MESSAGE, cards.length, CardsInDeckRDG.getCardsPerDeck()));
+					}
+					else {
+						
+						deck = new DeckRDG(DeckRDG.getMaxId(), player);
+						deck.insert();
+						
+						CardsInDeckRDG cardInDeck = null;
+						
+						for (String card : cards) {
+							
+							String type = card.substring(0,1);
+							String name = card.substring(3, card.length() - 1);
+							
+							cardInDeck = new CardsInDeckRDG(deck.getId(), type, name);
+							cardInDeck.insert();
+							
+						}
+						
+						success(request, response, DECK_SUCCESS_MESSAGE);
+						
+					}
 					
 				}
 				
