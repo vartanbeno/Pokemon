@@ -4,7 +4,7 @@
 
 {
 	"deck": {
-		"id": ${cards[0].deck.id},
+		"id": ${deck.id},
 		"cards": [
 			<c:forEach items="${cards}" var="card" varStatus="loop">
 				{

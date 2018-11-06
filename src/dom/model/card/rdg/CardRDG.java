@@ -27,36 +27,52 @@ public class CardRDG {
 	
 	private static final String TABLE_NAME = "cards";
 	
-	private static final String COLUMNS = "deck, type, name";
+	private static final String COLUMNS = "id, deck, type, name";
 	
 	private static final int CARDS_PER_DECK = 40;
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
+			+ "id BIGINT NOT NULL,"
 			+ "deck BIGINT NOT NULL,"
 			+ "type VARCHAR(1) NOT NULL,"
 			+ "name VARCHAR(30) NOT NULL,"
+			+ "PRIMARY KEY (id),"
 			+ "FOREIGN KEY (deck) REFERENCES %2$s (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME, DeckRDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
+	
+	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
 		
 	private static final String FIND_BY_DECK = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE deck = ?;", COLUMNS, TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
-	private static final String DELETE = String.format("DELETE FROM %1$s WHERE deck = ?;", TABLE_NAME);
+	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ?;", TABLE_NAME);
 	
+	private static final String DELETE_DECK = String.format("DELETE FROM %1$s WHERE deck = ?;", TABLE_NAME);
+	
+	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
+	private static long maxId = 0;
+	
+	private long id;
 	private long deck;
 	private String type;
 	private String name;
 	
-	public CardRDG(long deck, String type, String name) {
+	public CardRDG(Long id, long deck, String type, String name) {
+		this.id = id;
 		this.deck = deck;
 		this.type = type;
 		this.name = name;
+	}
+	
+	public long getId() {
+		return id;
 	}
 	
 	public long getDeck() {
@@ -104,6 +120,29 @@ public class CardRDG {
 		s.execute(DROP_TABLE);
 	}
 	
+	public static CardRDG findById(long id) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
+		ps.setLong(1, id);
+		ResultSet rs = ps.executeQuery();
+		
+		CardRDG cardRDG = null;
+		if (rs.next()) {
+			cardRDG = new CardRDG(
+					rs.getLong("id"),
+					rs.getLong("deck"),
+					rs.getString("type"),
+					rs.getString("name")
+			);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return cardRDG;
+	}
+	
 	public static List<CardRDG> findByDeck(long deck) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
@@ -115,6 +154,7 @@ public class CardRDG {
 		List<CardRDG> cardRDGs = new ArrayList<CardRDG>();
 		while (rs.next()) {
 			cardRDG = new CardRDG(
+					rs.getLong("id"),
 					rs.getLong("deck"),
 					rs.getString("type"),
 					rs.getString("name")
@@ -132,9 +172,10 @@ public class CardRDG {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
-		ps.setLong(1, deck);
-		ps.setString(2, type);
-		ps.setString(3, name);
+		ps.setLong(1, id);
+		ps.setLong(2, deck);
+		ps.setString(3, type);
+		ps.setString(4, name);
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -146,12 +187,40 @@ public class CardRDG {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
+		ps.setLong(1, id);
+		
+		int result = ps.executeUpdate();
+		ps.close();
+		
+		return result;
+	}
+	
+	public int deleteAllCardsInDeck() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(DELETE_DECK);
 		ps.setLong(1, deck);
 		
 		int result = ps.executeUpdate();
 		ps.close();
 		
 		return result;
+	}
+	
+	public static synchronized long getMaxId() throws SQLException {
+		if (maxId == 0) {
+			Connection con = DbRegistry.getDbConnection();
+			
+			PreparedStatement ps = con.prepareStatement(GET_MAX_ID);
+			ResultSet rs = ps.executeQuery();
+			
+			maxId = rs.next() ? rs.getLong("max_id") : 1;
+			
+			rs.close();
+			ps.close();
+		}
+		
+		return ++maxId;
 	}
 	
 }

@@ -121,7 +121,7 @@ public class UploadDeck extends PageController {
 							
 							CardRDG cardInDeck = null;
 							for (CardSpec card : cardSpecs) {
-								cardInDeck = new CardRDG(deck.getId(), card.type, card.name);
+								cardInDeck = new CardRDG(CardRDG.getMaxId(), deck.getId(), card.type, card.name);
 								cardInDeck.insert();
 							}
 							

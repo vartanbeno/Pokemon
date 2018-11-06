@@ -63,6 +63,7 @@ public class ViewDeck extends PageController {
 						
 					}
 					
+					request.setAttribute("deck", deckHelper);
 					request.setAttribute("cards", cardHelpers);
 					request.getRequestDispatcher(Global.DECK).forward(request, response);
 					
