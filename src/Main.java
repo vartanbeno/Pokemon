@@ -10,7 +10,7 @@ public class Main {
 				
 		try {
 			
-			PageController.initDb();
+			PageController.initDb("");
 			
 			UserRDG.createTable();
 			ChallengeRDG.createTable();

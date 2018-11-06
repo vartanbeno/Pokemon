@@ -31,14 +31,13 @@ public class PageController extends HttpServlet {
     
     @Override
     public void init() throws ServletException {
-    	initDb();
+    	initDb("");
     }
     
-    public static synchronized void initDb() {
+    public static synchronized void initDb(String key) {
     	    	
     	try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			String key = "";
 			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(null, null, null, null);
 			connectionFactory.defaultInitialization();
 			DbRegistry.setConFactory(key, connectionFactory);
