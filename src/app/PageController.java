@@ -15,6 +15,7 @@ import dom.model.card.rdg.CardRDG;
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.rdg.GameRDG;
+import dom.model.hand.rdg.HandRDG;
 import dom.model.user.rdg.UserRDG;
 
 /**
@@ -71,6 +72,7 @@ public class PageController extends HttpServlet {
 			DeckRDG.createTable();
 			CardRDG.createTable();
 			GameRDG.createTable();
+			HandRDG.createTable();
     	}
     	catch (Exception e) {
 			e.printStackTrace();
@@ -79,15 +81,14 @@ public class PageController extends HttpServlet {
     
     public static void dropTables() {
     	try {
+    		HandRDG.dropTable();
 			GameRDG.dropTable();
 			CardRDG.dropTable();
 			DeckRDG.dropTable();
 			ChallengeRDG.dropTable();
 			UserRDG.dropTable();
     	}
-    	catch (Exception e) {
-			e.printStackTrace();
-		}
+    	catch (Exception e) { }
     }
 
 	protected void success(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
