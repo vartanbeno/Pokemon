@@ -8,7 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.cardsindeck.rdg.CardsInDeckRDG;
+import dom.model.card.rdg.CardRDG;
 import dom.model.deck.rdg.DeckRDG;
 
 @WebServlet("/ViewDeck")
@@ -37,7 +37,7 @@ public class ViewDeck extends PageController {
 				}
 				else {
 					
-					List<CardsInDeckRDG> cards = CardsInDeckRDG.findByDeck(deck.getId());
+					List<CardRDG> cards = CardRDG.findByDeck(deck.getId());
 					
 					request.setAttribute("cards", cards);
 					request.getRequestDispatcher(Global.DECK).forward(request, response);

@@ -1,4 +1,4 @@
-package dom.model.cardsindeck.rdg;
+package dom.model.card.rdg;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,9 +23,9 @@ import dom.model.deck.rdg.DeckRDG;
  * @author vartanbeno
  *
  */
-public class CardsInDeckRDG {
+public class CardRDG {
 	
-	private static final String TABLE_NAME = "cards_in_deck";
+	private static final String TABLE_NAME = "cards";
 	
 	private static final String COLUMNS = "deck, type, name";
 	
@@ -53,7 +53,7 @@ public class CardsInDeckRDG {
 	private String type;
 	private String name;
 	
-	public CardsInDeckRDG(long deck, String type, String name) {
+	public CardRDG(long deck, String type, String name) {
 		this.deck = deck;
 		this.type = type;
 		this.name = name;
@@ -104,17 +104,17 @@ public class CardsInDeckRDG {
 		s.execute(DROP_TABLE);
 	}
 	
-	public static List<CardsInDeckRDG> findByDeck(long deck) throws SQLException {
+	public static List<CardRDG> findByDeck(long deck) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_BY_DECK);
 		ps.setLong(1, deck);
 		ResultSet rs = ps.executeQuery();
 		
-		CardsInDeckRDG cardsInDeckRDG = null;
-		List<CardsInDeckRDG> cardsInDeckRDGs = new ArrayList<CardsInDeckRDG>();
+		CardRDG cardsInDeckRDG = null;
+		List<CardRDG> cardsInDeckRDGs = new ArrayList<CardRDG>();
 		while (rs.next()) {
-			cardsInDeckRDG = new CardsInDeckRDG(
+			cardsInDeckRDG = new CardRDG(
 					rs.getLong("deck"),
 					rs.getString("type"),
 					rs.getString("name")

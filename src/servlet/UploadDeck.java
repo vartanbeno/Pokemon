@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.cardsindeck.rdg.CardsInDeckRDG;
+import dom.model.card.rdg.CardRDG;
 import dom.model.deck.rdg.DeckRDG;
 
 @WebServlet("/UploadDeck")
@@ -35,7 +35,7 @@ public class UploadDeck extends PageController {
 				DeckRDG deck = DeckRDG.findByPlayer(player);
 				
 				if (deck == null) {
-					request.setAttribute("numberOfCards", CardsInDeckRDG.getCardsPerDeck());
+					request.setAttribute("numberOfCards", CardRDG.getCardsPerDeck());
 					request.getRequestDispatcher(Global.CREATE_DECK_FORM).forward(request, response);
 				}
 				else {
@@ -79,22 +79,22 @@ public class UploadDeck extends PageController {
 					 */
 					String cards[] = request.getParameter("deck").replace("\r", "").trim().split("\n");
 					
-					if (cards.length != CardsInDeckRDG.getCardsPerDeck()) {
-						failure(request, response, String.format(CARDS_FAIL_MESSAGE, cards.length, CardsInDeckRDG.getCardsPerDeck()));
+					if (cards.length != CardRDG.getCardsPerDeck()) {
+						failure(request, response, String.format(CARDS_FAIL_MESSAGE, cards.length, CardRDG.getCardsPerDeck()));
 					}
 					else {
 						
 						deck = new DeckRDG(DeckRDG.getMaxId(), player);
 						deck.insert();
 						
-						CardsInDeckRDG cardInDeck = null;
+						CardRDG cardInDeck = null;
 						
 						for (String card : cards) {
 							
 							String type = card.substring(0, 1);
 							String name = card.substring(3, card.length() - 1);
 							
-							cardInDeck = new CardsInDeckRDG(deck.getId(), type, name);
+							cardInDeck = new CardRDG(deck.getId(), type, name);
 							cardInDeck.insert();
 							
 						}
