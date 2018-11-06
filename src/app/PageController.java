@@ -11,6 +11,12 @@ import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 
+import dom.model.card.rdg.CardRDG;
+import dom.model.challenge.rdg.ChallengeRDG;
+import dom.model.deck.rdg.DeckRDG;
+import dom.model.game.rdg.GameRDG;
+import dom.model.user.rdg.UserRDG;
+
 /**
  * 
  * Some of this code, like the initDb() and closeDb() methods, are taken from
@@ -56,6 +62,32 @@ public class PageController extends HttpServlet {
     	catch (Exception e) {
     		e.printStackTrace();
     	}
+    }
+    
+    public static void createTables() {
+    	try {
+    		UserRDG.createTable();
+			ChallengeRDG.createTable();
+			DeckRDG.createTable();
+			CardRDG.createTable();
+			GameRDG.createTable();
+    	}
+    	catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public static void dropTables() {
+    	try {
+			GameRDG.dropTable();
+			CardRDG.dropTable();
+			DeckRDG.dropTable();
+			ChallengeRDG.dropTable();
+			UserRDG.dropTable();
+    	}
+    	catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
 	protected void success(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
