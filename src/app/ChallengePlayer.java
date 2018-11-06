@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.ChallengeHelper;
 import dom.model.challenge.rdg.ChallengeRDG;
+import dom.model.deck.rdg.DeckRDG;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
 
@@ -24,6 +25,7 @@ public class ChallengePlayer extends PageController {
 	private static final String ALREADY_CHALLENGED = "You already have an open challenge against %s.";
 	private static final String CHALLENGEE_DOES_NOT_EXIST = "You have issued a challenge to a user that doesn't exist.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to issue a challenge to a player.";
+	private static final String NO_DECK = "You must have a deck to issue a challenge to a player.";
 	
 	private static final String CHALLENGE_SUCCESS = "You have successfully challenged %s to a game.";
 
@@ -38,21 +40,29 @@ public class ChallengePlayer extends PageController {
 			if (loggedIn(request)) {
 				
 				final long challenger = getUserId(request);
+				DeckRDG deck = DeckRDG.findByPlayer(challenger);
 				
-				List<UserRDG> userRDGs = UserRDG.findAll();
-				List<UserHelper> users = new ArrayList<UserHelper>();
-				
-				for (UserRDG userRDG : userRDGs) {
-					users.add(
-						new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
-					);
+				if (deck == null) {
+					failure(request, response, NO_DECK);
+				}
+				else {
+					
+					List<UserRDG> userRDGs = UserRDG.findAll();
+					List<UserHelper> users = new ArrayList<UserHelper>();
+					
+					for (UserRDG userRDG : userRDGs) {
+						users.add(
+							new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
+						);
+					}
+					
+					users.removeIf(user -> user.getId() == challenger);
+					
+					request.setAttribute("users", users);
+					request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
+					
 				}
 				
-				users.removeIf(user -> user.getId() == challenger);
-				
-				request.setAttribute("users", users);
-				request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
-
 			}
 			else {
 				failure(request, response, NOT_LOGGED_IN);

@@ -25,6 +25,7 @@ public class AcceptChallenge extends PageController {
 	private static final String CHALLENGE_DOES_NOT_EXIST = "An open challenge against %s does not exist.";
 	private static final String CHALLENGER_DOES_NOT_EXIST = "You have accepted a challenge against a user that doesn't exist.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to accept a challenge.";
+	private static final String NO_DECK = "You must have a deck to accept a challenge.";
 	
 	private static final String ACCEPT_SUCCESS = "You have successfully accepted %s's challenge. The game has begun!";
 
@@ -43,59 +44,68 @@ public class AcceptChallenge extends PageController {
 			if (loggedIn(request)) {
 				
 				long challengeeId = getUserId(request);
-				long challengerId = Long.parseLong(request.getParameter("challenger"));
+				DeckRDG deck = DeckRDG.findByPlayer(challengeeId);
 				
-				if (challengeeId == challengerId) {
-					failure(request, response, SAME_ID);
-					return;
-				}
-				
-				ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
-				UserRDG userRDGChallenger = UserRDG.findById(challengerId);
-				UserRDG userRDGChallengee = UserRDG.findById(challengeeId);
-				
-				if (challengeRDG == null) {
-					try {
-						failure(request, response, String.format(CHALLENGE_DOES_NOT_EXIST, userRDGChallenger.getUsername()));
-					}
-					catch (NullPointerException e) {
-						failure(request, response, CHALLENGER_DOES_NOT_EXIST);
-					}
+				if (deck == null) {
+					failure(request, response, NO_DECK);
 				}
 				else {
 					
-					UserHelper challenger = new UserHelper(
-							userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
-					);
+					long challengerId = Long.parseLong(request.getParameter("challenger"));
 					
-					DeckRDG challengerDeckRDG = DeckRDG.findByPlayer(challenger.getId());
-					DeckHelper challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
+					if (challengeeId == challengerId) {
+						failure(request, response, SAME_ID);
+						return;
+					}
 					
-					UserHelper challengee = new UserHelper(
-							userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
-					);
+					ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
+					UserRDG userRDGChallenger = UserRDG.findById(challengerId);
+					UserRDG userRDGChallengee = UserRDG.findById(challengeeId);
 					
-					DeckRDG challengeeDeckRDG = DeckRDG.findByPlayer(challengee.getId());
-					DeckHelper challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
-					
-					ChallengeHelper challenge = new ChallengeHelper(
-							challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
-					);
-					
-					challengeRDG.setStatus(ChallengeStatus.accepted.ordinal());
-					
-					GameRDG gameRDG = new GameRDG(
-							GameRDG.getMaxId(),
-							challenger.getId(),
-							challengee.getId(),
-							challengerDeck.getId(),
-							challengeeDeck.getId()
-					);
-					
-					challengeRDG.update();
-					gameRDG.insert();
-					
-					success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
+					if (challengeRDG == null) {
+						try {
+							failure(request, response, String.format(CHALLENGE_DOES_NOT_EXIST, userRDGChallenger.getUsername()));
+						}
+						catch (NullPointerException e) {
+							failure(request, response, CHALLENGER_DOES_NOT_EXIST);
+						}
+					}
+					else {
+						
+						UserHelper challenger = new UserHelper(
+								userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
+						);
+						
+						DeckRDG challengerDeckRDG = DeckRDG.findByPlayer(challenger.getId());
+						DeckHelper challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
+						
+						UserHelper challengee = new UserHelper(
+								userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
+						);
+						
+						DeckRDG challengeeDeckRDG = DeckRDG.findByPlayer(challengee.getId());
+						DeckHelper challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
+						
+						ChallengeHelper challenge = new ChallengeHelper(
+								challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
+						);
+						
+						challengeRDG.setStatus(ChallengeStatus.accepted.ordinal());
+						
+						GameRDG gameRDG = new GameRDG(
+								GameRDG.getMaxId(),
+								challenger.getId(),
+								challengee.getId(),
+								challengerDeck.getId(),
+								challengeeDeck.getId()
+						);
+						
+						challengeRDG.update();
+						gameRDG.insert();
+						
+						success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
+						
+					}
 					
 				}
 				
