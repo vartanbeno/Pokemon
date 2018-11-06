@@ -19,7 +19,7 @@ import dom.model.user.rdg.UserRDG;
  * 
  * GameRDG: Hand Row Data Gateway.
  * Points to row(s) in the hands table.
- * Provides methods to find, insert, update, and delete hand.
+ * Provides methods to find, insert, and delete hands.
  * 
  * Also includes create/truncate/drop queries.
  * 
@@ -62,7 +62,7 @@ private static final String TABLE_NAME = "hands";
 			+ "WHERE game = ?;", COLUMNS, TABLE_NAME);
 	
 	private static final String FIND_BY_GAME_AND_PLAYER = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE player = ? AND game = ?;", COLUMNS, TABLE_NAME);
+			+ "WHERE game = ? AND player = ?;", COLUMNS, TABLE_NAME);
 	
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
