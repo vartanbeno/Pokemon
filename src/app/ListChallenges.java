@@ -18,6 +18,8 @@ import dom.model.user.rdg.UserRDG;
 public class ListChallenges extends PageController {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private static final String NOT_LOGGED_IN = "You must be logged in to see the list of challenges.";
 
     public ListChallenges() {
         super();
@@ -27,48 +29,55 @@ public class ListChallenges extends PageController {
 		
 		try {
 			
-			List<ChallengeRDG> challengeRDGs = ChallengeRDG.findAll();
-			List<ChallengeHelper> challenges = new ArrayList<ChallengeHelper>();
-			
-			ChallengeHelper challenge = null;
-			
-			UserRDG userRDGChallenger = null;
-			UserRDG userRDGChallengee = null;
-			
-			UserHelper challenger = null;
-			UserHelper challengee = null;
-			
-			for (ChallengeRDG challengeRDG : challengeRDGs) {
+			if (loggedIn(request)) {
 				
-				userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
-				challenger = new UserHelper(
-						userRDGChallenger.getId(),
-						userRDGChallenger.getVersion(),
-						userRDGChallenger.getUsername(),
-						""
-				);
+				List<ChallengeRDG> challengeRDGs = ChallengeRDG.findAll();
+				List<ChallengeHelper> challenges = new ArrayList<ChallengeHelper>();
 				
-				userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
-				challengee = new UserHelper(
-						userRDGChallengee.getId(),
-						userRDGChallengee.getVersion(),
-						userRDGChallengee.getUsername(),
-						""
-				);
+				ChallengeHelper challenge = null;
 				
-				challenge = new ChallengeHelper(
-						challengeRDG.getId(),
-						challenger,
-						challengee,
-						challengeRDG.getStatus()
-				);
+				UserRDG userRDGChallenger = null;
+				UserRDG userRDGChallengee = null;
 				
-				challenges.add(challenge);
+				UserHelper challenger = null;
+				UserHelper challengee = null;
+				
+				for (ChallengeRDG challengeRDG : challengeRDGs) {
+					
+					userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
+					challenger = new UserHelper(
+							userRDGChallenger.getId(),
+							userRDGChallenger.getVersion(),
+							userRDGChallenger.getUsername(),
+							""
+					);
+					
+					userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
+					challengee = new UserHelper(
+							userRDGChallengee.getId(),
+							userRDGChallengee.getVersion(),
+							userRDGChallengee.getUsername(),
+							""
+					);
+					
+					challenge = new ChallengeHelper(
+							challengeRDG.getId(),
+							challenger,
+							challengee,
+							challengeRDG.getStatus()
+					);
+					
+					challenges.add(challenge);
+					
+				}
+				
+				request.setAttribute("challenges", challenges);
+				request.getRequestDispatcher(Global.LIST_CHALLENGES).forward(request, response);
 				
 			}
-			
-			request.setAttribute("challenges", challenges);
-			request.getRequestDispatcher(Global.LIST_CHALLENGES).forward(request, response);
+			else {
+				failure(request, response, NOT_LOGGED_IN);
+			}
 			
 		}
 		catch (Exception e) {
