@@ -24,7 +24,7 @@ public class Logout extends PageController {
 	 * I couldn't visit any of the pages anymore, much less log out.
 	 * Gotta do some more error handling.
 	 */
-	private static final String MAJOR_FAIL = "Something went horribly wrong.";
+	private static final String MAJOR_FAIL = "Something went horribly wrong. We can't point you to a user in the database.";
 	
 	private static final String LOGOUT_SUCCESS = "User %s has successfully logged out.";
 	
