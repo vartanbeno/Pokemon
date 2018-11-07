@@ -13,7 +13,7 @@
 
 <form method="POST" autocomplete="off">
 	<label for="challengee">Challengee: </label>
-	<select name="challengee" required>
+	<select name="player" required>
 		<option value="" selected disabled>Choose a player</option>
 		<c:forEach items="${users}" var="user">
 			<option value="${user.id}">${user.username}</option>

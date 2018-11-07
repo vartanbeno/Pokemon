@@ -85,7 +85,7 @@ public class ChallengePlayer extends PageController {
 			if (loggedIn(request)) {
 				
 				long challengerId = getUserId(request);
-				long challengeeId = Long.parseLong(request.getParameter("challengee"));
+				long challengeeId = Long.parseLong(request.getParameter("player"));
 				
 				if (challengerId == challengeeId) {
 					failure(request, response, SAME_ID);

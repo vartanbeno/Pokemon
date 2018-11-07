@@ -31,7 +31,7 @@ public class UserRDG {
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
 			+ "version INT NOT NULL,"
-			+ "username VARCHAR(30) NOT NULL,"
+			+ "username VARCHAR(64) NOT NULL,"
 			+ "password VARCHAR(64) NOT NULL,"
 			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME);
