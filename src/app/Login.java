@@ -17,7 +17,7 @@ public class Login extends PageController {
 	private static final String ENTER_USER_AND_PASS = "Please enter both a username and a password.";
 	private static final String INVALID_CREDENTIALS = "Incorrect username and/or password.";
 	
-	private static final String LOGIN_SUCCESS = "Successfully logged in.";
+	private static final String LOGIN_SUCCESS = "Successfully logged in as %s.";
 	
     public Login() {
         super();
@@ -41,7 +41,7 @@ public class Login extends PageController {
 			}
 			else if ((userRDG = UserRDG.findByUsernameAndPassword(username, password)) != null) {
 				request.getSession(true).setAttribute("userid", userRDG.getId());
-				success(request, response, LOGIN_SUCCESS);
+				success(request, response, String.format(LOGIN_SUCCESS, username));
 			}
 			else {
 				failure(request, response, INVALID_CREDENTIALS);

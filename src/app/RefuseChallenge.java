@@ -23,7 +23,7 @@ public class RefuseChallenge extends PageController {
 	private static final String CHALLENGER_DOES_NOT_EXIST = "You have refused a challenge against a user that doesn't exist.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to refuse a challenge.";
 	
-	private static final String ACCEPT_SUCCESS = "You have successfully refused %s's challenge.";
+	private static final String REFUSE_SUCCESS = "You have successfully refused %s's challenge.";
        
     public RefuseChallenge() {
         super();
@@ -40,44 +40,44 @@ public class RefuseChallenge extends PageController {
 			if (loggedIn(request)) {
 				
 				long challengeeId = getUserId(request);
-				long challengerId = Long.parseLong(request.getParameter("challenger"));
+				long challengeId = Long.parseLong(request.getParameter("challenge"));
 				
-				if (challengeeId == challengerId) {
-					failure(request, response, SAME_ID);
+				ChallengeRDG challengeRDG = ChallengeRDG.findOpenById(challengeId);
+				
+				if (challengeRDG == null) {
+					failure(request, response, CHALLENGE_DOES_NOT_EXIST);
 					return;
 				}
 				
-				ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
-				UserRDG userRDGChallenger = UserRDG.findById(challengerId);
-				UserRDG userRDGChallengee = UserRDG.findById(challengeeId);
+				UserRDG userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
+				UserRDG userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
 				
-				if (challengeRDG == null) {
-					try {
-						failure(request, response, String.format(CHALLENGE_DOES_NOT_EXIST, userRDGChallenger.getUsername()));
-					}
-					catch (NullPointerException e) {
-						failure(request, response, CHALLENGER_DOES_NOT_EXIST);
+				try {
+					if (challengeeId == userRDGChallenger.getId()) {
+						failure(request, response, SAME_ID);
+						return;
 					}
 				}
-				else {
-					
-					UserHelper challenger = new UserHelper(
-							userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
-					);
-					
-					UserHelper challengee = new UserHelper(
-							userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
-					);
-					
-					ChallengeHelper challenge = new ChallengeHelper(
-							challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
-					);
-					
-					challengeRDG.setStatus(ChallengeStatus.refused.ordinal());
-					challengeRDG.update();
-					success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
-					
+				catch (NullPointerException e) {
+					failure(request, response, CHALLENGER_DOES_NOT_EXIST);
+					return;
 				}
+				
+				UserHelper challenger = new UserHelper(
+						userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
+				);
+				
+				UserHelper challengee = new UserHelper(
+						userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
+				);
+				
+				ChallengeHelper challenge = new ChallengeHelper(
+						challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
+				);
+				
+				challengeRDG.setStatus(ChallengeStatus.refused.ordinal());
+				challengeRDG.update();
+				success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
 				
 			}
 			else {

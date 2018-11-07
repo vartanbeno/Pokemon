@@ -51,62 +51,62 @@ public class AcceptChallenge extends PageController {
 				}
 				else {
 					
-					long challengerId = Long.parseLong(request.getParameter("challenger"));
+					long challengeId = Long.parseLong(request.getParameter("challenge"));
 					
-					if (challengeeId == challengerId) {
-						failure(request, response, SAME_ID);
+					ChallengeRDG challengeRDG = ChallengeRDG.findOpenById(challengeId);
+					
+					if (challengeRDG == null) {
+						failure(request, response, CHALLENGE_DOES_NOT_EXIST);
 						return;
 					}
 					
-					ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
-					UserRDG userRDGChallenger = UserRDG.findById(challengerId);
-					UserRDG userRDGChallengee = UserRDG.findById(challengeeId);
+					UserRDG userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
+					UserRDG userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
 					
-					if (challengeRDG == null) {
-						try {
-							failure(request, response, String.format(CHALLENGE_DOES_NOT_EXIST, userRDGChallenger.getUsername()));
-						}
-						catch (NullPointerException e) {
-							failure(request, response, CHALLENGER_DOES_NOT_EXIST);
+					try {
+						if (challengeeId == userRDGChallenger.getId()) {
+							failure(request, response, SAME_ID);
+							return;
 						}
 					}
-					else {
-						
-						UserHelper challenger = new UserHelper(
-								userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
-						);
-						
-						DeckRDG challengerDeckRDG = DeckRDG.findByPlayer(challenger.getId());
-						DeckHelper challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
-						
-						UserHelper challengee = new UserHelper(
-								userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
-						);
-						
-						DeckRDG challengeeDeckRDG = DeckRDG.findByPlayer(challengee.getId());
-						DeckHelper challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
-						
-						ChallengeHelper challenge = new ChallengeHelper(
-								challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
-						);
-						
-						challengeRDG.setStatus(ChallengeStatus.accepted.ordinal());
-						
-						GameRDG gameRDG = new GameRDG(
-								GameRDG.getMaxId(),
-								challenger.getId(),
-								challengee.getId(),
-								challengerDeck.getId(),
-								challengeeDeck.getId()
-						);
-						
-						challengeRDG.update();
-						gameRDG.insert();
-						
-						success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
-						
+					catch (NullPointerException e) {
+						failure(request, response, CHALLENGER_DOES_NOT_EXIST);
+						return;
 					}
 					
+					UserHelper challenger = new UserHelper(
+							userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
+					);
+					
+					DeckRDG challengerDeckRDG = DeckRDG.findByPlayer(challenger.getId());
+					DeckHelper challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
+					
+					UserHelper challengee = new UserHelper(
+							userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
+					);
+					
+					DeckRDG challengeeDeckRDG = DeckRDG.findByPlayer(challengee.getId());
+					DeckHelper challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
+					
+					ChallengeHelper challenge = new ChallengeHelper(
+							challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
+					);
+					
+					challengeRDG.setStatus(ChallengeStatus.accepted.ordinal());
+					
+					GameRDG gameRDG = new GameRDG(
+							GameRDG.getMaxId(),
+							challenger.getId(),
+							challengee.getId(),
+							challengerDeck.getId(),
+							challengeeDeck.getId()
+					);
+					
+					challengeRDG.update();
+					gameRDG.insert();
+					
+					success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
+										
 				}
 				
 			}

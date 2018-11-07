@@ -52,6 +52,9 @@ public class ChallengeRDG {
 
 	private static final String FIND_BY_CHALLENGEE = String.format("SELECT %1$s FROM %2$s WHERE challengee = ?;", COLUMNS, TABLE_NAME);
 	
+	private static final String FIND_OPEN_BY_ID = String.format("SELECT %1$s FROM %2$s WHERE id = ? AND status = %3$d;",
+			COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
+	
 	private static final String FIND_OPEN_BY_CHALLENGER = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE challenger = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
 
@@ -237,6 +240,29 @@ public class ChallengeRDG {
 		ps.close();
 		
 		return challengeRDGs;
+	}
+	
+	public static ChallengeRDG findOpenById(long id) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_ID);
+		ps.setLong(1, id);
+		ResultSet rs = ps.executeQuery();
+		
+		ChallengeRDG challengeRDG = null;
+		if (rs.next()) {
+			challengeRDG = new ChallengeRDG(
+					rs.getLong("id"),
+					rs.getLong("challenger"),
+					rs.getLong("challengee"),
+					rs.getInt("status")
+			);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return challengeRDG;
 	}
 	
 	public static List<ChallengeRDG> findOpenByChallenger(long challenger) throws SQLException {

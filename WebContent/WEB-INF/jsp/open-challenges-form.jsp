@@ -17,12 +17,12 @@
 	<span>${challenge.challenger.username}</span>
 	
 	<form method="POST" action="${pageContext.request.contextPath}/AcceptChallenge">
-		<input type="hidden" name="challenger" value="${challenge.challenger.id}" />
+		<input type="hidden" name="challenge" value="${challenge.id}" />
 		<button type="submit">Accept</button>
 	</form>
 	
 	<form method="POST" action="${pageContext.request.contextPath}/RefuseChallenge">
-		<input type="hidden" name="challenger" value="${challenge.challenger.id}" />
+		<input type="hidden" name="challenge" value="${challenge.id}" />
 		<button type="submit">Refuse</button>
 	</form>
 </c:forEach>
