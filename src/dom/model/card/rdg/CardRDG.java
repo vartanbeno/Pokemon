@@ -48,7 +48,7 @@ public class CardRDG {
 			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
 		
 	private static final String FIND_BY_DECK = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE deck = ?;", COLUMNS, TABLE_NAME);
+			+ "WHERE deck = ? ORDER BY ID;", COLUMNS, TABLE_NAME);
 	
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	

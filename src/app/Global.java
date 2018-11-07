@@ -18,6 +18,6 @@ public class Global {
 	public static final String OPEN_CHALLENGES_FORM = PATH_TO_JSP + "open-challenges-form.jsp";
 	
 	public static final String UPLOAD_DECK_FORM = PATH_TO_JSP + "upload-deck-form.jsp";
-	public static final String DECK = PATH_TO_JSP + "deck.jsp";
+	public static final String DECK = PATH_TO_JSP + "view-deck.jsp";
 	
 }
