@@ -42,7 +42,7 @@ public class ViewDeck extends PageController {
 				}
 				else {
 					
-					UserRDG ownerOfDeck = UserRDG.findById(deck.getId());
+					UserRDG ownerOfDeck = UserRDG.findById(deck.getPlayer());
 					UserHelper userHelper = new UserHelper(
 							ownerOfDeck.getId(),
 							ownerOfDeck.getVersion(),

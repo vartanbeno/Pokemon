@@ -87,6 +87,11 @@ public class ChallengePlayer extends PageController {
 				long challengerId = getUserId(request);
 				long challengeeId = Long.parseLong(request.getParameter("player"));
 				
+				if (DeckRDG.findByPlayer(challengerId) == null) {
+					failure(request, response, NO_DECK);
+					return;
+				}
+				
 				if (challengerId == challengeeId) {
 					failure(request, response, SAME_ID);
 					return;
