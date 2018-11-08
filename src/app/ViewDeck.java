@@ -59,7 +59,7 @@ public class ViewDeck extends PageController {
 					
 					for (CardRDG card : cards) {
 						
-						cardHelper = new CardHelper(deckHelper, card.getType(), card.getName());
+						cardHelper = new CardHelper(card.getId(), deckHelper, card.getType(), card.getName());
 						cardHelpers.add(cardHelper);
 						
 					}

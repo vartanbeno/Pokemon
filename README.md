@@ -58,10 +58,11 @@ If you want to refuse a challenge issued against you, go to `/OpenChallenges`, a
 
 If you want to go back on your steps and withdraw from a challenge that you issued to another player, go to `/OpenChallenges`, and click on the `Withdraw` button on the challenge you want to withdraw from. This sets the challenge status to withdrawn.
 
-### List of Players and Challenges
+### List of Players, Challenges, and Games
 
 1. To see the list of players (i.e. users), visit `/ListPlayers`.
 2. To see the list of challenges, visit `/ListChallenges`.
+3. To see the list of games, visit `/ListGames`.
 
 ### Viewing Your Game Board
 
