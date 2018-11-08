@@ -19,9 +19,5 @@ public class DeckHelper {
 	public UserHelper getPlayer() {
 		return player;
 	}
-
-	public void setPlayer(UserHelper player) {
-		this.player = player;
-	}
 	
 }

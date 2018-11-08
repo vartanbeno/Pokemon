@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import dom.model.card.CardHelper;
 import dom.model.card.rdg.CardRDG;
 import dom.model.deck.DeckHelper;
+import dom.model.deck.DeckWithCardsHelper;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
@@ -63,8 +64,9 @@ public class ViewDeck extends PageController {
 						
 					}
 					
-					request.setAttribute("deck", deckHelper);
-					request.setAttribute("cards", cardHelpers);
+					DeckWithCardsHelper deckWithCardsHelper = new DeckWithCardsHelper(deck.getId(), userHelper, cardHelpers);
+					
+					request.setAttribute("deck", deckWithCardsHelper);
 					request.getRequestDispatcher(Global.VIEW_DECK).forward(request, response);
 					
 				}

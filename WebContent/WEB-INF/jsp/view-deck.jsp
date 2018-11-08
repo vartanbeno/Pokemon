@@ -4,9 +4,9 @@
 
 {
 	"deck": {
-		"id": ${deck.id},
+		"id": ${deck.player.id},
 		"cards": [
-			<c:forEach items="${cards}" var="card" varStatus="loop">
+			<c:forEach items="${deck.cards}" var="card" varStatus="loop">
 				{
 					"t": "${card.type}",
 					"n": "${card.name}"

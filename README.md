@@ -74,3 +74,5 @@ There are more features left to be implemented. Will update soon.
 I made use of the [SoenEA](http://soenea.htmlweb.com/) (Software Engineering Enterprise Application) framework to set up the connection to the database, making use of the `DbRegistry` class, which parses the [MyResources.properties](src/MyResources.properties) file to get the necessary credentials.
 
 The framework was developed by Stuart Thiel, a professor at Concordia University. Per his thesis, it is used to "aid in the rapid development of dependable Web Enterprise Applications."
+
+The project's file structure follows the recommended file structure from the thesis, which can be found in the Appendix, on page 73.
