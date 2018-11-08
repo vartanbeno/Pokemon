@@ -10,10 +10,10 @@
 </head>
 <body>
 
-<h2>Open Challenges</h2>
-<h4>You have ${fn:length(challenges)} open challenge(s).</h4>
+<h2>Open Challenges Issued Against You</h2>
+<h4>You have ${fn:length(challengesAgainstMe)} open challenge(s) issued against you.</h4>
 
-<c:forEach items="${challenges}" var="challenge">
+<c:forEach items="${challengesAgainstMe}" var="challenge">
 	<span>${challenge.challenger.username}</span>
 	
 	<form method="POST" action="${pageContext.request.contextPath}/AcceptChallenge">
@@ -24,6 +24,18 @@
 	<form method="POST" action="${pageContext.request.contextPath}/RefuseChallenge">
 		<input type="hidden" name="challenge" value="${challenge.id}" />
 		<button type="submit">Refuse</button>
+	</form>
+</c:forEach>
+
+<h2>Open Challenges Issued By You</h2>
+<h4>You have issued ${fn:length(challengesAgainstOthers)} challenge(s) against other players.</h4>
+
+<c:forEach items="${challengesAgainstOthers}" var="challenge">
+	<span>${challenge.challengee.username}</span>
+	
+	<form method="POST" action="${pageContext.request.contextPath}/RefuseChallenge">
+		<input type="hidden" name="challenge" value="${challenge.id}" />
+		<button type="submit">Withdraw</button>
 	</form>
 </c:forEach>
 

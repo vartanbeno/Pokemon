@@ -31,15 +31,18 @@ public class OpenChallenges extends PageController {
 			
 			if (loggedIn(request)) {
 				
-				long challengee = getUserId(request);
+				long userId = getUserId(request);
 				
-				List<ChallengeRDG> challengeRDGs = ChallengeRDG.findOpenByChallengee(challengee);
+				List<ChallengeRDG> challengeeChallengeRDGs = ChallengeRDG.findOpenByChallengee(userId);
+				List<ChallengeRDG> challengerChallengeRDGs = ChallengeRDG.findOpenByChallenger(userId);
 				
-				List<ChallengeHelper> challenges = new ArrayList<ChallengeHelper>();
+				List<ChallengeHelper> challengeeChallenges = new ArrayList<ChallengeHelper>();
+				List<ChallengeHelper> challengerChallenges = new ArrayList<ChallengeHelper>();
+				
 				ChallengeHelper challenge = null;
 				
 				UserRDG userRDGChallenger = null;
-				UserRDG userRDGChallengee = UserRDG.findById(challengee);
+				UserRDG userRDGChallengee = UserRDG.findById(userId);
 				
 				UserHelper userChallenger = null;
 				UserHelper userChallengee = new UserHelper(
@@ -49,7 +52,7 @@ public class OpenChallenges extends PageController {
 						""
 				);
 				
-				for (ChallengeRDG challengeRDG : challengeRDGs) {
+				for (ChallengeRDG challengeRDG : challengeeChallengeRDGs) {
 					
 					userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
 					userChallenger = new UserHelper(
@@ -65,11 +68,34 @@ public class OpenChallenges extends PageController {
 							userChallengee,
 							challengeRDG.getStatus()
 					);
-					challenges.add(challenge);
+					
+					challengeeChallenges.add(challenge);
 					
 				}
-								
-				request.setAttribute("challenges", challenges);
+				
+				for (ChallengeRDG challengeRDG : challengerChallengeRDGs) {
+					
+					userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
+					userChallenger = new UserHelper(
+							userRDGChallenger.getId(),
+							userRDGChallenger.getVersion(),
+							userRDGChallenger.getUsername(),
+							""
+					);
+					
+					challenge = new ChallengeHelper(
+							challengeRDG.getId(),
+							userChallenger,
+							userChallengee,
+							challengeRDG.getStatus()
+					);
+					
+					challengerChallenges.add(challenge);
+					
+				}
+				
+				request.setAttribute("challengesAgainstMe", challengeeChallenges);
+				request.setAttribute("challengesAgainstOthers", challengerChallenges);
 				request.getRequestDispatcher(Global.OPEN_CHALLENGES_FORM).forward(request, response);
 				
 			}

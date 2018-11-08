@@ -8,7 +8,7 @@ package dom.model.challenge;
  * 
  * How do we get the integer value?
  * For example:
- * ChallengeStatus.refused.ordinal() will return 2.
+ * ChallengeStatus.refused.ordinal() will return 1.
  * 1 represents the position of "refused" in the enum declaration (initial constant, "open", is assigned 0).
  * 
  * @author vartanbeno
@@ -16,6 +16,6 @@ package dom.model.challenge;
  */
 public enum ChallengeStatus {
 	
-	open, accepted, refused, withdrawn;
+	open, refused, withdrawn, accepted;
 
 }

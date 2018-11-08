@@ -24,7 +24,8 @@ public class RefuseChallenge extends PageController {
 	private static final String NOT_LOGGED_IN = "You must be logged in to refuse a challenge.";
 	
 	private static final String REFUSE_SUCCESS = "You have successfully refused %s's challenge.";
-       
+	private static final String WITHDRAW_SUCCESS = "You have successfully withdrawn from your challenge against %s.";
+	
     public RefuseChallenge() {
         super();
     }
@@ -52,13 +53,7 @@ public class RefuseChallenge extends PageController {
 				UserRDG userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
 				UserRDG userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
 				
-				try {
-					if (challengeeId == userRDGChallenger.getId()) {
-						failure(request, response, SAME_ID);
-						return;
-					}
-				}
-				catch (NullPointerException e) {
+				if (userRDGChallengee == null) {
 					failure(request, response, CHALLENGER_DOES_NOT_EXIST);
 					return;
 				}
@@ -75,9 +70,20 @@ public class RefuseChallenge extends PageController {
 						challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
 				);
 				
-				challengeRDG.setStatus(ChallengeStatus.refused.ordinal());
-				challengeRDG.update();
-				success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
+				/**
+				 * If you are the one being challenged and refuse, set the challenge status to refused.
+				 * If you are the one who challenged a player and refuse, set the challenge status to withdrawn.
+				 */
+				if (challengeRDG.getChallengee() == challengeeId) {
+					challengeRDG.setStatus(ChallengeStatus.refused.ordinal());
+					challengeRDG.update();
+					success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
+				}
+				else if (challengeRDG.getChallenger() == challengeeId) {
+					challengeRDG.setStatus(ChallengeStatus.withdrawn.ordinal());
+					challengeRDG.update();
+					success(request, response, String.format(WITHDRAW_SUCCESS, challenge.getChallengee().getUsername()));
+				}
 				
 			}
 			else {
