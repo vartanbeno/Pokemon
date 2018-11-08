@@ -1,6 +1,7 @@
 package app;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -8,17 +9,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dom.model.card.CardHelper;
 import dom.model.card.rdg.CardRDG;
+import dom.model.deck.DeckHelper;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.rdg.GameRDG;
 import dom.model.hand.rdg.HandRDG;
+import dom.model.user.UserHelper;
+import dom.model.user.rdg.UserRDG;
 
 @WebServlet("/DrawCard")
 public class DrawCard extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private static final String INVALID_GAME = "This is not a valid game.";
+	private static final String NOT_YOUR_GAME = "You must be part of the game to draw a card.";
+	private static final String NO_MORE_CARDS = "You have no more cards left in your deck to draw.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
+	
+	private static final String DRAW_SUCCESS = "You have successfully drawn a card! %s: %s.";
        
     public DrawCard() {
         super();
@@ -34,40 +44,76 @@ public class DrawCard extends PageController {
 			
 			if (loggedIn(request)) {
 				
-				long player = getUserId(request);
+				long playerId = getUserId(request);
 				long gameId = Long.parseLong(request.getParameter("game"));
 				
-				GameRDG game = GameRDG.findById(gameId);
+				GameRDG gameRDG = GameRDG.findById(gameId);
 				
-				// TODO error handling, if game is null
-				
-				List<HandRDG> hand = HandRDG.findByGameAndPlayer(game.getId(), player);
-				int handSize = hand.size();
-				
-				System.out.println("You have " + handSize + " cards in your hand.");
-				
-				DeckRDG deck = DeckRDG.findByPlayer(player);
-				List<CardRDG> cards = CardRDG.findByDeck(deck.getId());
-				
-				for (int i = 0; i < handSize; i++) {
-					cards.remove(0);
+				if (gameRDG == null) {
+					failure(request, response, INVALID_GAME);
+					return;
+				}
+				else if (playerId != gameRDG.getChallenger() && playerId != gameRDG.getChallengee()) {
+					failure(request, response, NOT_YOUR_GAME);
+					return;
 				}
 				
-				// TODO error handling, if no more cards left in deck
-				
-				HandRDG drawCard = new HandRDG(
-						HandRDG.getMaxId(),
-						game.getId(),
-						player,
-						deck.getId(),
-						cards.remove(0).getId()
+				UserRDG playerRDG = UserRDG.findById(playerId);
+				UserRDG opponentRDG = UserRDG.findById(
+						(playerId != gameRDG.getChallenger()) ? gameRDG.getChallenger() : gameRDG.getChallengee()
 				);
-				drawCard.insert();
 				
-				hand.add(drawCard);
+				UserHelper player = new UserHelper(
+						playerRDG.getId(),
+						playerRDG.getVersion(),
+						playerRDG.getUsername(),
+						""
+				);
 				
-				System.out.println("You now have " + hand.size() + " cards in your hand.");
-				System.out.println(cards.size() + " left in the deck.");
+				List<HandRDG> playerHandRDGs = HandRDG.findByGameAndPlayer(gameRDG.getId(), playerRDG.getId());
+				int playerHandSize = playerHandRDGs.size();
+				
+				DeckRDG playerDeckRDG = DeckRDG.findByPlayer(playerRDG.getId());
+				DeckHelper playerDeck = new DeckHelper(playerDeckRDG.getId(), player);
+				
+				List<CardRDG> playerCardRDGs = CardRDG.findByDeck(playerDeckRDG.getId());
+				List<CardHelper> playerCards = new ArrayList<CardHelper>();
+				CardHelper playerCard = null;
+				
+				for (CardRDG playerCardRDG : playerCardRDGs) {
+					
+					playerCard = new CardHelper(
+							playerCardRDG.getId(),
+							playerDeck,
+							playerCardRDG.getType(),
+							playerCardRDG.getName()
+					);
+					
+					playerCards.add(playerCard);
+					
+				}
+				
+				for (int i = 0; i < playerHandSize; i++) {
+					playerCards.remove(0);
+				}
+				
+				if (playerCards.size() == 0) {
+					failure(request, response, NO_MORE_CARDS);
+					return;
+				}
+				
+				CardHelper drawnCard = playerCards.remove(0);
+				
+				HandRDG drawnCardRDG = new HandRDG(
+						HandRDG.getMaxId(),
+						gameRDG.getId(),
+						playerId,
+						playerDeckRDG.getId(),
+						drawnCard.getId()
+				);
+				drawnCardRDG.insert();
+				
+				success(request, response, String.format(DRAW_SUCCESS, drawnCard.getType(), drawnCard.getName()));
 				
 			}
 			else {
