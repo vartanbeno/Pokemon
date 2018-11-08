@@ -24,6 +24,7 @@ public class AcceptChallenge extends PageController {
 	private static final String SAME_ID = "You have accepted a challenge against yourself. You are not allowed to do that.";
 	private static final String CHALLENGE_DOES_NOT_EXIST = "An open challenge against %s does not exist.";
 	private static final String CHALLENGER_DOES_NOT_EXIST = "You have accepted a challenge against a user that doesn't exist.";
+	private static final String NOT_PART_OF_CHALLENGE = "You must be part of the challenge to accept it.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to accept a challenge.";
 	private static final String NO_DECK = "You must have a deck to accept a challenge.";
 	
@@ -43,8 +44,8 @@ public class AcceptChallenge extends PageController {
 			
 			if (loggedIn(request)) {
 				
-				long challengeeId = getUserId(request);
-				DeckRDG deck = DeckRDG.findByPlayer(challengeeId);
+				long userId = getUserId(request);
+				DeckRDG deck = DeckRDG.findByPlayer(userId);
 				
 				if (deck == null) {
 					failure(request, response, NO_DECK);
@@ -64,7 +65,7 @@ public class AcceptChallenge extends PageController {
 					UserRDG userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
 					
 					try {
-						if (challengeeId == userRDGChallenger.getId()) {
+						if (userId == userRDGChallenger.getId()) {
 							failure(request, response, SAME_ID);
 							return;
 						}
@@ -92,21 +93,28 @@ public class AcceptChallenge extends PageController {
 							challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
 					);
 					
-					challengeRDG.setStatus(ChallengeStatus.accepted.ordinal());
+					if (challengeRDG.getChallengee() == userId) {
+						
+						challengeRDG.setStatus(ChallengeStatus.accepted.ordinal());
+						
+						GameRDG gameRDG = new GameRDG(
+								GameRDG.getMaxId(),
+								challenger.getId(),
+								challengee.getId(),
+								challengerDeck.getId(),
+								challengeeDeck.getId()
+						);
+						
+						challengeRDG.update();
+						gameRDG.insert();
+						
+						success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
+						
+					}
+					else {
+						failure(request, response, NOT_PART_OF_CHALLENGE);
+					}
 					
-					GameRDG gameRDG = new GameRDG(
-							GameRDG.getMaxId(),
-							challenger.getId(),
-							challengee.getId(),
-							challengerDeck.getId(),
-							challengeeDeck.getId()
-					);
-					
-					challengeRDG.update();
-					gameRDG.insert();
-					
-					success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
-										
 				}
 				
 			}

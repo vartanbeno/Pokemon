@@ -21,6 +21,7 @@ public class RefuseChallenge extends PageController {
 	private static final String SAME_ID = "You have refused a challenge against yourself. You are not allowed to do that.";
 	private static final String CHALLENGE_DOES_NOT_EXIST = "An open challenge against %s does not exist.";
 	private static final String CHALLENGER_DOES_NOT_EXIST = "You have refused a challenge against a user that doesn't exist.";
+	private static final String NOT_PART_OF_CHALLENGE = "You must be part of the challenge to refuse it.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to refuse a challenge.";
 	
 	private static final String REFUSE_SUCCESS = "You have successfully refused %s's challenge.";
@@ -40,7 +41,7 @@ public class RefuseChallenge extends PageController {
 			
 			if (loggedIn(request)) {
 				
-				long challengeeId = getUserId(request);
+				long userId = getUserId(request);
 				long challengeId = Long.parseLong(request.getParameter("challenge"));
 				
 				ChallengeRDG challengeRDG = ChallengeRDG.findOpenById(challengeId);
@@ -71,18 +72,26 @@ public class RefuseChallenge extends PageController {
 				);
 				
 				/**
-				 * If you are the one being challenged and refuse, set the challenge status to refused.
-				 * If you are the one who challenged a player and refuse, set the challenge status to withdrawn.
+				 * If somehow you refused a challenge against yourself (shouldn't even exist), get a fail message.
+				 * Else if you are the one being challenged and refuse, set the challenge status to refused.
+				 * Else if you are the one who challenged a player and refuse, set the challenge status to withdrawn.
+				 * Else, you tried to refuse a challenge you are not a part of.
 				 */
-				if (challengeRDG.getChallengee() == challengeeId) {
+				if (challengeRDG.getChallenger() == challengeRDG.getChallengee()) {
+					failure(request, response, SAME_ID);
+				}
+				else if (challengeRDG.getChallengee() == userId) {
 					challengeRDG.setStatus(ChallengeStatus.refused.ordinal());
 					challengeRDG.update();
 					success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
 				}
-				else if (challengeRDG.getChallenger() == challengeeId) {
+				else if (challengeRDG.getChallenger() == userId) {
 					challengeRDG.setStatus(ChallengeStatus.withdrawn.ordinal());
 					challengeRDG.update();
 					success(request, response, String.format(WITHDRAW_SUCCESS, challenge.getChallengee().getUsername()));
+				}
+				else {
+					failure(request, response, NOT_PART_OF_CHALLENGE);
 				}
 				
 			}

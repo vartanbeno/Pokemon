@@ -41,31 +41,31 @@ public class OpenChallenges extends PageController {
 				
 				ChallengeHelper challenge = null;
 				
-				UserRDG userRDGChallenger = null;
-				UserRDG userRDGChallengee = UserRDG.findById(userId);
+				UserRDG someoneElse = null;
+				UserHelper someoneElseHelper = null;
 				
-				UserHelper userChallenger = null;
-				UserHelper userChallengee = new UserHelper(
-						userRDGChallengee.getId(),
-						userRDGChallengee.getVersion(),
-						userRDGChallengee.getUsername(),
+				UserRDG user = UserRDG.findById(userId);
+				UserHelper userHelper = new UserHelper(
+						user.getId(),
+						user.getVersion(),
+						user.getUsername(),
 						""
 				);
 				
 				for (ChallengeRDG challengeRDG : challengeeChallengeRDGs) {
 					
-					userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
-					userChallenger = new UserHelper(
-							userRDGChallenger.getId(),
-							userRDGChallenger.getVersion(),
-							userRDGChallenger.getUsername(),
+					someoneElse = UserRDG.findById(challengeRDG.getChallenger());
+					someoneElseHelper = new UserHelper(
+							someoneElse.getId(),
+							someoneElse.getVersion(),
+							someoneElse.getUsername(),
 							""
 					);
 					
 					challenge = new ChallengeHelper(
 							challengeRDG.getId(),
-							userChallenger,
-							userChallengee,
+							someoneElseHelper,
+							userHelper,
 							challengeRDG.getStatus()
 					);
 					
@@ -75,18 +75,18 @@ public class OpenChallenges extends PageController {
 				
 				for (ChallengeRDG challengeRDG : challengerChallengeRDGs) {
 					
-					userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
-					userChallenger = new UserHelper(
-							userRDGChallenger.getId(),
-							userRDGChallenger.getVersion(),
-							userRDGChallenger.getUsername(),
+					someoneElse = UserRDG.findById(challengeRDG.getChallengee());
+					someoneElseHelper = new UserHelper(
+							someoneElse.getId(),
+							someoneElse.getVersion(),
+							someoneElse.getUsername(),
 							""
 					);
 					
 					challenge = new ChallengeHelper(
 							challengeRDG.getId(),
-							userChallenger,
-							userChallengee,
+							userHelper,
+							someoneElseHelper,
 							challengeRDG.getStatus()
 					);
 					
