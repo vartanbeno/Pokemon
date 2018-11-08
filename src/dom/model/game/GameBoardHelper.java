@@ -2,8 +2,8 @@ package dom.model.game;
 
 import java.util.List;
 
+import dom.model.cardinplay.CardInPlayHelper;
 import dom.model.deck.DeckWithCardsHelper;
-import dom.model.handcard.HandCardHelper;
 import dom.model.user.UserHelper;
 
 public class GameBoardHelper {
@@ -13,22 +13,33 @@ public class GameBoardHelper {
 	private UserHelper challengee;
 	private DeckWithCardsHelper challengerDeck;
 	private DeckWithCardsHelper challengeeDeck;
-	private List<HandCardHelper> challengerHand;
-	private List<HandCardHelper> challengeeHand;
+	private List<CardInPlayHelper> challengerHandCards;
+	private List<CardInPlayHelper> challengeeHandCards;
+	private List<CardInPlayHelper> challengerBenchedCards;
+	private List<CardInPlayHelper> challengeeBenchedCards;
+	private List<CardInPlayHelper> challengerDiscardedCards;
+	private List<CardInPlayHelper> challengeeDiscardedCards;
 	
 	public GameBoardHelper(
 			long id,
 			UserHelper challenger, UserHelper challengee,
 			DeckWithCardsHelper challengerDeck, DeckWithCardsHelper challengeeDeck,
-			List<HandCardHelper> challengerHand, List<HandCardHelper> challengeeHand
+			List<CardInPlayHelper> challengerHandCards, List<CardInPlayHelper> challengeeHandCards,
+			List<CardInPlayHelper> challengerBenchedCards, List<CardInPlayHelper> challengeeBenchedCards,
+			List<CardInPlayHelper> challengerDiscardedCards, List<CardInPlayHelper> challengeeDiscardedCards
 	) {
+		super();
 		this.id = id;
 		this.challenger = challenger;
 		this.challengee = challengee;
 		this.challengerDeck = challengerDeck;
 		this.challengeeDeck = challengeeDeck;
-		this.challengerHand = challengerHand;
-		this.challengeeHand = challengeeHand;
+		this.challengerHandCards = challengerHandCards;
+		this.challengeeHandCards = challengeeHandCards;
+		this.challengerBenchedCards = challengerBenchedCards;
+		this.challengeeBenchedCards = challengeeBenchedCards;
+		this.challengerDiscardedCards = challengerDiscardedCards;
+		this.challengeeDiscardedCards = challengeeDiscardedCards;
 	}
 
 	public long getId() {
@@ -67,20 +78,52 @@ public class GameBoardHelper {
 		this.challengeeDeck = challengeeDeck;
 	}
 
-	public List<HandCardHelper> getChallengerHand() {
-		return challengerHand;
+	public List<CardInPlayHelper> getChallengerHandCards() {
+		return challengerHandCards;
 	}
 
-	public void setChallengerHand(List<HandCardHelper> challengerHand) {
-		this.challengerHand = challengerHand;
+	public void setChallengerHandCards(List<CardInPlayHelper> challengerHandCards) {
+		this.challengerHandCards = challengerHandCards;
 	}
 
-	public List<HandCardHelper> getChallengeeHand() {
-		return challengeeHand;
+	public List<CardInPlayHelper> getChallengeeHandCards() {
+		return challengeeHandCards;
 	}
 
-	public void setChallengeeHand(List<HandCardHelper> challengeeHand) {
-		this.challengeeHand = challengeeHand;
+	public void setChallengeeHandCards(List<CardInPlayHelper> challengeeHandCards) {
+		this.challengeeHandCards = challengeeHandCards;
+	}
+
+	public List<CardInPlayHelper> getChallengerBenchedCards() {
+		return challengerBenchedCards;
+	}
+
+	public void setChallengerBenchedCards(List<CardInPlayHelper> challengerBenchedCards) {
+		this.challengerBenchedCards = challengerBenchedCards;
+	}
+
+	public List<CardInPlayHelper> getChallengeeBenchedCards() {
+		return challengeeBenchedCards;
+	}
+
+	public void setChallengeeBenchedCards(List<CardInPlayHelper> challengeeBenchedCards) {
+		this.challengeeBenchedCards = challengeeBenchedCards;
+	}
+
+	public List<CardInPlayHelper> getChallengerDiscardedCards() {
+		return challengerDiscardedCards;
+	}
+
+	public void setChallengerDiscardedCards(List<CardInPlayHelper> challengerDiscardedCards) {
+		this.challengerDiscardedCards = challengerDiscardedCards;
+	}
+
+	public List<CardInPlayHelper> getChallengeeDiscardedCards() {
+		return challengeeDiscardedCards;
+	}
+
+	public void setChallengeeDiscardedCards(List<CardInPlayHelper> challengeeDiscardedCards) {
+		this.challengeeDiscardedCards = challengeeDiscardedCards;
 	}
 	
 }

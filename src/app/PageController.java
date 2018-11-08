@@ -12,10 +12,10 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
 import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 
 import dom.model.card.rdg.CardRDG;
+import dom.model.cardinplay.rdg.CardInPlayRDG;
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.rdg.GameRDG;
-import dom.model.handcard.rdg.HandCardRDG;
 import dom.model.user.rdg.UserRDG;
 
 /**
@@ -72,7 +72,7 @@ public class PageController extends HttpServlet {
 			DeckRDG.createTable();
 			CardRDG.createTable();
 			GameRDG.createTable();
-			HandCardRDG.createTable();
+			CardInPlayRDG.createTable();
     	}
     	catch (Exception e) {
 			e.printStackTrace();
@@ -81,7 +81,7 @@ public class PageController extends HttpServlet {
     
     public static void dropTables() {
     	try {
-    		HandCardRDG.dropTable();
+    		CardInPlayRDG.dropTable();
 			GameRDG.dropTable();
 			CardRDG.dropTable();
 			DeckRDG.dropTable();
