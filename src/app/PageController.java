@@ -15,7 +15,7 @@ import dom.model.card.rdg.CardRDG;
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.rdg.GameRDG;
-import dom.model.hand.rdg.HandRDG;
+import dom.model.handcard.rdg.HandCardRDG;
 import dom.model.user.rdg.UserRDG;
 
 /**
@@ -72,7 +72,7 @@ public class PageController extends HttpServlet {
 			DeckRDG.createTable();
 			CardRDG.createTable();
 			GameRDG.createTable();
-			HandRDG.createTable();
+			HandCardRDG.createTable();
     	}
     	catch (Exception e) {
 			e.printStackTrace();
@@ -81,7 +81,7 @@ public class PageController extends HttpServlet {
     
     public static void dropTables() {
     	try {
-    		HandRDG.dropTable();
+    		HandCardRDG.dropTable();
 			GameRDG.dropTable();
 			CardRDG.dropTable();
 			DeckRDG.dropTable();

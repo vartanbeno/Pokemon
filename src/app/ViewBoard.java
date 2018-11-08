@@ -18,8 +18,8 @@ import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.GameBoardHelper;
 import dom.model.game.GameHelper;
 import dom.model.game.rdg.GameRDG;
-import dom.model.hand.HandHelper;
-import dom.model.hand.rdg.HandRDG;
+import dom.model.handcard.HandCardHelper;
+import dom.model.handcard.rdg.HandCardRDG;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
 
@@ -73,8 +73,8 @@ public class ViewBoard extends PageController {
 					List<CardRDG> challengerDeckCardsRDG = CardRDG.findByDeck(gameRDG.getChallengerDeck());
 					List<CardRDG> challengeeDeckCardsRDG = CardRDG.findByDeck(gameRDG.getChallengeeDeck());
 					
-					List<HandRDG> challengerHandRDG = HandRDG.findByGameAndPlayer(gameRDG.getId(), gameRDG.getChallenger());
-					List<HandRDG> challengeeHandRDG = HandRDG.findByGameAndPlayer(gameRDG.getId(), gameRDG.getChallengee());
+					List<HandCardRDG> challengerHandCardRDGs = HandCardRDG.findByGameAndPlayer(gameRDG.getId(), gameRDG.getChallenger());
+					List<HandCardRDG> challengeeHandCardRDGs = HandCardRDG.findByGameAndPlayer(gameRDG.getId(), gameRDG.getChallengee());
 					
 					UserHelper challenger = new UserHelper(
 							challengerRDG.getId(),
@@ -144,14 +144,14 @@ public class ViewBoard extends PageController {
 						
 					}
 					
-					HandHelper challengerCardInHand = null;
-					HandHelper challengeeCardInHand = null;
-					List<HandHelper> challengerHand = new ArrayList<HandHelper>();
-					List<HandHelper> challengeeHand = new ArrayList<HandHelper>();
+					HandCardHelper challengerHandCard = null;
+					HandCardHelper challengeeHandCard = null;
+					List<HandCardHelper> challengerHand = new ArrayList<HandCardHelper>();
+					List<HandCardHelper> challengeeHand = new ArrayList<HandCardHelper>();
 					
-					for (HandRDG handRDG : challengerHandRDG) {
+					for (HandCardRDG handCardRDG : challengerHandCardRDGs) {
 						
-						challengerCardRDG = CardRDG.findById(handRDG.getCard());
+						challengerCardRDG = CardRDG.findById(handCardRDG.getCard());
 						challengerCard = new CardHelper(
 								challengerCardRDG.getId(),
 								challengerDeck,
@@ -159,21 +159,21 @@ public class ViewBoard extends PageController {
 								challengerCardRDG.getName()
 						);
 						
-						challengerCardInHand = new HandHelper(
-								handRDG.getId(),
+						challengerHandCard = new HandCardHelper(
+								handCardRDG.getId(),
 								game,
 								challenger,
 								challengerDeck,
 								challengerCard
 						);
 						
-						challengerHand.add(challengerCardInHand);
+						challengerHand.add(challengerHandCard);
 						
 					}
 					
-					for (HandRDG handRDG : challengeeHandRDG) {
+					for (HandCardRDG handCardRDG : challengeeHandCardRDGs) {
 						
-						challengeeCardRDG = CardRDG.findById(handRDG.getCard());
+						challengeeCardRDG = CardRDG.findById(handCardRDG.getCard());
 						challengeeCard = new CardHelper(
 								challengeeCardRDG.getId(),
 								challengeeDeck,
@@ -181,15 +181,15 @@ public class ViewBoard extends PageController {
 								challengeeCardRDG.getName()
 						);
 						
-						challengeeCardInHand = new HandHelper(
-								handRDG.getId(),
+						challengeeHandCard = new HandCardHelper(
+								handCardRDG.getId(),
 								game,
 								challengee,
 								challengeeDeck,
 								challengeeCard
 						);
 						
-						challengeeHand.add(challengeeCardInHand);
+						challengeeHand.add(challengeeHandCard);
 						
 					}
 					

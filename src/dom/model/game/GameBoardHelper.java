@@ -3,7 +3,7 @@ package dom.model.game;
 import java.util.List;
 
 import dom.model.deck.DeckWithCardsHelper;
-import dom.model.hand.HandHelper;
+import dom.model.handcard.HandCardHelper;
 import dom.model.user.UserHelper;
 
 public class GameBoardHelper {
@@ -13,14 +13,14 @@ public class GameBoardHelper {
 	private UserHelper challengee;
 	private DeckWithCardsHelper challengerDeck;
 	private DeckWithCardsHelper challengeeDeck;
-	private List<HandHelper> challengerHand;
-	private List<HandHelper> challengeeHand;
+	private List<HandCardHelper> challengerHand;
+	private List<HandCardHelper> challengeeHand;
 	
 	public GameBoardHelper(
 			long id,
 			UserHelper challenger, UserHelper challengee,
 			DeckWithCardsHelper challengerDeck, DeckWithCardsHelper challengeeDeck,
-			List<HandHelper> challengerHand, List<HandHelper> challengeeHand
+			List<HandCardHelper> challengerHand, List<HandCardHelper> challengeeHand
 	) {
 		this.id = id;
 		this.challenger = challenger;
@@ -67,19 +67,19 @@ public class GameBoardHelper {
 		this.challengeeDeck = challengeeDeck;
 	}
 
-	public List<HandHelper> getChallengerHand() {
+	public List<HandCardHelper> getChallengerHand() {
 		return challengerHand;
 	}
 
-	public void setChallengerHand(List<HandHelper> challengerHand) {
+	public void setChallengerHand(List<HandCardHelper> challengerHand) {
 		this.challengerHand = challengerHand;
 	}
 
-	public List<HandHelper> getChallengeeHand() {
+	public List<HandCardHelper> getChallengeeHand() {
 		return challengeeHand;
 	}
 
-	public void setChallengeeHand(List<HandHelper> challengeeHand) {
+	public void setChallengeeHand(List<HandCardHelper> challengeeHand) {
 		this.challengeeHand = challengeeHand;
 	}
 	

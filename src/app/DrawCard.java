@@ -14,7 +14,7 @@ import dom.model.card.rdg.CardRDG;
 import dom.model.deck.DeckHelper;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.rdg.GameRDG;
-import dom.model.hand.rdg.HandRDG;
+import dom.model.handcard.rdg.HandCardRDG;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
 
@@ -59,9 +59,6 @@ public class DrawCard extends PageController {
 				}
 				
 				UserRDG playerRDG = UserRDG.findById(playerId);
-				UserRDG opponentRDG = UserRDG.findById(
-						(playerId != gameRDG.getChallenger()) ? gameRDG.getChallenger() : gameRDG.getChallengee()
-				);
 				
 				UserHelper player = new UserHelper(
 						playerRDG.getId(),
@@ -70,8 +67,8 @@ public class DrawCard extends PageController {
 						""
 				);
 				
-				List<HandRDG> playerHandRDGs = HandRDG.findByGameAndPlayer(gameRDG.getId(), playerRDG.getId());
-				int playerHandSize = playerHandRDGs.size();
+				List<HandCardRDG> playerHandCardRDGs = HandCardRDG.findByGameAndPlayer(gameRDG.getId(), playerRDG.getId());
+				int playerHandSize = playerHandCardRDGs.size();
 				
 				DeckRDG playerDeckRDG = DeckRDG.findByPlayer(playerRDG.getId());
 				DeckHelper playerDeck = new DeckHelper(playerDeckRDG.getId(), player);
@@ -104,8 +101,8 @@ public class DrawCard extends PageController {
 				
 				CardHelper drawnCard = playerCards.remove(0);
 				
-				HandRDG drawnCardRDG = new HandRDG(
-						HandRDG.getMaxId(),
+				HandCardRDG drawnCardRDG = new HandCardRDG(
+						HandCardRDG.getMaxId(),
 						gameRDG.getId(),
 						playerId,
 						playerDeckRDG.getId(),

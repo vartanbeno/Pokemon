@@ -1,4 +1,4 @@
-package dom.model.hand.rdg;
+package dom.model.handcard.rdg;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,18 +17,18 @@ import dom.model.user.rdg.UserRDG;
 
 /**
  * 
- * GameRDG: Hand Row Data Gateway.
- * Points to row(s) in the hands table.
- * Provides methods to find, insert, and delete hands.
+ * HandCardRDG: Hand Card Row Data Gateway.
+ * Points to row(s) in the hand_cards table.
+ * Provides methods to find, insert, and delete hand cards.
  * 
  * Also includes create/truncate/drop queries.
  * 
  * @author vartanbeno
  *
  */
-public class HandRDG {
+public class HandCardRDG {
 	
-private static final String TABLE_NAME = "hands";
+private static final String TABLE_NAME = "hand_cards";
 	
 	private static final String COLUMNS = "id, game, player, deck, card";
 	
@@ -77,7 +77,7 @@ private static final String TABLE_NAME = "hands";
 	private long deck;
 	private long card;
 	
-	public HandRDG(long id, long game, long player, long deck, long card) {
+	public HandCardRDG(long id, long game, long player, long deck, long card) {
 		this.id = id;
 		this.game = game;
 		this.player = player;
@@ -126,41 +126,41 @@ private static final String TABLE_NAME = "hands";
 		s.execute(DROP_TABLE);
 	}
 	
-	public static List<HandRDG> findAll() throws SQLException {
+	public static List<HandCardRDG> findAll() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		ResultSet rs = ps.executeQuery();
 		
-		HandRDG handRDG = null;
-		List<HandRDG> handRDGs = new ArrayList<HandRDG>();
+		HandCardRDG handCarddRDG = null;
+		List<HandCardRDG> handCardRDGs = new ArrayList<HandCardRDG>();
 		while (rs.next()) {
-			handRDG = new HandRDG(
+			handCarddRDG = new HandCardRDG(
 					rs.getLong("id"),
 					rs.getLong("game"),
 					rs.getLong("player"),
 					rs.getLong("deck"),
 					rs.getLong("card")
 			);
-			handRDGs.add(handRDG);
+			handCardRDGs.add(handCarddRDG);
 		}
 		
 		rs.close();
 		ps.close();
 		
-		return handRDGs;
+		return handCardRDGs;
 	}
 	
-	public static HandRDG findById(long id) throws SQLException {
+	public static HandCardRDG findById(long id) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		ResultSet rs = ps.executeQuery();
 		
-		HandRDG handRDG = null;
+		HandCardRDG handCardRDG = null;
 		while (rs.next()) {
-			handRDG = new HandRDG(
+			handCardRDG = new HandCardRDG(
 					rs.getLong("id"),
 					rs.getLong("game"),
 					rs.getLong("player"),
@@ -172,62 +172,62 @@ private static final String TABLE_NAME = "hands";
 		rs.close();
 		ps.close();
 		
-		return handRDG;
+		return handCardRDG;
 	}
 	
-	public static List<HandRDG> findByPlayer(long player) throws SQLException {
+	public static List<HandCardRDG> findByPlayer(long player) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_BY_PLAYER);
 		ps.setLong(1, player);
 		ResultSet rs = ps.executeQuery();
 		
-		HandRDG handRDG = null;
-		List<HandRDG> handRDGs = new ArrayList<HandRDG>();
+		HandCardRDG handCardRDG = null;
+		List<HandCardRDG> handCardRDGs = new ArrayList<HandCardRDG>();
 		while (rs.next()) {
-			handRDG = new HandRDG(
+			handCardRDG = new HandCardRDG(
 					rs.getLong("id"),
 					rs.getLong("game"),
 					rs.getLong("player"),
 					rs.getLong("deck"),
 					rs.getLong("card")
 			);
-			handRDGs.add(handRDG);
+			handCardRDGs.add(handCardRDG);
 		}
 		
 		rs.close();
 		ps.close();
 		
-		return handRDGs;
+		return handCardRDGs;
 	}
 	
-	public static List<HandRDG> findByGame(long game) throws SQLException {
+	public static List<HandCardRDG> findByGame(long game) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME);
 		ps.setLong(1, game);
 		ResultSet rs = ps.executeQuery();
 		
-		HandRDG handRDG = null;
-		List<HandRDG> handRDGs = new ArrayList<HandRDG>();
+		HandCardRDG handCardRDG = null;
+		List<HandCardRDG> handCardRDGs = new ArrayList<HandCardRDG>();
 		while (rs.next()) {
-			handRDG = new HandRDG(
+			handCardRDG = new HandCardRDG(
 					rs.getLong("id"),
 					rs.getLong("game"),
 					rs.getLong("player"),
 					rs.getLong("deck"),
 					rs.getLong("card")
 			);
-			handRDGs.add(handRDG);
+			handCardRDGs.add(handCardRDG);
 		}
 		
 		rs.close();
 		ps.close();
 		
-		return handRDGs;
+		return handCardRDGs;
 	}
 	
-	public static List<HandRDG> findByGameAndPlayer(long game, long player) throws SQLException {
+	public static List<HandCardRDG> findByGameAndPlayer(long game, long player) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME_AND_PLAYER);
@@ -235,23 +235,23 @@ private static final String TABLE_NAME = "hands";
 		ps.setLong(2, player);
 		ResultSet rs = ps.executeQuery();
 		
-		HandRDG handRDG = null;
-		List<HandRDG> handRDGs = new ArrayList<HandRDG>();
+		HandCardRDG handCardRDG = null;
+		List<HandCardRDG> handCardRDGs = new ArrayList<HandCardRDG>();
 		while (rs.next()) {
-			handRDG = new HandRDG(
+			handCardRDG = new HandCardRDG(
 					rs.getLong("id"),
 					rs.getLong("game"),
 					rs.getLong("player"),
 					rs.getLong("deck"),
 					rs.getLong("card")
 			);
-			handRDGs.add(handRDG);
+			handCardRDGs.add(handCardRDG);
 		}
 		
 		rs.close();
 		ps.close();
 		
-		return handRDGs;
+		return handCardRDGs;
 	}
 	
 	public int insert() throws SQLException {

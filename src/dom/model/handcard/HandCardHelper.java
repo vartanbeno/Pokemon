@@ -1,11 +1,11 @@
-package dom.model.hand;
+package dom.model.handcard;
 
 import dom.model.card.CardHelper;
 import dom.model.deck.DeckHelper;
 import dom.model.game.GameHelper;
 import dom.model.user.UserHelper;
 
-public class HandHelper {
+public class HandCardHelper {
 	
 	private long id;
 	private GameHelper game;
@@ -13,7 +13,7 @@ public class HandHelper {
 	private DeckHelper deck;
 	private CardHelper card;
 	
-	public HandHelper(long id, GameHelper game, UserHelper player, DeckHelper deck, CardHelper card) {
+	public HandCardHelper(long id, GameHelper game, UserHelper player, DeckHelper deck, CardHelper card) {
 		super();
 		this.id = id;
 		this.game = game;
