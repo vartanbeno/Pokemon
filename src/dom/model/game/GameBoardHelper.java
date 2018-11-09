@@ -19,6 +19,7 @@ public class GameBoardHelper {
 	private List<CardInPlayHelper> challengeeBenchedCards;
 	private List<CardInPlayHelper> challengerDiscardedCards;
 	private List<CardInPlayHelper> challengeeDiscardedCards;
+	private int status;
 	
 	public GameBoardHelper(
 			long id,
@@ -26,7 +27,8 @@ public class GameBoardHelper {
 			DeckWithCardsHelper challengerDeck, DeckWithCardsHelper challengeeDeck,
 			List<CardInPlayHelper> challengerHandCards, List<CardInPlayHelper> challengeeHandCards,
 			List<CardInPlayHelper> challengerBenchedCards, List<CardInPlayHelper> challengeeBenchedCards,
-			List<CardInPlayHelper> challengerDiscardedCards, List<CardInPlayHelper> challengeeDiscardedCards
+			List<CardInPlayHelper> challengerDiscardedCards, List<CardInPlayHelper> challengeeDiscardedCards,
+			int status
 	) {
 		super();
 		this.id = id;
@@ -40,6 +42,7 @@ public class GameBoardHelper {
 		this.challengeeBenchedCards = challengeeBenchedCards;
 		this.challengerDiscardedCards = challengerDiscardedCards;
 		this.challengeeDiscardedCards = challengeeDiscardedCards;
+		this.status = status;
 	}
 
 	public long getId() {
@@ -124,6 +127,14 @@ public class GameBoardHelper {
 
 	public void setChallengeeDiscardedCards(List<CardInPlayHelper> challengeeDiscardedCards) {
 		this.challengeeDiscardedCards = challengeeDiscardedCards;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	
 }

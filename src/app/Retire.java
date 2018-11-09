@@ -16,6 +16,7 @@ public class Retire extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
+	private static final String GAME_ALREADY_ENDED = "This game has already ended.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to retire from a game.";
     
 	private static final String RETIRE_SUCCESS = "You have successfully retired from your game against %s.";
@@ -39,6 +40,11 @@ public class Retire extends PageController {
 			
 			GameRDG gameRDG = getGame(request, response);
 			if (gameRDG == null) return;
+			
+			if (gameRDG.getStatus() != GameStatus.ongoing.ordinal()) {
+				failure(request, response, GAME_ALREADY_ENDED);
+				return;
+			}
 			
 			long userId = getUserId(request);
 			UserRDG opponentRDG = null;

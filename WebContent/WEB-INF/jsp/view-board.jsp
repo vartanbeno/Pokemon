@@ -10,6 +10,7 @@
 		"decks": [${game.challengerDeck.id}, ${game.challengeeDeck.id}],
 		"play": {
 			"${game.challenger.id}": {
+				"status": "${challengerStatus}",
 				"handsize": ${fn:length(game.challengerHandCards)},
 				"decksize": ${fn:length(game.challengerDeck.cards)},
 				"discardsize": ${fn:length(game.challengerDiscardedCards)},
@@ -20,6 +21,7 @@
 				]
 			},
 			"${game.challengee.id}": {
+				"status": "${challengeeStatus}",
 				"handsize": ${fn:length(game.challengeeHandCards)},
 				"decksize": ${fn:length(game.challengeeDeck.cards)},
 				"discardsize": ${fn:length(game.challengeeDiscardedCards)},

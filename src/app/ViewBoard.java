@@ -21,6 +21,7 @@ import dom.model.deck.DeckWithCardsHelper;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.GameBoardHelper;
 import dom.model.game.GameHelper;
+import dom.model.game.GameStatus;
 import dom.model.game.rdg.GameRDG;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
@@ -256,10 +257,37 @@ public class ViewBoard extends PageController {
 					challengerDeckWithCards, challengeeDeckWithCards,
 					challengerHandCards, challengeeHandCards,
 					challengerBenchedCards, challengeeBenchedCards,
-					challengerDiscardedCards, challengeeDiscardedCards
+					challengerDiscardedCards, challengeeDiscardedCards,
+					gameRDG.getStatus()
 			);
 			
+			String challengerStatus = "";
+			String challengeeStatus = "";
+			
+			if (gameBoard.getStatus() == GameStatus.ongoing.ordinal()) {
+				challengerStatus = challengeeStatus = "playing";
+			}
+			else if (gameBoard.getStatus() == GameStatus.challengerRetired.ordinal()) {
+				challengerStatus = "retired";
+				challengeeStatus = "won";
+			}
+			else if (gameBoard.getStatus() == GameStatus.challengeeRetired.ordinal()) {
+				challengerStatus = "won";
+				challengeeStatus = "retired";
+			}
+			else if (gameBoard.getStatus() == GameStatus.challengerWon.ordinal()) {
+				challengerStatus = "won";
+				challengeeStatus = "lost";
+			}
+			else if (gameBoard.getStatus() == GameStatus.challengeeWon.ordinal()) {
+				challengerStatus = "lost";
+				challengeeStatus = "won";
+			}
+			
+			request.setAttribute("challengerStatus", challengerStatus);
+			request.setAttribute("challengeeStatus", challengeeStatus);
 			request.setAttribute("game", gameBoard);
+			
 			request.getRequestDispatcher(Global.VIEW_BOARD).forward(request, response);
 			
 		}
