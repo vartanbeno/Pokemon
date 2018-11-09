@@ -30,7 +30,6 @@ public class ViewBoard extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String NO_GAMES = "You do not have any games going on currently.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to view a game board.";
 	
     public ViewBoard() {
@@ -38,92 +37,6 @@ public class ViewBoard extends PageController {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		try {
-			
-			if (!loggedIn(request)) {
-				failure(request, response, NOT_LOGGED_IN);
-				return;
-			}
-			
-			long userId = getUserId(request);
-			
-			List<GameRDG> gameRDGs = GameRDG.findByChallengerOrChallengee(userId);
-			
-			if (gameRDGs.size() == 0) {
-				failure(request, response, NO_GAMES);
-				return;
-			}
-			
-			UserRDG meRDG = UserRDG.findById(userId);
-			UserHelper me = new UserHelper(
-					meRDG.getId(), meRDG.getVersion(), meRDG.getUsername(), ""
-			);
-			
-			DeckRDG myDeckRDG = DeckRDG.findByPlayer(meRDG.getId());
-			DeckHelper myDeck = new DeckHelper(myDeckRDG.getId(), me);
-			
-			List<GameHelper> opponentChallengerGames = new ArrayList<GameHelper>();
-			List<GameHelper> opponentChallengeeGames = new ArrayList<GameHelper>();
-			
-			/**
-			 * If I am the challenger, I want the challengee ID.
-			 * And vice-versa.
-			 */
-			for (GameRDG gameRDG : gameRDGs) {
-				
-				if (userId == gameRDG.getChallengee()) {
-					
-					UserRDG opponentRDG = UserRDG.findById(gameRDG.getChallenger());
-					UserHelper opponent = new UserHelper(
-							opponentRDG.getId(), opponentRDG.getVersion(), opponentRDG.getUsername(), ""
-					);
-					
-					DeckRDG opponentDeckRDG = DeckRDG.findByPlayer(opponentRDG.getId());
-					DeckHelper opponentDeck = new DeckHelper(opponentDeckRDG.getId(), opponent);
-					
-					GameHelper game = new GameHelper(
-							gameRDG.getId(), opponent, me, opponentDeck, myDeck
-					);
-					
-					opponentChallengerGames.add(game);
-					
-				}
-				else if (userId == gameRDG.getChallenger()) {
-					
-					UserRDG opponentRDG = UserRDG.findById(gameRDG.getChallengee());
-					UserHelper opponent = new UserHelper(
-							opponentRDG.getId(), opponentRDG.getVersion(), opponentRDG.getUsername(), ""
-					);
-					
-					DeckRDG opponentDeckRDG = DeckRDG.findByPlayer(opponentRDG.getId());
-					DeckHelper opponentDeck = new DeckHelper(opponentDeckRDG.getId(), opponent);
-					
-					GameHelper game = new GameHelper(
-							gameRDG.getId(), me, opponent, myDeck, opponentDeck
-					);
-					
-					opponentChallengeeGames.add(game);
-					
-				}
-				
-			}
-			
-			request.setAttribute("opponentChallengerGames", opponentChallengerGames);
-			request.setAttribute("opponentChallengeeGames", opponentChallengeeGames);
-			request.getRequestDispatcher(Global.VIEW_BOARD_FORM).forward(request, response);
-			
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			closeDb();
-		}
-		
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
@@ -356,6 +269,10 @@ public class ViewBoard extends PageController {
 			closeDb();
 		}
 		
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);		
 	}
 
 }

@@ -20,7 +20,6 @@ public class Global {
 	public static final String UPLOAD_DECK_FORM = PATH_TO_JSP + "upload-deck-form.jsp";
 	public static final String VIEW_DECK = PATH_TO_JSP + "view-deck.jsp";
 	
-	public static final String VIEW_BOARD_FORM = PATH_TO_JSP + "view-board-form.jsp";
 	public static final String VIEW_BOARD = PATH_TO_JSP + "view-board.jsp";
 	
 	public static final String VIEW_HAND = PATH_TO_JSP + "view-hand.jsp";

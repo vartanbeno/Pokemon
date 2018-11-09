@@ -13,7 +13,7 @@ This is a web application built using various architectural patterns. The goal w
     - This project was made in Eclipse, so you might get a smoother run using it.
 3. Import the project.
 4. Deploy the project to the Tomcat server.
-5. Go to [localhost:8080/Pokemon/Register](localhost:8080/Register) and play around with the project!
+5. Go to [localhost:8080/Pokemon/Register](http://localhost:8080/Register) and play around with the project!
     - This is assuming that the context root of the project is `Pokemon`.
 
 ### Getting the Database Set Up
@@ -64,9 +64,27 @@ If you want to go back on your steps and withdraw from a challenge that you issu
 2. To see the list of challenges, visit `/ListChallenges`.
 3. To see the list of games, visit `/ListGames`.
 
+You must be logged in to do any of those.
+
 ### Viewing Your Game Board
 
-To view your game board, visit `/ViewBoard?game=[id]`, where `id` is the specific game's ID attribute. You must be part of the game to be able to view its board.
+To view your game board, visit `/ViewBoard?game=[id]`, where the game parameter is the ID of an ongoing game that you are part of.
+
+You must be part of a game to view its board.
+
+### Drawing a Card
+
+To draw a card, visit `/DrawCard?game=[id]`, where `id` is the specific game's ID. You must be part of the game to draw a card. Drawing a card adds it to your hand.
+
+### Viewing Your Hand
+
+To view your hand, visit `/ViewHand?game=[id]`, with the appropriate game ID parameter.
+
+### Playing Pokemon to the Bench
+
+To play a Pokemon card to the bench, visit `/PlayPokemonToBench`, where you will see a list of Pokemon type cards that are currently in your hand. You can freely choose whichever to send to the bench.
+
+The maximum amount of Pokemon on your bench at any given time is 5, so you might get a fail message.
 
 There are more features left to be implemented. Will update soon.
 
