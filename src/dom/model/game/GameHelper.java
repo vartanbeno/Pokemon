@@ -10,13 +10,20 @@ public class GameHelper {
 	private UserHelper challengee;
 	private DeckHelper challengerDeck;
 	private DeckHelper challengeeDeck;
+	private int status;
 	
-	public GameHelper(long id, UserHelper challenger, UserHelper challengee, DeckHelper challengerDeck, DeckHelper challengeeDeck) {
+	public GameHelper(
+			long id,
+			UserHelper challenger, UserHelper challengee,
+			DeckHelper challengerDeck, DeckHelper challengeeDeck,
+			int status
+	) {
 		this.id = id;
 		this.challenger = challenger;
 		this.challengee = challengee;
 		this.challengerDeck = challengerDeck;
 		this.challengeeDeck = challengeeDeck;
+		this.status = status;
 	}
 
 	public long getId() {
@@ -53,6 +60,14 @@ public class GameHelper {
 
 	public void setChallengeeDeck(DeckHelper challengeeDeck) {
 		this.challengeeDeck = challengeeDeck;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+	
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	
 }

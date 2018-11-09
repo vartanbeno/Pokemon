@@ -11,6 +11,7 @@ import java.util.List;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.deck.rdg.DeckRDG;
+import dom.model.game.GameStatus;
 import dom.model.user.rdg.UserRDG;
 
 /**
@@ -21,6 +22,13 @@ import dom.model.user.rdg.UserRDG;
  * 
  * Also includes create/truncate/drop queries.
  * 
+ * The status column has the following possible values:
+ *  - 0: the game is still ongoing.
+ *  - 1: the challenger won.
+ *  - 2: the challengee won.
+ *  - 3: the challenger retired.
+ *  - 4: the challengee retired.
+ * 
  * @author vartanbeno
  *
  */
@@ -28,7 +36,7 @@ public class GameRDG {
 	
 	private static final String TABLE_NAME = "games";
 	
-	private static final String COLUMNS = "id, challenger, challengee, challenger_deck, challengee_deck";
+	private static final String COLUMNS = "id, challenger, challengee, challenger_deck, challengee_deck, status";
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
@@ -36,6 +44,7 @@ public class GameRDG {
 			+ "challengee BIGINT NOT NULL,"
 			+ "challenger_deck BIGINT NOT NULL,"
 			+ "challengee_deck BIGINT NOT NULL,"
+			+ "status INT NOT NULL,"
 			+ "PRIMARY KEY (id),"
 			+ "FOREIGN KEY (challenger) REFERENCES %2$s (id),"
 			+ "FOREIGN KEY (challengee) REFERENCES %2$s (id),"
@@ -52,6 +61,9 @@ public class GameRDG {
 	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
 	
+	private static final String FIND_BY_STATUS = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE status = ?;", COLUMNS, TABLE_NAME);
+	
 	private static final String FIND_BY_CHALLENGER = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE challenger = ?;", COLUMNS, TABLE_NAME);
 	
@@ -64,7 +76,9 @@ public class GameRDG {
 	private static final String FIND_BY_CHALLENGER_OR_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE challenger = ? OR challengee = ?;", COLUMNS, TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
+	
+	private static final String UPDATE = String.format("UPDATE %1$s SET status = ? WHERE id = ?;", TABLE_NAME);
 	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ?;", TABLE_NAME);
 	
@@ -76,8 +90,27 @@ public class GameRDG {
 	private long challengee;
 	private long challengerDeck;
 	private long challengeeDeck;
+	private int status;
 	
-	public GameRDG(long id, long challenger, long challengee, long challengerDeck, long challengeeDeck) {
+	public GameRDG(
+			long id,
+			long challenger, long challengee,
+			long challengerDeck, long challengeeDeck,
+			int status
+	) {
+		this.id = id;
+		this.challenger = challenger;
+		this.challengee = challengee;
+		this.challengerDeck = challengerDeck;
+		this.challengeeDeck = challengeeDeck;
+		this.status = status;
+	}
+	
+	public GameRDG(
+			long id,
+			long challenger, long challengee,
+			long challengerDeck, long challengeeDeck
+	) {
 		this.id = id;
 		this.challenger = challenger;
 		this.challengee = challengee;
@@ -109,6 +142,14 @@ public class GameRDG {
 		return TABLE_NAME;
 	}
 	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	public static void createTable() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
@@ -140,7 +181,8 @@ public class GameRDG {
 					rs.getLong("challenger"),
 					rs.getLong("challengee"),
 					rs.getLong("challenger_deck"),
-					rs.getLong("challengee_deck")
+					rs.getLong("challengee_deck"),
+					rs.getInt("status")
 			);
 			gameRDGs.add(gameRDG);
 		}
@@ -165,7 +207,8 @@ public class GameRDG {
 					rs.getLong("challenger"),
 					rs.getLong("challengee"),
 					rs.getLong("challenger_deck"),
-					rs.getLong("challengee_deck")
+					rs.getLong("challengee_deck"),
+					rs.getInt("status")
 			);
 		}
 		
@@ -173,6 +216,33 @@ public class GameRDG {
 		ps.close();
 		
 		return gameRDG;
+	}
+	
+	public static List<GameRDG> findByStatus(int status) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_BY_STATUS);
+		ps.setInt(1, status);
+		ResultSet rs = ps.executeQuery();
+		
+		GameRDG gameRDG = null;
+		List<GameRDG> gameRDGs = new ArrayList<GameRDG>();
+		while (rs.next()) {
+			gameRDG = new GameRDG(
+					rs.getLong("id"),
+					rs.getLong("challenger"),
+					rs.getLong("challengee"),
+					rs.getLong("challenger_deck"),
+					rs.getLong("challengee_deck"),
+					rs.getInt("status")
+			);
+			gameRDGs.add(gameRDG);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return gameRDGs;
 	}
 	
 	public static List<GameRDG> findByChallenger(long challenger) throws SQLException {
@@ -190,7 +260,8 @@ public class GameRDG {
 					rs.getLong("challenger"),
 					rs.getLong("challengee"),
 					rs.getLong("challenger_deck"),
-					rs.getLong("challengee_deck")
+					rs.getLong("challengee_deck"),
+					rs.getInt("status")
 			);
 			gameRDGs.add(gameRDG);
 		}
@@ -216,7 +287,8 @@ public class GameRDG {
 					rs.getLong("challenger"),
 					rs.getLong("challengee"),
 					rs.getLong("challenger_deck"),
-					rs.getLong("challengee_deck")
+					rs.getLong("challengee_deck"),
+					rs.getInt("status")
 			);
 			gameRDGs.add(gameRDG);
 		}
@@ -242,7 +314,8 @@ public class GameRDG {
 					rs.getLong("challenger"),
 					rs.getLong("challengee"),
 					rs.getLong("challenger_deck"),
-					rs.getLong("challengee_deck")
+					rs.getLong("challengee_deck"),
+					rs.getInt("status")
 			);
 		}
 		
@@ -268,7 +341,8 @@ public class GameRDG {
 					rs.getLong("challenger"),
 					rs.getLong("challengee"),
 					rs.getLong("challenger_deck"),
-					rs.getLong("challengee_deck")
+					rs.getLong("challengee_deck"),
+					rs.getInt("status")
 			);
 			gameRDGs.add(gameRDG);
 		}
@@ -288,6 +362,20 @@ public class GameRDG {
 		ps.setLong(3, challengee);
 		ps.setLong(4, challengerDeck);
 		ps.setLong(5, challengeeDeck);
+		ps.setInt(6, GameStatus.ongoing.ordinal());
+		
+		int result = ps.executeUpdate();
+		ps.close();
+		
+		return result;
+	}
+	
+	public int update() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(UPDATE);
+		ps.setInt(1, status);
+		ps.setLong(2, id);
 		
 		int result = ps.executeUpdate();
 		ps.close();

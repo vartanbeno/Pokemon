@@ -65,10 +65,9 @@ public class ListGames extends PageController {
 				
 				GameHelper game = new GameHelper(
 						gameRDG.getId(),
-						challenger,
-						challengee,
-						challengerDeck,
-						challengeeDeck
+						challenger, challengee,
+						challengerDeck, challengeeDeck,
+						gameRDG.getStatus()
 				);
 				
 				games.add(game);

@@ -13,7 +13,7 @@ This is a web application built using various architectural patterns. The goal w
     - This project was made in Eclipse, so you might get a smoother run using it.
 3. Import the project.
 4. Deploy the project to the Tomcat server.
-5. Go to [localhost:8080/Pokemon/Register](http://localhost:8080/Register) and play around with the project!
+5. Go to [localhost:8080/Pokemon/Register](http://localhost:8080/Pokemon/Register) and play around with the project!
     - This is assuming that the context root of the project is `Pokemon`.
 
 ### Getting the Database Set Up

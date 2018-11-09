@@ -15,6 +15,7 @@ import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.rdg.CardInPlayRDG;
 import dom.model.deck.DeckHelper;
 import dom.model.deck.rdg.DeckRDG;
+import dom.model.game.GameStatus;
 import dom.model.game.rdg.GameRDG;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
@@ -29,6 +30,7 @@ public class PlayPokemonToBench extends PageController {
 	private static final String ALREADY_BENCHED = "That card is already on the bench.";
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
 	private static final String NOT_A_POKEMON = "You can only bench cards of type 'p', i.e. Pokemon.";
+	private static final String GAME_STOPPED = "This game is over. You cannot continue playing.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
 	private static final String BENCH_SUCCESS = "You have sent %s to the bench!";
@@ -48,6 +50,11 @@ public class PlayPokemonToBench extends PageController {
 			
 			GameRDG gameRDG = getGame(request, response);
 			if (gameRDG == null) return;
+			
+			if (gameRDG.getStatus() != GameStatus.ongoing.ordinal()) {
+				failure(request, response, GAME_STOPPED);
+				return;
+			}
 			
 			List<CardInPlayRDG> playerBenchRDG = CardInPlayRDG.findByGameAndPlayerAndStatus(
 					gameRDG.getId(), getUserId(request), CardStatus.benched.ordinal()

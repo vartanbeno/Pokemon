@@ -86,7 +86,8 @@ public class ViewBoard extends PageController {
 					challenger,
 					challengee,
 					challengerDeck,
-					challengeeDeck
+					challengeeDeck,
+					gameRDG.getStatus()
 			);
 			
 			List<CardHelper> challengerCards = new ArrayList<CardHelper>();

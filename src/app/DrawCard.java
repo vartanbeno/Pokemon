@@ -15,6 +15,7 @@ import dom.model.card.rdg.CardRDG;
 import dom.model.cardinplay.rdg.CardInPlayRDG;
 import dom.model.deck.DeckHelper;
 import dom.model.deck.rdg.DeckRDG;
+import dom.model.game.GameStatus;
 import dom.model.game.rdg.GameRDG;
 import dom.model.user.UserHelper;
 import dom.model.user.rdg.UserRDG;
@@ -25,6 +26,7 @@ public class DrawCard extends PageController {
 	private static final long serialVersionUID = 1L;
 	
 	private static final String NO_MORE_CARDS = "You have no more cards left in your deck to draw.";
+	private static final String GAME_STOPPED = "This game is over. You cannot continue playing.";
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
 	private static final String DRAW_SUCCESS = "You have successfully drawn a card! %s: %s.";
@@ -48,6 +50,11 @@ public class DrawCard extends PageController {
 			
 			GameRDG gameRDG = getGame(request, response);
 			if (gameRDG == null) return;
+			
+			if (gameRDG.getStatus() != GameStatus.ongoing.ordinal()) {
+				failure(request, response, GAME_STOPPED);
+				return;
+			}
 			
 			long playerId = getUserId(request);
 			
