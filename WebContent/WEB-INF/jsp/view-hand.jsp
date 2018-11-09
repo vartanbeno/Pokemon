@@ -5,10 +5,7 @@
 {
 	"hand": [
 		<c:forEach items="${hand}" var="card" varStatus="loop">
-			{
-				"t": "${card.type}",
-				"n": "${card.name}"
-			}<c:if test="${!loop.last}">,</c:if>
+			${card.id}<c:if test="${!loop.last}">,</c:if>
 		</c:forEach>
 	]
 }
