@@ -61,6 +61,9 @@ public class GameRDG {
 	private static final String FIND_BY_CHALLENGER_AND_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE challenger = ? AND challengee = ?;", COLUMNS, TABLE_NAME);
 	
+	private static final String FIND_BY_CHALLENGER_OR_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE challenger = ? OR challengee = ?;", COLUMNS, TABLE_NAME);
+	
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ?;", TABLE_NAME);
@@ -247,6 +250,33 @@ public class GameRDG {
 		ps.close();
 		
 		return gameRDG;
+	}
+	
+	public static List<GameRDG> findByChallengerOrChallengee(long player) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGER_OR_CHALLENGEE);
+		ps.setLong(1, player);
+		ps.setLong(2, player);
+		ResultSet rs = ps.executeQuery();
+		
+		GameRDG gameRDG = null;
+		List<GameRDG> gameRDGs = new ArrayList<GameRDG>();
+		if (rs.next()) {
+			gameRDG = new GameRDG(
+					rs.getLong("id"),
+					rs.getLong("challenger"),
+					rs.getLong("challengee"),
+					rs.getLong("challenger_deck"),
+					rs.getLong("challengee_deck")
+			);
+			gameRDGs.add(gameRDG);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return gameRDGs;
 	}
 	
 	public int insert() throws SQLException {
