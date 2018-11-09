@@ -14,7 +14,7 @@
 				"discardsize": ${fn:length(game.challengerDiscardedCards)},
 				"bench": [
 					<c:forEach items="${game.challengerBenchedCards}" var="card" varStatus="loop">
-						card.id<c:if test="${!loop.last}">,</c:if>
+						${card.card.id}<c:if test="${!loop.last}">,</c:if>
 					</c:forEach>
 				]
 			},
@@ -24,7 +24,7 @@
 				"discardsize": ${fn:length(game.challengeeDiscardedCards)},
 				"bench": [
 					<c:forEach items="${game.challengeeBenchedCards}" var="card" varStatus="loop">
-						card.id<c:if test="${!loop.last}">,</c:if>
+						${card.card.id}<c:if test="${!loop.last}">,</c:if>
 					</c:forEach>
 				]
 			}

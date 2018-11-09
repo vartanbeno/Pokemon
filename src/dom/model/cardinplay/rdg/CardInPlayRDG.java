@@ -61,6 +61,9 @@ public class CardInPlayRDG {
 	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
 	
+	private static final String FIND_BY_CARD = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE card = ?;", COLUMNS, TABLE_NAME);
+	
 	private static final String FIND_BY_GAME_AND_PLAYER = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE game = ? AND player = ?;", COLUMNS, TABLE_NAME);
 	
@@ -181,6 +184,31 @@ public class CardInPlayRDG {
 
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
+		ResultSet rs = ps.executeQuery();
+
+		CardInPlayRDG cardInPlayRDG = null;
+		if (rs.next()) {
+			cardInPlayRDG = new CardInPlayRDG(
+					rs.getLong("id"),
+					rs.getLong("game"),
+					rs.getLong("player"),
+					rs.getLong("deck"),
+					rs.getLong("card"),
+					rs.getInt("status")
+			);
+		}
+
+		rs.close();
+		ps.close();
+
+		return cardInPlayRDG;
+	}
+	
+	public static CardInPlayRDG findByCard(long card) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+
+		PreparedStatement ps = con.prepareStatement(FIND_BY_CARD);
+		ps.setLong(1, card);
 		ResultSet rs = ps.executeQuery();
 
 		CardInPlayRDG cardInPlayRDG = null;
