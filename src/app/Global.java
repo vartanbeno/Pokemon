@@ -21,8 +21,6 @@ public class Global {
 	public static final String VIEW_DECK = PATH_TO_JSP + "view-deck.jsp";
 	
 	public static final String VIEW_BOARD = PATH_TO_JSP + "view-board.jsp";
-	
 	public static final String VIEW_HAND = PATH_TO_JSP + "view-hand.jsp";
-	public static final String PLAY_TO_BENCH_FORM = PATH_TO_JSP + "play-to-bench-form.jsp";
 	
 }

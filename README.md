@@ -82,11 +82,17 @@ To view your hand, visit `/ViewHand?game=[id]`, with the appropriate game ID par
 
 ### Playing Pokemon to the Bench
 
-To play a Pokemon card to the bench, visit `/PlayPokemonToBench`, where you will see a list of Pokemon type cards that are currently in your hand. You can freely choose whichever to send to the bench.
+To play a Pokemon card to the bench, visit `/PlayPokemonToBench?game=[id]&card=[position]`, where the `game` parameter is the ID of a game that you are a part of, and the `card` parameter is the position of the card in your hand that you want to send to the bench, using a zero-based index (e.g. position 2 corresponds to the 3rd card in your hand).
 
 The maximum amount of Pokemon on your bench at any given time is 5, so you might get a fail message.
 
-There are more features left to be implemented. Will update soon.
+You can only send Pokemon to the bench. If you attempt to send a card that isn't a Pokemon to the bench, you will get a fail message.
+
+### Retiring From a Game
+
+To retire from a game, visit `/Retire?game=[id]`, where the `game` parameter is the ID of a game that you are a part of. Once you retire from a game, you can no longer draw cards or play Pokemon to the bench. You can still view its board and the hand you had right before retiring.
+
+When you retire from a game, your status is declared retired, and your opponent is declared the winner.
 
 ## Acknowledgement
 
@@ -95,3 +101,4 @@ I made use of the [SoenEA](http://soenea.htmlweb.com/) (Software Engineering Ent
 The framework was developed by Stuart Thiel, a professor at Concordia University. Per his thesis, it is used to "aid in the rapid development of dependable Web Enterprise Applications."
 
 The project's file structure follows the recommended file structure from the thesis, which can be found in the Appendix, on page 73.
+
