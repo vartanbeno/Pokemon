@@ -37,35 +37,38 @@ public class ChallengePlayer extends PageController {
 					
 		try {
 			
-			if (loggedIn(request)) {
+			if (!loggedIn(request)) {
+				failure(request, response, NOT_LOGGED_IN);
+				return;
+			}
 				
-				final long challenger = getUserId(request);
-				DeckRDG deck = DeckRDG.findByPlayer(challenger);
-				
-				if (deck == null) {
-					failure(request, response, NO_DECK);
-				}
-				else {
-					
-					List<UserRDG> userRDGs = UserRDG.findAll();
-					List<UserHelper> users = new ArrayList<UserHelper>();
-					
-					for (UserRDG userRDG : userRDGs) {
-						users.add(
-							new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
-						);
-					}
-					
-					users.removeIf(user -> user.getId() == challenger);
-					
-					request.setAttribute("users", users);
-					request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
-					
-				}
-				
+			final long challenger = getUserId(request);
+			DeckRDG deck = DeckRDG.findByPlayer(challenger);
+			
+			if (deck == null) {
+				failure(request, response, NO_DECK);
 			}
 			else {
-				failure(request, response, NOT_LOGGED_IN);
+				
+				List<UserRDG> userRDGs = UserRDG.findAll();
+				List<UserHelper> users = new ArrayList<UserHelper>();
+				
+				for (UserRDG userRDG : userRDGs) {
+					users.add(
+						new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
+					);
+				}
+				
+				/**
+				 * We want a list of users to be able to challenge.
+				 * But we should omit our own username,
+				 * because we shouldn't be able to challenge ourselves.
+				 */
+				users.removeIf(user -> user.getId() == challenger);
+				
+				request.setAttribute("users", users);
+				request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
+				
 			}
 			
 		}
@@ -82,56 +85,54 @@ public class ChallengePlayer extends PageController {
 		
 		try {
 			
-			if (loggedIn(request)) {
-				
-				long challengerId = getUserId(request);
-				long challengeeId = Long.parseLong(request.getParameter("player"));
-				
-				if (DeckRDG.findByPlayer(challengerId) == null) {
-					failure(request, response, NO_DECK);
-					return;
+			if (!loggedIn(request)) {
+				failure(request, response, NOT_LOGGED_IN);
+				return;
+			}
+			
+			long challengerId = getUserId(request);
+			long challengeeId = Long.parseLong(request.getParameter("player"));
+			
+			if (DeckRDG.findByPlayer(challengerId) == null) {
+				failure(request, response, NO_DECK);
+				return;
+			}
+			
+			if (challengerId == challengeeId) {
+				failure(request, response, SAME_ID);
+				return;
+			}
+			
+			ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
+			UserRDG userRDGChallenger = UserRDG.findById(challengerId);
+			UserRDG userRDGChallengee = UserRDG.findById(challengeeId);
+			
+			if (challengeRDG == null) {
+				challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challengerId, challengeeId);
+				try {
+					challengeRDG.insert();
+					success(request, response, String.format(CHALLENGE_SUCCESS, userRDGChallengee.getUsername()));
 				}
-				
-				if (challengerId == challengeeId) {
-					failure(request, response, SAME_ID);
-					return;
+				catch (NullPointerException | SQLIntegrityConstraintViolationException e) {
+					failure(request, response, CHALLENGEE_DOES_NOT_EXIST);
 				}
-				
-				ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
-				UserRDG userRDGChallenger = UserRDG.findById(challengerId);
-				UserRDG userRDGChallengee = UserRDG.findById(challengeeId);
-				
-				if (challengeRDG == null) {
-					challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challengerId, challengeeId);
-					try {
-						challengeRDG.insert();
-						success(request, response, String.format(CHALLENGE_SUCCESS, userRDGChallengee.getUsername()));
-					}
-					catch (NullPointerException | SQLIntegrityConstraintViolationException e) {
-						failure(request, response, CHALLENGEE_DOES_NOT_EXIST);
-					}
-				}
-				else {
-					
-					UserHelper challenger = new UserHelper(
-							userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
-					);
-					
-					UserHelper challengee = new UserHelper(
-							userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
-					);
-					
-					ChallengeHelper challenge = new ChallengeHelper(
-							challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
-					);
-					
-					failure(request, response, String.format(ALREADY_CHALLENGED, challenge.getChallengee().getUsername()));
-					
-				}
-				
 			}
 			else {
-				failure(request, response, NOT_LOGGED_IN);
+				
+				UserHelper challenger = new UserHelper(
+						userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
+				);
+				
+				UserHelper challengee = new UserHelper(
+						userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
+				);
+				
+				ChallengeHelper challenge = new ChallengeHelper(
+						challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
+				);
+				
+				failure(request, response, String.format(ALREADY_CHALLENGED, challenge.getChallengee().getUsername()));
+				
 			}
 			
 		}

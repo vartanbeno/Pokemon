@@ -20,6 +20,8 @@ import dom.model.user.rdg.UserRDG;
 public class ListGames extends PageController {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private static final String NOT_LOGGED_IN = "You must be logged in to view the list of games.";
        
     public ListGames() {
         super();
@@ -29,48 +31,39 @@ public class ListGames extends PageController {
 		
 		try {
 			
+			if (!loggedIn(request)) {
+				failure(request, response, NOT_LOGGED_IN);
+				return;
+			}
+			
 			List<GameRDG> gameRDGs = GameRDG.findAll();
-			
-			UserRDG challengerRDG = null;
-			UserHelper challenger = null;
-			
-			UserHelper challengee = null;
-			UserRDG challengeeRDG = null;
-			
-			DeckRDG challengerDeckRDG = null;
-			DeckHelper challengerDeck = null;
-			
-			DeckRDG challengeeDeckRDG = null;
-			DeckHelper challengeeDeck = null;
-			
 			List<GameHelper> games = new ArrayList<GameHelper>();
-			GameHelper game = null;
 			
 			for (GameRDG gameRDG : gameRDGs) {
 				
-				challengerRDG = UserRDG.findById(gameRDG.getChallenger());
-				challenger = new UserHelper(
+				UserRDG challengerRDG = UserRDG.findById(gameRDG.getChallenger());
+				UserHelper challenger = new UserHelper(
 						challengerRDG.getId(),
 						challengerRDG.getVersion(),
 						challengerRDG.getUsername(),
 						""
 				);
 				
-				challengeeRDG = UserRDG.findById(gameRDG.getChallengee());
-				challengee = new UserHelper(
+				UserRDG challengeeRDG = UserRDG.findById(gameRDG.getChallengee());
+				UserHelper challengee = new UserHelper(
 						challengeeRDG.getId(),
 						challengeeRDG.getVersion(),
 						challengeeRDG.getUsername(),
 						""
 				);
 				
-				challengerDeckRDG = DeckRDG.findByPlayer(gameRDG.getChallenger());
-				challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
+				DeckRDG challengerDeckRDG = DeckRDG.findByPlayer(gameRDG.getChallenger());
+				DeckHelper challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
 				
-				challengeeDeckRDG = DeckRDG.findByPlayer(gameRDG.getChallengee());
-				challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
+				DeckRDG challengeeDeckRDG = DeckRDG.findByPlayer(gameRDG.getChallengee());
+				DeckHelper challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
 				
-				game = new GameHelper(
+				GameHelper game = new GameHelper(
 						gameRDG.getId(),
 						challenger,
 						challengee,

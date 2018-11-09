@@ -17,7 +17,7 @@ public class ListPlayers extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String NOT_LOGGED_IN = "You must be logged in to see the list of players.";
+	private static final String NOT_LOGGED_IN = "You must be logged in to view the list of players.";
 	
     public ListPlayers() {
         super();
@@ -27,25 +27,21 @@ public class ListPlayers extends PageController {
 		
 		try {
 			
-			if (loggedIn(request)) {
-				
-				List<UserRDG> userRDGs = UserRDG.findAll();
-				
-				List<UserHelper> users = new ArrayList<UserHelper>();
-				UserHelper user = null;
-				
-				for (UserRDG userRDG : userRDGs) {
-					user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-					users.add(user);
-				}
-				
-				request.setAttribute("players", users);
-				request.getRequestDispatcher(Global.LIST_PLAYERS).forward(request, response);
-				
-			}
-			else {
+			if (!loggedIn(request)) {
 				failure(request, response, NOT_LOGGED_IN);
+				return;
 			}
+			
+			List<UserRDG> userRDGs = UserRDG.findAll();
+			List<UserHelper> players = new ArrayList<UserHelper>();
+			
+			for (UserRDG userRDG : userRDGs) {
+				UserHelper player = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
+				players.add(player);
+			}
+			
+			request.setAttribute("players", players);
+			request.getRequestDispatcher(Global.LIST_PLAYERS).forward(request, response);
 			
 		}
 		catch (Exception e) {

@@ -40,23 +40,21 @@ public class Logout extends PageController {
 		
 		try {
 			
-			if (loggedIn(request)) {
-				
-				UserRDG userRDG = UserRDG.findById(getUserId(request));
-				
-				try {
-					UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-					request.getSession(true).invalidate();
-					success(request, response, String.format(LOGOUT_SUCCESS, user.getUsername()));
-				}
-				catch (NullPointerException e) {
-					request.getSession(true).invalidate();
-					success(request, response, MAJOR_FAIL);
-				}
-				
-			}
-			else {
+			if (!loggedIn(request)) {
 				failure(request, response, LOGOUT_FAIL);
+				return;
+			}
+				
+			UserRDG userRDG = UserRDG.findById(getUserId(request));
+			
+			try {
+				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
+				request.getSession(true).invalidate();
+				success(request, response, String.format(LOGOUT_SUCCESS, user.getUsername()));
+			}
+			catch (NullPointerException e) {
+				request.getSession(true).invalidate();
+				success(request, response, MAJOR_FAIL);
 			}
 			
 		}

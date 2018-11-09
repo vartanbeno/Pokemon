@@ -29,79 +29,72 @@ public class OpenChallenges extends PageController {
 		
 		try {
 			
-			if (loggedIn(request)) {
+			if (!loggedIn(request)) {
+				failure(request, response, NOT_LOGGED_IN);
+				return;
+			}
 				
-				long userId = getUserId(request);
+			long userId = getUserId(request);
+			
+			List<ChallengeRDG> challengeeChallengeRDGs = ChallengeRDG.findOpenByChallengee(userId);
+			List<ChallengeRDG> challengerChallengeRDGs = ChallengeRDG.findOpenByChallenger(userId);
+			
+			List<ChallengeHelper> challengeeChallenges = new ArrayList<ChallengeHelper>();
+			List<ChallengeHelper> challengerChallenges = new ArrayList<ChallengeHelper>();
+			
+			UserRDG user = UserRDG.findById(userId);
+			UserHelper userHelper = new UserHelper(
+					user.getId(),
+					user.getVersion(),
+					user.getUsername(),
+					""
+			);
+			
+			for (ChallengeRDG challengeRDG : challengeeChallengeRDGs) {
 				
-				List<ChallengeRDG> challengeeChallengeRDGs = ChallengeRDG.findOpenByChallengee(userId);
-				List<ChallengeRDG> challengerChallengeRDGs = ChallengeRDG.findOpenByChallenger(userId);
-				
-				List<ChallengeHelper> challengeeChallenges = new ArrayList<ChallengeHelper>();
-				List<ChallengeHelper> challengerChallenges = new ArrayList<ChallengeHelper>();
-				
-				ChallengeHelper challenge = null;
-				
-				UserRDG someoneElse = null;
-				UserHelper someoneElseHelper = null;
-				
-				UserRDG user = UserRDG.findById(userId);
-				UserHelper userHelper = new UserHelper(
-						user.getId(),
-						user.getVersion(),
-						user.getUsername(),
+				UserRDG someoneElse = UserRDG.findById(challengeRDG.getChallenger());
+				UserHelper someoneElseHelper = new UserHelper(
+						someoneElse.getId(),
+						someoneElse.getVersion(),
+						someoneElse.getUsername(),
 						""
 				);
 				
-				for (ChallengeRDG challengeRDG : challengeeChallengeRDGs) {
-					
-					someoneElse = UserRDG.findById(challengeRDG.getChallenger());
-					someoneElseHelper = new UserHelper(
-							someoneElse.getId(),
-							someoneElse.getVersion(),
-							someoneElse.getUsername(),
-							""
-					);
-					
-					challenge = new ChallengeHelper(
-							challengeRDG.getId(),
-							someoneElseHelper,
-							userHelper,
-							challengeRDG.getStatus()
-					);
-					
-					challengeeChallenges.add(challenge);
-					
-				}
+				ChallengeHelper challenge = new ChallengeHelper(
+						challengeRDG.getId(),
+						someoneElseHelper,
+						userHelper,
+						challengeRDG.getStatus()
+				);
 				
-				for (ChallengeRDG challengeRDG : challengerChallengeRDGs) {
-					
-					someoneElse = UserRDG.findById(challengeRDG.getChallengee());
-					someoneElseHelper = new UserHelper(
-							someoneElse.getId(),
-							someoneElse.getVersion(),
-							someoneElse.getUsername(),
-							""
-					);
-					
-					challenge = new ChallengeHelper(
-							challengeRDG.getId(),
-							userHelper,
-							someoneElseHelper,
-							challengeRDG.getStatus()
-					);
-					
-					challengerChallenges.add(challenge);
-					
-				}
-				
-				request.setAttribute("challengesAgainstMe", challengeeChallenges);
-				request.setAttribute("challengesAgainstOthers", challengerChallenges);
-				request.getRequestDispatcher(Global.OPEN_CHALLENGES_FORM).forward(request, response);
+				challengeeChallenges.add(challenge);
 				
 			}
-			else {
-				failure(request, response, NOT_LOGGED_IN);
+			
+			for (ChallengeRDG challengeRDG : challengerChallengeRDGs) {
+				
+				UserRDG someoneElse = UserRDG.findById(challengeRDG.getChallengee());
+				UserHelper someoneElseHelper = new UserHelper(
+						someoneElse.getId(),
+						someoneElse.getVersion(),
+						someoneElse.getUsername(),
+						""
+				);
+				
+				ChallengeHelper challenge = new ChallengeHelper(
+						challengeRDG.getId(),
+						userHelper,
+						someoneElseHelper,
+						challengeRDG.getStatus()
+				);
+				
+				challengerChallenges.add(challenge);
+				
 			}
+			
+			request.setAttribute("challengesAgainstMe", challengeeChallenges);
+			request.setAttribute("challengesAgainstOthers", challengerChallenges);
+			request.getRequestDispatcher(Global.OPEN_CHALLENGES_FORM).forward(request, response);
     		
     	}
     	catch (Exception e) {

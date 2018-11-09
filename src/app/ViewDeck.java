@@ -22,7 +22,7 @@ public class ViewDeck extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String LOGIN_FAIL_MESSAGE = "You must be logged in to view your deck.";
+	private static final String NOT_LOGGED_IN = "You must be logged in to view your deck.";
 	private static final String NO_DECK = "You do not have a deck. Upload one!";
 	
        
@@ -33,48 +33,49 @@ public class ViewDeck extends PageController {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			
-			if (loggedIn(request)) {
+			if (!loggedIn(request)) {
+				failure(request, response, NOT_LOGGED_IN);
+				return;
+			}
+			
+			long player = getUserId(request);
+			DeckRDG deck = DeckRDG.findByPlayer(player);
+			
+			if (deck == null) {
+				failure(request, response, NO_DECK);
+				return;
+			}
+			
+			UserRDG ownerRDG = UserRDG.findById(deck.getPlayer());
+			UserHelper owner = new UserHelper(
+					ownerRDG.getId(),
+					ownerRDG.getVersion(),
+					ownerRDG.getUsername(),
+					""
+			);
+			
+			DeckHelper deckHelper = new DeckHelper(deck.getId(), owner);
+			
+			List<CardRDG> cardRDGs = CardRDG.findByDeck(deck.getId());
+			List<CardHelper> cards = new ArrayList<CardHelper>();
+			
+			for (CardRDG cardRDG : cardRDGs) {
 				
-				long player = getUserId(request);
-				DeckRDG deck = DeckRDG.findByPlayer(player);
+				CardHelper card = new CardHelper(
+						cardRDG.getId(),
+						deckHelper,
+						cardRDG.getType(),
+						cardRDG.getName()
+				);
 				
-				if (deck == null) {
-					failure(request, response, NO_DECK);
-				}
-				else {
-					
-					UserRDG ownerOfDeck = UserRDG.findById(deck.getPlayer());
-					UserHelper userHelper = new UserHelper(
-							ownerOfDeck.getId(),
-							ownerOfDeck.getVersion(),
-							ownerOfDeck.getUsername(),
-							""
-					);
-					
-					DeckHelper deckHelper = new DeckHelper(deck.getId(), userHelper);
-					
-					List<CardRDG> cards = CardRDG.findByDeck(deck.getId());
-					List<CardHelper> cardHelpers = new ArrayList<CardHelper>();
-					CardHelper cardHelper = null;
-					
-					for (CardRDG card : cards) {
-						
-						cardHelper = new CardHelper(card.getId(), deckHelper, card.getType(), card.getName());
-						cardHelpers.add(cardHelper);
-						
-					}
-					
-					DeckWithCardsHelper deckWithCardsHelper = new DeckWithCardsHelper(deck.getId(), userHelper, cardHelpers);
-					
-					request.setAttribute("deck", deckWithCardsHelper);
-					request.getRequestDispatcher(Global.VIEW_DECK).forward(request, response);
-					
-				}
+				cards.add(card);
 				
 			}
-			else {
-				failure(request, response, LOGIN_FAIL_MESSAGE);
-			}
+			
+			DeckWithCardsHelper deckWithCardsHelper = new DeckWithCardsHelper(deck.getId(), owner, cards);
+			
+			request.setAttribute("deck", deckWithCardsHelper);
+			request.getRequestDispatcher(Global.VIEW_DECK).forward(request, response);
 			
 		}
 		catch (Exception e) {
