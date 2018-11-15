@@ -1,12 +1,10 @@
-package dom.model.card.rdg;
+package dom.model.card.tdg;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
@@ -14,8 +12,8 @@ import dom.model.deck.rdg.DeckRDG;
 
 /**
  * 
- * CardRDG: Card Row Data Gateway.
- * Points to row(s) in the cards table.
+ * CardTDG: Card Table Data Gateway.
+ * Points to the cards table.
  * Provides methods to find, insert, and delete cards.
  * 
  * Also includes create/truncate/drop queries.
@@ -23,7 +21,7 @@ import dom.model.deck.rdg.DeckRDG;
  * @author vartanbeno
  *
  */
-public class CardRDG {
+public class CardTDG {
 	
 	private static final String TABLE_NAME = "cards";
 	
@@ -59,42 +57,6 @@ public class CardRDG {
 	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
 	private static long maxId = 0;
 	
-	private long id;
-	private long deck;
-	private String type;
-	private String name;
-	
-	public CardRDG(Long id, long deck, String type, String name) {
-		this.id = id;
-		this.deck = deck;
-		this.type = type;
-		this.name = name;
-	}
-	
-	public long getId() {
-		return id;
-	}
-	
-	public long getDeck() {
-		return deck;
-	}
-	
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public static String getTableName() {
 		return TABLE_NAME;
 	}
@@ -108,6 +70,7 @@ public class CardRDG {
 		
 		Statement s = con.createStatement();
 		s.execute(CREATE_TABLE);
+		s.close();
 	}
 	
 	public static void dropTable() throws SQLException {
@@ -118,57 +81,34 @@ public class CardRDG {
 		
 		s = con.createStatement();
 		s.execute(DROP_TABLE);
+		s.close();
 	}
 	
-	public static CardRDG findById(long id) throws SQLException {
+	public static ResultSet findById(long id) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
+		
 		ResultSet rs = ps.executeQuery();
-		
-		CardRDG cardRDG = null;
-		if (rs.next()) {
-			cardRDG = new CardRDG(
-					rs.getLong("id"),
-					rs.getLong("deck"),
-					rs.getString("type"),
-					rs.getString("name")
-			);
-		}
-		
-		rs.close();
 		ps.close();
 		
-		return cardRDG;
+		return rs;
 	}
 	
-	public static List<CardRDG> findByDeck(long deck) throws SQLException {
+	public static ResultSet findByDeck(long deck) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(FIND_BY_DECK);
 		ps.setLong(1, deck);
+		
 		ResultSet rs = ps.executeQuery();
-		
-		CardRDG cardRDG = null;
-		List<CardRDG> cardRDGs = new ArrayList<CardRDG>();
-		while (rs.next()) {
-			cardRDG = new CardRDG(
-					rs.getLong("id"),
-					rs.getLong("deck"),
-					rs.getString("type"),
-					rs.getString("name")
-			);
-			cardRDGs.add(cardRDG);
-		}
-		
-		rs.close();
 		ps.close();
 		
-		return cardRDGs;
+		return rs;
 	}
 	
-	public int insert() throws SQLException {
+	public static int insert(long id, long deck, String type, String name) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
@@ -183,7 +123,7 @@ public class CardRDG {
 		return result;
 	}
 	
-	public int delete() throws SQLException {
+	public static int delete(long id) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
@@ -222,5 +162,5 @@ public class CardRDG {
 		
 		return ++maxId;
 	}
-	
+
 }
