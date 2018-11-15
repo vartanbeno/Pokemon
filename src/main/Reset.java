@@ -1,3 +1,4 @@
+package main;
 public class Reset {
 	
 	public static void main(String[] args) {

@@ -1,13 +1,14 @@
+package main;
 import app.PageController;
 
-public class Setup {
-
+public class Teardown {
+	
 	public static void main(String[] args) {
-				
+		
 		try {
 			
 			PageController.initDb("");
-			PageController.createTables();
+			PageController.dropTables();
 			
 		}
 		catch (Exception e) {
