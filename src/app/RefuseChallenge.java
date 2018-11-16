@@ -7,11 +7,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.challenge.ChallengeHelper;
+import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.rdg.ChallengeRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.challenge.mapper.ChallengeMapper;
 
 @WebServlet("/RefuseChallenge")
 public class RefuseChallenge extends PageController {
@@ -42,45 +40,21 @@ public class RefuseChallenge extends PageController {
 			
 			long userId = getUserId(request);
 			
-			ChallengeRDG challengeRDG = getChallengeToRefuseOrWithdraw(request, response);
-			if (challengeRDG == null) return;
-			
-			UserRDG userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
-			UserRDG userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
-			
-			UserHelper challenger = new UserHelper(
-					userRDGChallenger.getId(),
-					userRDGChallenger.getVersion(),
-					userRDGChallenger.getUsername(),
-					""
-			);
-			
-			UserHelper challengee = new UserHelper(
-					userRDGChallengee.getId(),
-					userRDGChallengee.getVersion(),
-					userRDGChallengee.getUsername(),
-					""
-			);
-			
-			ChallengeHelper challenge = new ChallengeHelper(
-					challengeRDG.getId(),
-					challenger,
-					challengee,
-					challengeRDG.getStatus()
-			);
+			Challenge challenge = getChallengeToRefuseOrWithdraw(request, response);
+			if (challenge == null) return;
 			
 			/**
 			 * If you are the one being challenged and refuse, set the challenge status to refused.
 			 * Else if you are the challenger and refuse, set the challenge status to withdrawn.
 			 */
-			if (challengeRDG.getChallengee() == userId) {
-				challengeRDG.setStatus(ChallengeStatus.refused.ordinal());
-				challengeRDG.update();
+			if (challenge.getChallengee().getId() == userId) {
+				challenge.setStatus(ChallengeStatus.refused.ordinal());
+				ChallengeMapper.update(challenge);
 				success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
 			}
-			else if (challengeRDG.getChallenger() == userId) {
-				challengeRDG.setStatus(ChallengeStatus.withdrawn.ordinal());
-				challengeRDG.update();
+			else if (challenge.getChallenger().getId() == userId) {
+				challenge.setStatus(ChallengeStatus.withdrawn.ordinal());
+				ChallengeMapper.update(challenge);
 				success(request, response, String.format(WITHDRAW_SUCCESS, challenge.getChallengee().getUsername()));
 			}
 			

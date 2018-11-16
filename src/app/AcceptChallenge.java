@@ -45,7 +45,7 @@ public class AcceptChallenge extends PageController {
 			}
 			
 			long userId = getUserId(request);
-			Deck challengeeDeck = DeckMapper.findByPlayer(getUserId(request));
+			Deck challengeeDeck = DeckMapper.findByPlayer(userId);
 			
 			if (challengeeDeck == null) {
 				failure(request, response, NO_DECK);
