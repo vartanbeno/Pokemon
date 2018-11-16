@@ -80,7 +80,7 @@ public class UserMapper {
 	
 	public static List<IUser> buildUsers(ResultSet rs) throws SQLException {
 		
-		ArrayList<IUser> users = new ArrayList<IUser>();
+		List<IUser> users = new ArrayList<IUser>();
 		
 		while (rs.next()) {
 			

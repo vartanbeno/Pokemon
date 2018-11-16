@@ -67,7 +67,7 @@ public class DeckMapper {
 	
 	public static List<IDeck> buildDecks(ResultSet rs) throws SQLException {
 		
-		ArrayList<IDeck> decks = new ArrayList<IDeck>();
+		List<IDeck> decks = new ArrayList<IDeck>();
 		
 		while (rs.next()) {
 			

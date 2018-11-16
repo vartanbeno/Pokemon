@@ -143,7 +143,7 @@ public class GameMapper {
 	
 	public static List<IGame> buildGames(ResultSet rs) throws SQLException {
 		
-		ArrayList<IGame> games = new ArrayList<IGame>();
+		List<IGame> games = new ArrayList<IGame>();
 		
 		while (rs.next()) {
 			

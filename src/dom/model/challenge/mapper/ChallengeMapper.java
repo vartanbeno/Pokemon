@@ -135,7 +135,7 @@ public class ChallengeMapper {
 	
 	public static List<IChallenge> buildChallenges(ResultSet rs) throws SQLException {
 		
-		ArrayList<IChallenge> challenges = new ArrayList<IChallenge>();
+		List<IChallenge> challenges = new ArrayList<IChallenge>();
 		
 		while (rs.next()) {
 			
