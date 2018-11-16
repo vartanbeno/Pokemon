@@ -122,11 +122,11 @@ public class GameMapper {
 		User challengee = challengeeRS.next() ? UserMapper.buildUser(challengeeRS) : null;
 		challengeeRS.close();
 		
-		ResultSet challengerDeckRS = DeckTDG.findById(rs.getLong("challengerDeck"));
+		ResultSet challengerDeckRS = DeckTDG.findById(rs.getLong("challenger_deck"));
 		Deck challengerDeck = challengerDeckRS.next() ? DeckMapper.buildDeck(challengerDeckRS) : null;
 		challengerDeckRS.close();
 		
-		ResultSet challengeeDeckRS = DeckTDG.findById(rs.getLong("challengeeDeck"));
+		ResultSet challengeeDeckRS = DeckTDG.findById(rs.getLong("challengee_deck"));
 		Deck challengeeDeck = challengeeDeckRS.next() ? DeckMapper.buildDeck(challengeeDeckRS) : null;
 		challengeeDeckRS.close();
 		

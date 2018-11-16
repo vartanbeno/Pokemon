@@ -112,10 +112,7 @@ public class GameTDG {
 		
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findById(long id) throws SQLException {
@@ -124,10 +121,7 @@ public class GameTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByStatus(int status) throws SQLException {
@@ -136,10 +130,7 @@ public class GameTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_STATUS);
 		ps.setInt(1, status);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByChallenger(long challenger) throws SQLException {
@@ -148,10 +139,7 @@ public class GameTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGER);
 		ps.setLong(1, challenger);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByChallengee(long challengee) throws SQLException {
@@ -160,10 +148,7 @@ public class GameTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGEE);
 		ps.setLong(1, challengee);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
@@ -173,10 +158,7 @@ public class GameTDG {
 		ps.setLong(1, challenger);
 		ps.setLong(2, challengee);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByChallengerOrChallengee(long player) throws SQLException {
@@ -186,10 +168,7 @@ public class GameTDG {
 		ps.setLong(1, player);
 		ps.setLong(2, player);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long challenger, long challengee, long challengerDeck, long challengeeDeck) throws SQLException {

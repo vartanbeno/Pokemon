@@ -90,10 +90,7 @@ public class CardTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByDeck(long deck) throws SQLException {
@@ -102,10 +99,7 @@ public class CardTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_DECK);
 		ps.setLong(1, deck);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long deck, String type, String name) throws SQLException {
