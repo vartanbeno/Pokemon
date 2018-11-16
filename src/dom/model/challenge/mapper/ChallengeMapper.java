@@ -102,6 +102,18 @@ public class ChallengeMapper {
 		
 	}
 	
+	public static void insert(Challenge challenge) throws SQLException {
+		ChallengeTDG.insert(challenge.getId(), challenge.getChallenger().getId(), challenge.getChallengee().getId());
+	}
+	
+	public static void update(Challenge challenge) throws SQLException {
+		ChallengeTDG.update(challenge.getStatus(), challenge.getId());
+	}
+	
+	public static void delete(Challenge challenge) throws SQLException {
+		ChallengeTDG.delete(challenge.getId());
+	}
+	
 	public static Challenge buildChallenge(ResultSet rs) throws SQLException {
 		
 		ResultSet challengerRS = UserTDG.findById(rs.getLong("challenger"));
