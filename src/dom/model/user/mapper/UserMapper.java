@@ -67,7 +67,7 @@ public class UserMapper {
 		UserTDG.delete(user.getId(), user.getVersion());
 	}
 	
-	private static User buildUser(ResultSet rs) throws SQLException {
+	public static User buildUser(ResultSet rs) throws SQLException {
 		
 		return new User(
 				rs.getLong("id"),
@@ -78,7 +78,7 @@ public class UserMapper {
 		
 	}
 	
-	private static List<IUser> buildUsers(ResultSet rs) throws SQLException {
+	public static List<IUser> buildUsers(ResultSet rs) throws SQLException {
 		
 		ArrayList<IUser> users = new ArrayList<IUser>();
 		
@@ -88,6 +88,8 @@ public class UserMapper {
 			users.add(user);
 			
 		}
+		
+		rs.close();
 		
 		return users;
 		
