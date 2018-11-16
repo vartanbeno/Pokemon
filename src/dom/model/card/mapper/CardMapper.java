@@ -8,9 +8,6 @@ import java.util.List;
 import dom.model.card.Card;
 import dom.model.card.ICard;
 import dom.model.card.tdg.CardTDG;
-import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckMapper;
-import dom.model.deck.tdg.DeckTDG;
 
 public class CardMapper {
 	
@@ -37,7 +34,7 @@ public class CardMapper {
 	}
 	
 	public static void insert(Card card) throws SQLException {
-		CardTDG.insert(card.getId(), card.getDeck().getId(), card.getType(), card.getName());
+		CardTDG.insert(card.getId(), card.getDeck(), card.getType(), card.getName());
 	}
 	
 	public static void delete(Card card) throws SQLException {
@@ -50,11 +47,12 @@ public class CardMapper {
 	
 	public static Card buildCard(ResultSet rs) throws SQLException {
 		
-		ResultSet deckRS = DeckTDG.findById(rs.getLong("id"));
-		Deck deck = deckRS.next() ? DeckMapper.buildDeck(deckRS) : null;
-		deckRS.close();
-		
-		return new Card(rs.getLong("id"), deck, rs.getString("type"), rs.getString("name"));
+		return new Card(
+				rs.getLong("id"),
+				rs.getLong("deck"),
+				rs.getString("type"),
+				rs.getString("name")
+		);
 		
 	}
 	

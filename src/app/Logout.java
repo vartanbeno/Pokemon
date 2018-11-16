@@ -53,7 +53,7 @@ public class Logout extends PageController {
 			}
 			catch (NullPointerException e) {
 				request.getSession(true).invalidate();
-				success(request, response, MAJOR_FAIL);
+				failure(request, response, MAJOR_FAIL);
 			}
 			
 		}

@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dom.model.card.Card;
+import dom.model.card.ICard;
+import dom.model.card.mapper.CardMapper;
+import dom.model.card.tdg.CardTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.tdg.DeckTDG;
@@ -48,11 +52,23 @@ public class DeckMapper {
 	}
 	
 	public static void insert(Deck deck) throws SQLException {
+		
 		DeckTDG.insert(deck.getId(), deck.getPlayer().getId());
+		
+		for (ICard card : deck.getCards()) {
+			CardMapper.insert((Card) card);
+		}
+		
 	}
 	
 	public static void delete(Deck deck) throws SQLException {
+		
+		for (ICard card : deck.getCards()) {
+			CardMapper.delete((Card) card);
+		}
+		
 		DeckTDG.delete(deck.getId());
+		
 	}
 	
 	public static Deck buildDeck(ResultSet rs) throws SQLException {
@@ -61,7 +77,11 @@ public class DeckMapper {
 		User player = playerRS.next() ? UserMapper.buildUser(playerRS) : null;
 		playerRS.close();
 		
-		return new Deck(rs.getLong("id"), player);
+		ResultSet cardsRS = CardTDG.findByDeck(rs.getLong("id"));
+		List<ICard> cards = CardMapper.buildCards(cardsRS);
+		cardsRS.close();
+		
+		return new Deck(rs.getLong("id"), player, cards);
 		
 	}
 	
