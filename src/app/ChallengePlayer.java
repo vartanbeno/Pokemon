@@ -2,7 +2,6 @@ package app;
 
 import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,11 +9,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.challenge.ChallengeHelper;
-import dom.model.challenge.rdg.ChallengeRDG;
-import dom.model.deck.rdg.DeckRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.challenge.Challenge;
+import dom.model.challenge.ChallengeStatus;
+import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.tdg.ChallengeTDG;
+import dom.model.deck.Deck;
+import dom.model.deck.mapper.DeckMapper;
+import dom.model.user.IUser;
+import dom.model.user.mapper.UserMapper;
 
 @WebServlet("/ChallengePlayer")
 public class ChallengePlayer extends PageController {
@@ -44,30 +46,23 @@ public class ChallengePlayer extends PageController {
 			}
 				
 			final long challenger = getUserId(request);
-			DeckRDG deck = DeckRDG.findByPlayer(challenger);
+			Deck deck = DeckMapper.findByPlayer(challenger);
 			
 			if (deck == null) {
 				failure(request, response, NO_DECK);
 				return;
 			}
-				
-			List<UserRDG> userRDGs = UserRDG.findAll();
-			List<UserHelper> users = new ArrayList<UserHelper>();
 			
-			for (UserRDG userRDG : userRDGs) {
-				users.add(
-					new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "")
-				);
-			}
+			List<IUser> challengees = UserMapper.findAll();
 			
 			/**
 			 * We want a list of users to be able to challenge.
 			 * But we should omit our own username,
 			 * because we shouldn't be able to challenge ourselves.
 			 */
-			users.removeIf(user -> user.getId() == challenger);
+			challengees.removeIf(challengee -> challengee.getId() == challenger);
 			
-			request.setAttribute("users", users);
+			request.setAttribute("users", challengees);
 			request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
 			
 		}
@@ -100,7 +95,7 @@ public class ChallengePlayer extends PageController {
 				return;
 			}
 			
-			if (DeckRDG.findByPlayer(challengerId) == null) {
+			if (DeckMapper.findByPlayer(challengerId) == null) {
 				failure(request, response, NO_DECK);
 				return;
 			}
@@ -110,36 +105,25 @@ public class ChallengePlayer extends PageController {
 				return;
 			}
 			
-			ChallengeRDG challengeRDG = ChallengeRDG.findOpenByChallengerAndChallengee(challengerId, challengeeId);
-			UserRDG userRDGChallenger = UserRDG.findById(challengerId);
-			UserRDG userRDGChallengee = UserRDG.findById(challengeeId);
+			Challenge challenge = ChallengeMapper.findOpenByChallengerAndChallengee(challengerId, challengeeId);
 			
-			if (challengeRDG == null) {
-				challengeRDG = new ChallengeRDG(ChallengeRDG.getMaxId(), challengerId, challengeeId);
+			if (challenge == null) {
+				challenge = new Challenge(
+						ChallengeTDG.getMaxId(),
+						UserMapper.findById(challengerId),
+						UserMapper.findById(challengeeId),
+						ChallengeStatus.open.ordinal()
+				);
 				try {
-					challengeRDG.insert();
-					success(request, response, String.format(CHALLENGE_SUCCESS, userRDGChallengee.getUsername()));
+					ChallengeMapper.insert(challenge);
+					success(request, response, String.format(CHALLENGE_SUCCESS, challenge.getChallengee().getUsername()));
 				}
 				catch (NullPointerException | SQLIntegrityConstraintViolationException e) {
 					failure(request, response, CHALLENGEE_DOES_NOT_EXIST);
 				}
 			}
 			else {
-				
-				UserHelper challenger = new UserHelper(
-						userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
-				);
-				
-				UserHelper challengee = new UserHelper(
-						userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
-				);
-				
-				ChallengeHelper challenge = new ChallengeHelper(
-						challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
-				);
-				
 				failure(request, response, String.format(ALREADY_CHALLENGED, challenge.getChallengee().getUsername()));
-				
 			}
 			
 		}

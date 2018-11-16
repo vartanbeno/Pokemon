@@ -91,14 +91,14 @@ public class ChallengeMapper {
 		
 	}
 	
-	public static List<IChallenge> findOpenByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
+	public static Challenge findOpenByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
 		
 		ResultSet rs = ChallengeTDG.findOpenByChallengerAndChallengee(challenger, challengee);
 		
-		List<IChallenge> challenges = buildChallenges(rs);
+		Challenge challenge = rs.next() ? buildChallenge(rs) : null;
 		rs.close();
 		
-		return challenges;
+		return challenge;
 		
 	}
 	
