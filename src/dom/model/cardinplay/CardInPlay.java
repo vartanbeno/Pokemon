@@ -5,7 +5,7 @@ import dom.model.deck.IDeck;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
 
-public class CardInPlayer implements ICardInPlay {
+public class CardInPlay implements ICardInPlay {
 	
 	private long id;
 	private IGame game;
@@ -14,7 +14,7 @@ public class CardInPlayer implements ICardInPlay {
 	private ICard card;
 	private int status;
 	
-	public CardInPlayer(long id, IGame game, IUser player, IDeck deck, ICard card, int status) {
+	public CardInPlay(long id, IGame game, IUser player, IDeck deck, ICard card, int status) {
 		this.id = id;
 		this.game = game;
 		this.player = player;
