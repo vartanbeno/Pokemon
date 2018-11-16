@@ -50,7 +50,6 @@ public class Register extends PageController {
 				request.getSession(true).setAttribute("userid", user.getId());
 				success(request, response, String.format(REGISTRATION_SUCCESS, user.getUsername()));
 			}
-				
 			
 		}
 		catch (Exception e) {

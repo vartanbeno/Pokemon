@@ -9,8 +9,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.card.rdg.CardRDG;
-import dom.model.deck.rdg.DeckRDG;
+import dom.model.card.Card;
+import dom.model.card.mapper.CardMapper;
+import dom.model.card.tdg.CardTDG;
+import dom.model.deck.Deck;
+import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.tdg.DeckTDG;
+import dom.model.user.User;
+import dom.model.user.mapper.UserMapper;
 
 @WebServlet("/UploadDeck")
 public class UploadDeck extends PageController {
@@ -38,10 +44,10 @@ public class UploadDeck extends PageController {
 				return;
 			}
 				
-			DeckRDG deck = DeckRDG.findByPlayer(getUserId(request));
+			Deck deck = DeckMapper.findByPlayer(getUserId(request));
 			
 			if (deck == null) {
-				request.setAttribute("numberOfCards", CardRDG.getNumberOfCardsPerDeck());
+				request.setAttribute("numberOfCards", CardTDG.getNumberOfCardsPerDeck());
 				request.getRequestDispatcher(Global.UPLOAD_DECK_FORM).forward(request, response);
 			}
 			else {
@@ -67,8 +73,8 @@ public class UploadDeck extends PageController {
 				return;
 			}
 			
-			long player = getUserId(request);
-			DeckRDG deck = DeckRDG.findByPlayer(player);
+			User player = UserMapper.findById(getUserId(request));
+			Deck deck = DeckMapper.findByPlayer(player.getId());
 			
 			if (deck != null) {
 				failure(request, response, DECK_FAIL_MESSAGE);
@@ -82,18 +88,17 @@ public class UploadDeck extends PageController {
 			 */
 			String cards[] = request.getParameter("deck").replace("\r", "").trim().split("\n");
 			
-			if (cards.length != CardRDG.getNumberOfCardsPerDeck()) {
-				failure(request, response, String.format(CARDS_FAIL_MESSAGE, cards.length, CardRDG.getNumberOfCardsPerDeck()));
+			if (cards.length != CardTDG.getNumberOfCardsPerDeck()) {
+				failure(request, response, String.format(CARDS_FAIL_MESSAGE, cards.length, CardTDG.getNumberOfCardsPerDeck()));
 			}
 			else {
 				
 				boolean deckIsValid = true;
-				
-				CardSpec cardSpec = null;
 				List<CardSpec> cardSpecs = new ArrayList<CardSpec>();
-				String type, name = "";
 				
 				for (String card : cards) {
+					
+					String type, name = "";
 					
 					try {
 						type = card.substring(0, 1);
@@ -109,20 +114,19 @@ public class UploadDeck extends PageController {
 						break;
 					}
 					
-					cardSpec = new CardSpec(type, name);
+					CardSpec cardSpec = new CardSpec(type, name);
 					cardSpecs.add(cardSpec);
 					
 				}
 				
 				if (deckIsValid) {
 					
-					deck = new DeckRDG(DeckRDG.getMaxId(), player);
-					deck.insert();
+					deck = new Deck(DeckTDG.getMaxId(), player);
+					DeckMapper.insert(deck);
 					
-					CardRDG cardInDeck = null;
 					for (CardSpec card : cardSpecs) {
-						cardInDeck = new CardRDG(CardRDG.getMaxId(), deck.getId(), card.type, card.name);
-						cardInDeck.insert();
+						Card cardInDeck = new Card(CardTDG.getMaxId(), deck, card.type, card.name);
+						CardMapper.insert(cardInDeck);
 					}
 					
 					success(request, response, DECK_SUCCESS_MESSAGE);
