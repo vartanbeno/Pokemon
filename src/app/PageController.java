@@ -15,6 +15,8 @@ import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 
 import dom.model.card.rdg.CardRDG;
 import dom.model.cardinplay.rdg.CardInPlayRDG;
+import dom.model.challenge.Challenge;
+import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.challenge.rdg.ChallengeRDG;
 import dom.model.deck.rdg.DeckRDG;
 import dom.model.game.rdg.GameRDG;
@@ -145,23 +147,23 @@ public class PageController extends HttpServlet {
 		
 	}
 	
-	protected ChallengeRDG getChallengeToAccept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected Challenge getChallengeToAccept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
 			long challengeId = Long.parseLong(request.getParameter("challenge"));
 			long userId = getUserId(request);
 			
-			ChallengeRDG challenge = ChallengeRDG.findById(challengeId);
+			Challenge challenge = ChallengeMapper.findById(challengeId);
 			
 			if (challenge == null) {
 				failure(request, response, ACCEPT_CHALLENGE_DOES_NOT_EXIST);
 			}
-			else if (userId == challenge.getChallenger()) {
+			else if (userId == challenge.getChallenger().getId()) {
 				challenge = null;
 				failure(request, response, ACCEPT_CHALLENGE_SAME_ID);
 			}
-			else if (userId != challenge.getChallenger() && userId != challenge.getChallengee()) {
+			else if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId()) {
 				challenge = null;
 				failure(request, response, NOT_PART_OF_CHALLENGE);
 			}
