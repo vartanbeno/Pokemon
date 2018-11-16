@@ -7,7 +7,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.user.rdg.UserRDG;
+import dom.model.user.mapper.UserMapper;
+import dom.model.user.User;
 
 @WebServlet("/Login")
 public class Login extends PageController {
@@ -30,17 +31,17 @@ public class Login extends PageController {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-			
-			UserRDG userRDG = null;
 				
 			String username = request.getParameter("user");
 			String password = request.getParameter("pass");
 			
+			User user = UserMapper.findByUsernameAndPassword(username, password);
+			
 			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				failure(request, response, ENTER_USER_AND_PASS);
 			}
-			else if ((userRDG = UserRDG.findByUsernameAndPassword(username, password)) != null) {
-				request.getSession(true).setAttribute("userid", userRDG.getId());
+			else if (user != null) {
+				request.getSession(true).setAttribute("userid", user.getId());
 				success(request, response, String.format(LOGIN_SUCCESS, username));
 			}
 			else {

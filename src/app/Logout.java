@@ -7,8 +7,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.user.User;
+import dom.model.user.mapper.UserMapper;
 
 @WebServlet("/Logout")
 public class Logout extends PageController {
@@ -45,10 +45,9 @@ public class Logout extends PageController {
 				return;
 			}
 				
-			UserRDG userRDG = UserRDG.findById(getUserId(request));
+			User user = UserMapper.findById(getUserId(request));
 			
 			try {
-				UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
 				request.getSession(true).invalidate();
 				success(request, response, String.format(LOGOUT_SUCCESS, user.getUsername()));
 			}
