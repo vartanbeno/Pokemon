@@ -7,21 +7,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.deck.Deck;
-
-@WebServlet("/ViewDeck")
-public class ViewDeck extends PageController {
+@WebServlet("/Deck")
+public class Deck extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to view a deck.";
 	
-       
-    public ViewDeck() {
+    public Deck() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		try {
 			
 			if (!loggedIn(request)) {
@@ -29,11 +27,16 @@ public class ViewDeck extends PageController {
 				return;
 			}
 			
-			Deck deck = getDeck(request, response);
-			if (deck == null) return;
-						
-			request.setAttribute("deck", deck);
-			request.getRequestDispatcher(Global.VIEW_DECK).forward(request, response);
+			if (request.getParameter("deck") == null) {
+				request.setAttribute("decks", getMyDecks(request));
+				request.getRequestDispatcher(Global.VIEW_DECKS).forward(request, response);
+			}
+			else {
+				dom.model.deck.Deck deck = getDeck(request, response);
+				if (deck == null) return;
+				request.setAttribute("deck", deck);
+				request.getRequestDispatcher(Global.VIEW_DECK).forward(request, response);
+			}
 			
 		}
 		catch (Exception e) {
@@ -42,10 +45,12 @@ public class ViewDeck extends PageController {
 		finally {
 			closeDb();
 		}
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		UploadDeck uploadDeck = new UploadDeck();
+		uploadDeck.doPost(request, response);
 	}
 
 }

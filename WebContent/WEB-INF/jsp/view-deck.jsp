@@ -8,6 +8,7 @@
 		"cards": [
 			<c:forEach items="${deck.cards}" var="card" varStatus="loop">
 				{
+					"id": ${card.id},
 					"t": "${card.type}",
 					"n": "${card.name}"
 				}<c:if test="${!loop.last}">,</c:if>
