@@ -4,8 +4,8 @@
 
 {
 	"hand": [
-		<c:forEach items="${hand}" var="card" varStatus="loop">
-			${card.id}<c:if test="${!loop.last}">,</c:if>
+		<c:forEach items="${hand}" var="handCard" varStatus="loop">
+			${handCard.card.id}<c:if test="${!loop.last}">,</c:if>
 		</c:forEach>
 	]
 }
