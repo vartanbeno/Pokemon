@@ -19,7 +19,8 @@ import dom.model.challenge.Challenge;
 import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.tdg.DeckTDG;
-import dom.model.game.rdg.GameRDG;
+import dom.model.game.Game;
+import dom.model.game.mapper.GameMapper;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.tdg.UserTDG;
 
@@ -214,19 +215,19 @@ public class PageController extends HttpServlet {
 		
 	}
 	
-	protected GameRDG getGame(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected Game getGame(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
 			long gameId = Long.parseLong(request.getParameter("game"));
 			long userId = getUserId(request);
 			
-			GameRDG game = GameRDG.findById(gameId);
+			Game game = GameMapper.findById(gameId);
 			
 			if (game == null) {
 				failure(request, response, GAME_DOES_NOT_EXIST);
 			}
-			else if (userId != game.getChallenger() && userId != game.getChallengee()) {
+			else if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId()) {
 				game = null;
 				failure(request, response, NOT_YOUR_GAME);
 			}

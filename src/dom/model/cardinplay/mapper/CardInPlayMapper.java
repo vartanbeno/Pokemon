@@ -43,6 +43,16 @@ public class CardInPlayMapper {
 		
 	}
 	
+	public static CardInPlay findByCard(long card) throws SQLException {
+		
+		ResultSet rs = CardInPlayTDG.findByCard(card);
+		CardInPlay cardInPlay = rs.next() ? buildCardInPlay(rs) : null;
+		rs.close();
+		
+		return cardInPlay;
+		
+	}
+	
 	public static List<ICardInPlay> findByGameAndPlayer(long game, long player) throws SQLException {
 		
 		ResultSet rs = CardInPlayTDG.findByGameAndPlayer(game, player);

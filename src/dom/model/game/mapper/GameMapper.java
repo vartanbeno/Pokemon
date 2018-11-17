@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
@@ -166,6 +167,7 @@ public class GameMapper {
 	public static GameBoard buildGameBoard(Game game) throws SQLException {
 		
 		long gameId = game.getId();
+		int gameStatus = game.getStatus();
 		
 		User challenger = (User) game.getChallenger();
 		User challengee = (User) game.getChallengee();
@@ -196,14 +198,26 @@ public class GameMapper {
 		List<ICardInPlay> challengeeDiscarded = CardInPlayMapper.buildCardsInPlay(challengeeDiscardedRS);
 		challengeeDiscardedRS.close();
 		
+		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
+		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size();
+		
+		/**
+		 * We make sure to remove X number of cards from the 40-card deck.
+		 * Decks are always so it's just a matter of removing the first one X times.
+		 * i.e. if we have 13 cards in play, we remove 13 cards from the top.
+		 * So now we have 27 cards left.
+		 */
+		IntStream.range(0, challengerCardsNotInDeck).forEach($ -> challengerDeck.getCards().remove(0));
+		IntStream.range(0, challengeeCardsNotInDeck).forEach($ -> challengeeDeck.getCards().remove(0));
+		
 		return new GameBoard(
-				game.getId(),
+				gameId,
 				challenger, challengee,
 				challengerDeck, challengeeDeck,
 				challengerHand, challengeeHand,
 				challengerBench, challengeeBench,
 				challengerDiscarded, challengeeDiscarded,
-				game.getStatus()
+				gameStatus
 		);
 		
 	}
