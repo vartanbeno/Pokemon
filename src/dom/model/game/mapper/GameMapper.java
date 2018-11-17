@@ -5,10 +5,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dom.model.cardinplay.CardStatus;
+import dom.model.cardinplay.ICardInPlay;
+import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
+import dom.model.game.GameBoard;
 import dom.model.game.IGame;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.User;
@@ -155,6 +160,51 @@ public class GameMapper {
 		rs.close();
 		
 		return games;
+		
+	}
+	
+	public static GameBoard buildGameBoard(Game game) throws SQLException {
+		
+		long gameId = game.getId();
+		
+		User challenger = (User) game.getChallenger();
+		User challengee = (User) game.getChallengee();
+		Deck challengerDeck = (Deck) game.getChallengerDeck();
+		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
+		
+		ResultSet challengerHandRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengerHand = CardInPlayMapper.buildCardsInPlay(challengerHandRS);
+		challengerHandRS.close();
+		
+		ResultSet challengeeHandRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengeeHand = CardInPlayMapper.buildCardsInPlay(challengeeHandRS);
+		challengeeHandRS.close();
+		
+		ResultSet challengerBenchRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengerBench = CardInPlayMapper.buildCardsInPlay(challengerBenchRS);
+		challengerBenchRS.close();
+		
+		ResultSet challengeeBenchRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengeeBench = CardInPlayMapper.buildCardsInPlay(challengeeBenchRS);
+		challengeeBenchRS.close();
+		
+		ResultSet challengerDiscardedRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengerDiscarded = CardInPlayMapper.buildCardsInPlay(challengerDiscardedRS);
+		challengerDiscardedRS.close();
+		
+		ResultSet challengeeDiscardedRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengeeDiscarded = CardInPlayMapper.buildCardsInPlay(challengeeDiscardedRS);
+		challengeeDiscardedRS.close();
+		
+		return new GameBoard(
+				game.getId(),
+				challenger, challengee,
+				challengerDeck, challengeeDeck,
+				challengerHand, challengeeHand,
+				challengerBench, challengeeBench,
+				challengerDiscarded, challengeeDiscarded,
+				game.getStatus()
+		);
 		
 	}
 
