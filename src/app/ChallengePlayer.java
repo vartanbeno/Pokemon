@@ -14,7 +14,7 @@ import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 import dom.model.user.mapper.UserMapper;
 
@@ -28,7 +28,7 @@ public class ChallengePlayer extends PageController {
 	private static final String CHALLENGEE_DOES_NOT_EXIST = "You have issued a challenge to a user that doesn't exist.";
 	private static final String CHALLENGEE_ID_FORMAT = "You must provide a valid format for the challengee ID (positive integer).";
 	private static final String NOT_LOGGED_IN = "You must be logged in to issue a challenge to a player.";
-	private static final String NO_DECK = "You must have a deck to issue a challenge to a player.";
+	private static final String NO_DECK = "You must have at least one deck to issue a challenge to a player.";
 	
 	private static final String CHALLENGE_SUCCESS = "You have successfully challenged %s to a game.";
 
@@ -45,10 +45,9 @@ public class ChallengePlayer extends PageController {
 				return;
 			}
 				
-			final long challenger = getUserId(request);
-			Deck deck = DeckMapper.findByPlayer(challenger);
+			List<IDeck> decks = getMyDecks(request);
 			
-			if (deck == null) {
+			if (decks.size() == 0) {
 				failure(request, response, NO_DECK);
 				return;
 			}
@@ -60,9 +59,10 @@ public class ChallengePlayer extends PageController {
 			 * But we should omit our own username,
 			 * because we shouldn't be able to challenge ourselves.
 			 */
-			challengees.removeIf(challengee -> challengee.getId() == challenger);
+			challengees.removeIf(challengee -> challengee.getId() == getUserId(request));
 			
 			request.setAttribute("users", challengees);
+			request.setAttribute("decks", decks);
 			request.getRequestDispatcher(Global.CHALLENGE_FORM).forward(request, response);
 			
 		}
@@ -95,7 +95,7 @@ public class ChallengePlayer extends PageController {
 				return;
 			}
 			
-			if (DeckMapper.findByPlayer(challengerId) == null) {
+			if (getMyDecks(request).size() == 0) {
 				failure(request, response, NO_DECK);
 				return;
 			}
@@ -107,12 +107,16 @@ public class ChallengePlayer extends PageController {
 			
 			Challenge challenge = ChallengeMapper.findOpenByChallengerAndChallengee(challengerId, challengeeId);
 			
+			Deck challengerDeck = getDeck(request, response);
+			if (challengerDeck == null) return;
+			
 			if (challenge == null) {
 				challenge = new Challenge(
 						ChallengeTDG.getMaxId(),
 						UserMapper.findById(challengerId),
 						UserMapper.findById(challengeeId),
-						ChallengeStatus.open.ordinal()
+						ChallengeStatus.open.ordinal(),
+						challengerDeck
 				);
 				try {
 					ChallengeMapper.insert(challenge);

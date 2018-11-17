@@ -40,14 +40,14 @@ public class DeckMapper {
 		
 	}
 	
-	public static Deck findByPlayer(long player) throws SQLException {
+	public static List<IDeck> findByPlayer(long player) throws SQLException {
 		
 		ResultSet rs = DeckTDG.findByPlayer(player);
 		
-		Deck deck = rs.next() ? buildDeck(rs) : null;
+		List<IDeck> decks = buildDecks(rs);
 		rs.close();
 		
-		return deck;
+		return decks;
 		
 	}
 	

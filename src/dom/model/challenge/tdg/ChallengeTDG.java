@@ -9,6 +9,7 @@ import java.sql.Statement;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.challenge.ChallengeStatus;
+import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.tdg.UserTDG;
 
 /**
@@ -26,17 +27,19 @@ public class ChallengeTDG {
 	
 	private static final String TABLE_NAME = "challenges";
 	
-	private static final String COLUMNS = "id, challenger, challengee, status";
+	private static final String COLUMNS = "id, challenger, challengee, status, challenger_deck";
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
 			+ "challenger BIGINT NOT NULL,"
 			+ "challengee BIGINT NOT NULL,"
 			+ "status INT NOT NULL,"
+			+ "challenger_deck BIGINT NOT NULL,"
 			+ "PRIMARY KEY (id),"
 			+ "FOREIGN KEY (challenger) REFERENCES %2$s (id),"
-			+ "FOREIGN KEY (challengee) REFERENCES %2$s (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName());
+			+ "FOREIGN KEY (challengee) REFERENCES %2$s (id),"
+			+ "FOREIGN KEY (challenger_deck) REFERENCES %3$s (id)"
+			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName(), DeckTDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
@@ -62,7 +65,7 @@ public class ChallengeTDG {
 	private static final String FIND_OPEN_BY_CHALLENGER_AND_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE challenger = ? AND challengee = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
 			
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
 	private static final String UPDATE = String.format("UPDATE %1$s SET status = ? WHERE id = ?;", TABLE_NAME);
 	
@@ -168,7 +171,7 @@ public class ChallengeTDG {
 		return ps.executeQuery();
 	}
 	
-	public static int insert(long id, long challenger, long challengee) throws SQLException {
+	public static int insert(long id, long challenger, long challengee, long challengerDeck) throws SQLException {
 		
 		if (challenger == challengee) {
 			System.err.println("The challenger and challengee cannot be the same.\n"
@@ -184,6 +187,7 @@ public class ChallengeTDG {
 		ps.setLong(2, challenger);
 		ps.setLong(3, challengee);
 		ps.setInt(4, ChallengeStatus.open.ordinal());
+		ps.setLong(5, challengerDeck);
 		
 		int result = ps.executeUpdate();
 		ps.close();

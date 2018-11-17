@@ -1,5 +1,6 @@
 package dom.model.challenge;
 
+import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
 public interface IChallenge {
@@ -14,5 +15,8 @@ public interface IChallenge {
 	
 	public int getStatus();
 	public void setStatus(int status);
+	
+	public IDeck getChallengerDeck();
+	public void setChallengerDeck(IDeck challengerDeck);
 
 }
