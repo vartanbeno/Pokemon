@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
-import dom.model.deck.rdg.DeckRDG;
+import dom.model.deck.tdg.DeckTDG;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class CardTDG {
 			+ "name VARCHAR(30) NOT NULL,"
 			+ "PRIMARY KEY (id),"
 			+ "FOREIGN KEY (deck) REFERENCES %2$s (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, DeckRDG.getTableName());
+			+ ") ENGINE=InnoDB;", TABLE_NAME, DeckTDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
@@ -90,10 +90,7 @@ public class CardTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByDeck(long deck) throws SQLException {
@@ -102,10 +99,7 @@ public class CardTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_DECK);
 		ps.setLong(1, deck);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long deck, String type, String name) throws SQLException {

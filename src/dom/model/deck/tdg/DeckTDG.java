@@ -79,10 +79,7 @@ public class DeckTDG {
 		
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findById(long id) throws SQLException {
@@ -91,10 +88,7 @@ public class DeckTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByPlayer(long player) throws SQLException {
@@ -103,10 +97,7 @@ public class DeckTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_PLAYER);
 		ps.setLong(1, player);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long player) throws SQLException {

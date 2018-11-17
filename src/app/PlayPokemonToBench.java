@@ -8,11 +8,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.card.rdg.CardRDG;
 import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.rdg.CardInPlayRDG;
+import dom.model.cardinplay.ICardInPlay;
+import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.card.Card;
+import dom.model.card.mapper.CardMapper;
+import dom.model.cardinplay.CardInPlay;
+import dom.model.game.Game;
 import dom.model.game.GameStatus;
-import dom.model.game.rdg.GameRDG;
 
 @WebServlet("/PlayPokemonToBench")
 public class PlayPokemonToBench extends PageController {
@@ -46,13 +49,15 @@ public class PlayPokemonToBench extends PageController {
 				return;
 			}
 			
-			GameRDG gameRDG = getGame(request, response);
-			if (gameRDG == null) return;
+			Game game = getGame(request, response);
+			if (game == null) return;
 			
-			if (gameRDG.getStatus() != GameStatus.ongoing.ordinal()) {
+			if (game.getStatus() != GameStatus.ongoing.ordinal()) {
 				failure(request, response, GAME_STOPPED);
 				return;
 			}
+			
+			long userId = getUserId(request);
 			
 			/**
 			 * This is the card index.
@@ -73,39 +78,39 @@ public class PlayPokemonToBench extends PageController {
 				return;
 			}
 			
-			List<CardInPlayRDG> playerBenchRDG = CardInPlayRDG.findByGameAndPlayerAndStatus(
-					gameRDG.getId(), getUserId(request), CardStatus.benched.ordinal()
+			List<ICardInPlay> playerBench = CardInPlayMapper.findByGameAndPlayerAndStatus(
+					game.getId(), userId, CardStatus.benched.ordinal()
 			);
 			
-			if (playerBenchRDG.size() >= 5) {
+			if (playerBench.size() >= 5) {
 				failure(request, response, BENCH_IS_FULL);
 				return;
 			}
 			
-			List<CardInPlayRDG> playerHandRDG = CardInPlayRDG.findByGameAndPlayerAndStatus(
-					gameRDG.getId(), getUserId(request), CardStatus.hand.ordinal()
+			List<ICardInPlay> playerHand = CardInPlayMapper.findByGameAndPlayerAndStatus(
+					game.getId(), userId, CardStatus.hand.ordinal()
 			);
 			
-			if (playerHandRDG.size() == 0) {
+			if (playerHand.size() == 0) {
 				failure(request, response, EMPTY_HAND);
 				return;
 			}
 			
-			CardInPlayRDG playerCardInHandRDG;
+			CardInPlay playerCardInHand;
 			try {
-				playerCardInHandRDG = playerHandRDG.get(cardIndex);
+				playerCardInHand = (CardInPlay) playerHand.get(cardIndex);
 			}
 			catch (IndexOutOfBoundsException e) {
 				failure(request, response, NOT_IN_HAND);
 				return;
 			}
 			
-			CardInPlayRDG cardInHand = CardInPlayRDG.findByCard(playerCardInHandRDG.getCard());
-			CardRDG card = CardRDG.findById(cardInHand.getCard());
+			CardInPlay cardInHand = (CardInPlay) CardInPlayMapper.findByCard(playerCardInHand.getCard().getId());
+			Card card = CardMapper.findById(cardInHand.getCard().getId());
 			
 			if (card.getType().equals("p")) {
 				cardInHand.setStatus(CardStatus.benched.ordinal());
-				cardInHand.update();
+				CardInPlayMapper.update(cardInHand);
 				success(request, response, String.format(BENCH_SUCCESS, card.getName()));
 			}
 			else {

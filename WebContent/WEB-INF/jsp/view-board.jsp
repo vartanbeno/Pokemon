@@ -11,22 +11,22 @@
 		"play": {
 			"${game.challenger.id}": {
 				"status": "${challengerStatus}",
-				"handsize": ${fn:length(game.challengerHandCards)},
+				"handsize": ${fn:length(game.challengerHand)},
 				"decksize": ${fn:length(game.challengerDeck.cards)},
-				"discardsize": ${fn:length(game.challengerDiscardedCards)},
+				"discardsize": ${fn:length(game.challengerDiscarded)},
 				"bench": [
-					<c:forEach items="${game.challengerBenchedCards}" var="card" varStatus="loop">
+					<c:forEach items="${game.challengerBench}" var="card" varStatus="loop">
 						${card.card.id}<c:if test="${!loop.last}">,</c:if>
 					</c:forEach>
 				]
 			},
 			"${game.challengee.id}": {
 				"status": "${challengeeStatus}",
-				"handsize": ${fn:length(game.challengeeHandCards)},
+				"handsize": ${fn:length(game.challengeeHand)},
 				"decksize": ${fn:length(game.challengeeDeck.cards)},
-				"discardsize": ${fn:length(game.challengeeDiscardedCards)},
+				"discardsize": ${fn:length(game.challengeeDiscarded)},
 				"bench": [
-					<c:forEach items="${game.challengeeBenchedCards}" var="card" varStatus="loop">
+					<c:forEach items="${game.challengeeBench}" var="card" varStatus="loop">
 						${card.card.id}<c:if test="${!loop.last}">,</c:if>
 					</c:forEach>
 				]

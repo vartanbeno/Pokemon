@@ -1,24 +1,23 @@
 package app;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.card.CardHelper;
-import dom.model.card.rdg.CardRDG;
-import dom.model.cardinplay.rdg.CardInPlayRDG;
-import dom.model.deck.DeckHelper;
-import dom.model.deck.rdg.DeckRDG;
+import dom.model.card.Card;
+import dom.model.cardinplay.CardInPlay;
+import dom.model.cardinplay.CardStatus;
+import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.tdg.CardInPlayTDG;
+import dom.model.deck.Deck;
+import dom.model.game.Game;
+import dom.model.game.GameBoard;
 import dom.model.game.GameStatus;
-import dom.model.game.rdg.GameRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.game.mapper.GameMapper;
+import dom.model.user.User;
 
 @WebServlet("/DrawCard")
 public class DrawCard extends PageController {
@@ -48,66 +47,44 @@ public class DrawCard extends PageController {
 				return;
 			}
 			
-			GameRDG gameRDG = getGame(request, response);
-			if (gameRDG == null) return;
+			Game game = getGame(request, response);
+			if (game == null) return;
 			
-			if (gameRDG.getStatus() != GameStatus.ongoing.ordinal()) {
+			if (game.getStatus() != GameStatus.ongoing.ordinal()) {
 				failure(request, response, GAME_STOPPED);
 				return;
 			}
 			
-			long playerId = getUserId(request);
+			long userId = getUserId(request);
 			
-			UserRDG playerRDG = UserRDG.findById(playerId);
-			UserHelper player = new UserHelper(
-					playerRDG.getId(),
-					playerRDG.getVersion(),
-					playerRDG.getUsername(),
-					""
-			);
+			GameBoard gameBoard = GameMapper.buildGameBoard(game);
+			User player = null;
+			Deck deck = null;
 			
-			List<CardInPlayRDG> playerCardsInPlayRDGs = CardInPlayRDG.findByGameAndPlayer(
-					gameRDG.getId(), playerRDG.getId()
-			);
-			
-			DeckRDG playerDeckRDG = DeckRDG.findByPlayer(playerRDG.getId());
-			DeckHelper playerDeck = new DeckHelper(playerDeckRDG.getId(), player);
-			
-			List<CardRDG> playerCardRDGs = CardRDG.findByDeck(playerDeckRDG.getId());
-			List<CardHelper> playerCards = new ArrayList<CardHelper>();
-			
-			for (CardRDG playerCardRDG : playerCardRDGs) {
-				
-				CardHelper playerCard = new CardHelper(
-						playerCardRDG.getId(),
-						playerDeck,
-						playerCardRDG.getType(),
-						playerCardRDG.getName()
-				);
-				
-				playerCards.add(playerCard);
-				
+			if (userId == gameBoard.getChallenger().getId()) {
+				player = (User) gameBoard.getChallenger();
+				deck = (Deck) gameBoard.getChallengerDeck(); 
+			}
+			else if (userId == gameBoard.getChallengee().getId()) {
+				player = (User) gameBoard.getChallengee(); 
+				deck = (Deck) gameBoard.getChallengeeDeck();
 			}
 			
-			IntStream.range(0, playerCardsInPlayRDGs.size()).forEach($ -> playerCards.remove(0));
-			
-			if (playerCards.size() == 0) {
+			if (deck.getCards().size() == 0) {
 				failure(request, response, NO_MORE_CARDS);
 				return;
 			}
 			
-			CardHelper drawnCard = playerCards.remove(0);
-			
-			CardInPlayRDG drawnCardRDG = new CardInPlayRDG(
-					CardInPlayRDG.getMaxId(),
-					gameRDG.getId(),
-					playerId,
-					playerDeckRDG.getId(),
-					drawnCard.getId()
+			Card card = (Card) deck.getCards().remove(0);
+			CardInPlay cardInPlay = new CardInPlay(
+					CardInPlayTDG.getMaxId(),
+					game, player, deck, card,
+					CardStatus.hand.ordinal()
 			);
-			drawnCardRDG.insert();
 			
-			success(request, response, String.format(DRAW_SUCCESS, drawnCard.getType(), drawnCard.getName()));
+			CardInPlayMapper.insert(cardInPlay);
+			
+			success(request, response, String.format(DRAW_SUCCESS, card.getType(), card.getName()));
 			
 		}
 		catch (Exception e) {

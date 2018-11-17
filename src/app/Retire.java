@@ -6,10 +6,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dom.model.game.Game;
 import dom.model.game.GameStatus;
-import dom.model.game.rdg.GameRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.game.mapper.GameMapper;
+import dom.model.user.User;
+import dom.model.user.mapper.UserMapper;
 
 @WebServlet("/Retire")
 public class Retire extends PageController {
@@ -38,32 +39,27 @@ public class Retire extends PageController {
 				return;
 			}
 			
-			GameRDG gameRDG = getGame(request, response);
-			if (gameRDG == null) return;
+			Game game = getGame(request, response);
+			if (game == null) return;
 			
-			if (gameRDG.getStatus() != GameStatus.ongoing.ordinal()) {
+			if (game.getStatus() != GameStatus.ongoing.ordinal()) {
 				failure(request, response, GAME_ALREADY_ENDED);
 				return;
 			}
 			
 			long userId = getUserId(request);
-			UserRDG opponentRDG = null;
+			User opponent = null;
 			
-			if (userId == gameRDG.getChallenger()) {
-				gameRDG.setStatus(GameStatus.challengerRetired.ordinal());
-				opponentRDG = UserRDG.findById(gameRDG.getChallengee());
+			if (userId == game.getChallenger().getId()) {
+				game.setStatus(GameStatus.challengerRetired.ordinal());
+				opponent = UserMapper.findById(game.getChallengee().getId());
 			}
-			else if (userId == gameRDG.getChallengee()) {
-				gameRDG.setStatus(GameStatus.challengeeRetired.ordinal());
-				opponentRDG = UserRDG.findById(gameRDG.getChallenger());
+			else if (userId == game.getChallengee().getId()) {
+				game.setStatus(GameStatus.challengeeRetired.ordinal());
+				opponent = UserMapper.findById(game.getChallenger().getId());
 			}
 			
-			gameRDG.update();
-			
-			UserHelper opponent = new UserHelper(
-					opponentRDG.getId(), opponentRDG.getVersion(), opponentRDG.getUsername(), ""
-			);
-			
+			GameMapper.update(game);
 			success(request, response, String.format(RETIRE_SUCCESS, opponent.getUsername()));
 			
 		}

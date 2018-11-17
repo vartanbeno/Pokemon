@@ -9,8 +9,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.card.rdg.CardRDG;
-import dom.model.deck.rdg.DeckRDG;
+import dom.model.card.Card;
+import dom.model.card.ICard;
+import dom.model.card.tdg.CardTDG;
+import dom.model.deck.Deck;
+import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.tdg.DeckTDG;
+import dom.model.user.User;
+import dom.model.user.mapper.UserMapper;
 
 @WebServlet("/UploadDeck")
 public class UploadDeck extends PageController {
@@ -38,10 +44,10 @@ public class UploadDeck extends PageController {
 				return;
 			}
 				
-			DeckRDG deck = DeckRDG.findByPlayer(getUserId(request));
+			Deck deck = DeckMapper.findByPlayer(getUserId(request));
 			
 			if (deck == null) {
-				request.setAttribute("numberOfCards", CardRDG.getNumberOfCardsPerDeck());
+				request.setAttribute("numberOfCards", CardTDG.getNumberOfCardsPerDeck());
 				request.getRequestDispatcher(Global.UPLOAD_DECK_FORM).forward(request, response);
 			}
 			else {
@@ -67,8 +73,8 @@ public class UploadDeck extends PageController {
 				return;
 			}
 			
-			long player = getUserId(request);
-			DeckRDG deck = DeckRDG.findByPlayer(player);
+			User player = UserMapper.findById(getUserId(request));
+			Deck deck = DeckMapper.findByPlayer(player.getId());
 			
 			if (deck != null) {
 				failure(request, response, DECK_FAIL_MESSAGE);
@@ -80,24 +86,23 @@ public class UploadDeck extends PageController {
 			 * We make sure to trim the String, i.e. delete leftmost and rightmost spaces/newlines.
 			 * Then, we get the cards by splitting by newline.
 			 */
-			String cards[] = request.getParameter("deck").replace("\r", "").trim().split("\n");
+			String cardsArray[] = request.getParameter("deck").replace("\r", "").trim().split("\n");
 			
-			if (cards.length != CardRDG.getNumberOfCardsPerDeck()) {
-				failure(request, response, String.format(CARDS_FAIL_MESSAGE, cards.length, CardRDG.getNumberOfCardsPerDeck()));
+			if (cardsArray.length != CardTDG.getNumberOfCardsPerDeck()) {
+				failure(request, response, String.format(CARDS_FAIL_MESSAGE, cardsArray.length, CardTDG.getNumberOfCardsPerDeck()));
 			}
 			else {
 				
-				boolean deckIsValid = true;
+				List<ICard> cards = new ArrayList<ICard>();
+				deck = new Deck(DeckTDG.getMaxId(), player, cards);
 				
-				CardSpec cardSpec = null;
-				List<CardSpec> cardSpecs = new ArrayList<CardSpec>();
-				String type, name = "";
-				
-				for (String card : cards) {
+				for (String cardString : cardsArray) {
+					
+					String type, name = "";
 					
 					try {
-						type = card.substring(0, 1);
-						name = card.substring(3, card.length() - 1);
+						type = cardString.substring(0, 1);
+						name = cardString.substring(3, cardString.length() - 1);
 					}
 					catch (StringIndexOutOfBoundsException e) {
 						failure(request, response, FORMATTING_ERROR);
@@ -105,32 +110,19 @@ public class UploadDeck extends PageController {
 					}
 					
 					if (!type.equals("e") && !type.equals("p") && !type.equals("t")) {
-						deckIsValid = false;
-						break;
+						failure(request, response, CARD_TYPE_ERROR);
+						return;
 					}
 					
-					cardSpec = new CardSpec(type, name);
-					cardSpecs.add(cardSpec);
+					Card card = new Card(CardTDG.getMaxId(), deck.getId(), type, name);
+					cards.add(card);
 					
 				}
 				
-				if (deckIsValid) {
-					
-					deck = new DeckRDG(DeckRDG.getMaxId(), player);
-					deck.insert();
-					
-					CardRDG cardInDeck = null;
-					for (CardSpec card : cardSpecs) {
-						cardInDeck = new CardRDG(CardRDG.getMaxId(), deck.getId(), card.type, card.name);
-						cardInDeck.insert();
-					}
-					
-					success(request, response, DECK_SUCCESS_MESSAGE);
-					
-				}
-				else {
-					failure(request, response, CARD_TYPE_ERROR);
-				}
+				deck.setCards(cards);
+				DeckMapper.insert(deck);
+				
+				success(request, response, DECK_SUCCESS_MESSAGE);
 				
 			}
 				
@@ -141,18 +133,6 @@ public class UploadDeck extends PageController {
 		}
 		finally {
 			closeDb();
-		}
-		
-	}
-	
-	private class CardSpec {
-		
-		public String type;
-		public String name;
-		
-		public CardSpec(String type, String name) {
-			this.type = type;
-			this.name = name;
 		}
 		
 	}

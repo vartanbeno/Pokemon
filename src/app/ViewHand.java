@@ -1,7 +1,6 @@
 package app;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,15 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.card.CardHelper;
-import dom.model.card.rdg.CardRDG;
 import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.rdg.CardInPlayRDG;
-import dom.model.deck.DeckHelper;
-import dom.model.deck.rdg.DeckRDG;
-import dom.model.game.rdg.GameRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.cardinplay.ICardInPlay;
+import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.game.Game;
+import dom.model.user.User;
 
 @WebServlet("/ViewHand")
 public class ViewHand extends PageController {
@@ -39,29 +34,15 @@ public class ViewHand extends PageController {
 				return;
 			}
 			
-			GameRDG gameRDG = getGame(request, response);
-			if (gameRDG == null) return;
+			Game game = getGame(request, response);
+			if (game == null) return;
 			
-			UserRDG userRDG = UserRDG.findById(getUserId(request));
-			UserHelper user = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
+			long userId = getUserId(request);
+			User player = userId == game.getChallenger().getId() ? (User) game.getChallenger() : (User) game.getChallengee();
 			
-			DeckRDG deckRDG = DeckRDG.findByPlayer(userRDG.getId());
-			DeckHelper deck = new DeckHelper(deckRDG.getId(), user);
-			
-			List<CardInPlayRDG> handRDG = CardInPlayRDG.findByGameAndPlayerAndStatus(
-					gameRDG.getId(), userRDG.getId(), CardStatus.hand.ordinal()
+			List<ICardInPlay> hand = CardInPlayMapper.findByGameAndPlayerAndStatus(
+					game.getId(), player.getId(), CardStatus.hand.ordinal()
 			);
-			
-			List<CardHelper> hand = new ArrayList<CardHelper>();
-			
-			for (CardInPlayRDG cardInPlayRDG : handRDG) {
-				
-				CardRDG cardRDG = CardRDG.findById(cardInPlayRDG.getCard());
-				CardHelper card = new CardHelper(cardRDG.getId(), deck, cardRDG.getType(), cardRDG.getName());
-				
-				hand.add(card);
-				
-			}
 			
 			request.setAttribute("hand", hand);
 			request.getRequestDispatcher(Global.VIEW_HAND).forward(request, response);

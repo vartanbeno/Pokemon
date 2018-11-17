@@ -4,11 +4,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
+import dom.model.cardinplay.CardStatus;
+import dom.model.cardinplay.ICardInPlay;
+import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
+import dom.model.game.GameBoard;
 import dom.model.game.IGame;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.User;
@@ -122,11 +128,11 @@ public class GameMapper {
 		User challengee = challengeeRS.next() ? UserMapper.buildUser(challengeeRS) : null;
 		challengeeRS.close();
 		
-		ResultSet challengerDeckRS = DeckTDG.findById(rs.getLong("challengerDeck"));
+		ResultSet challengerDeckRS = DeckTDG.findById(rs.getLong("challenger_deck"));
 		Deck challengerDeck = challengerDeckRS.next() ? DeckMapper.buildDeck(challengerDeckRS) : null;
 		challengerDeckRS.close();
 		
-		ResultSet challengeeDeckRS = DeckTDG.findById(rs.getLong("challengeeDeck"));
+		ResultSet challengeeDeckRS = DeckTDG.findById(rs.getLong("challengee_deck"));
 		Deck challengeeDeck = challengeeDeckRS.next() ? DeckMapper.buildDeck(challengeeDeckRS) : null;
 		challengeeDeckRS.close();
 		
@@ -155,6 +161,64 @@ public class GameMapper {
 		rs.close();
 		
 		return games;
+		
+	}
+	
+	public static GameBoard buildGameBoard(Game game) throws SQLException {
+		
+		long gameId = game.getId();
+		int gameStatus = game.getStatus();
+		
+		User challenger = (User) game.getChallenger();
+		User challengee = (User) game.getChallengee();
+		Deck challengerDeck = (Deck) game.getChallengerDeck();
+		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
+		
+		ResultSet challengerHandRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengerHand = CardInPlayMapper.buildCardsInPlay(challengerHandRS);
+		challengerHandRS.close();
+		
+		ResultSet challengeeHandRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengeeHand = CardInPlayMapper.buildCardsInPlay(challengeeHandRS);
+		challengeeHandRS.close();
+		
+		ResultSet challengerBenchRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengerBench = CardInPlayMapper.buildCardsInPlay(challengerBenchRS);
+		challengerBenchRS.close();
+		
+		ResultSet challengeeBenchRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengeeBench = CardInPlayMapper.buildCardsInPlay(challengeeBenchRS);
+		challengeeBenchRS.close();
+		
+		ResultSet challengerDiscardedRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengerDiscarded = CardInPlayMapper.buildCardsInPlay(challengerDiscardedRS);
+		challengerDiscardedRS.close();
+		
+		ResultSet challengeeDiscardedRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengeeDiscarded = CardInPlayMapper.buildCardsInPlay(challengeeDiscardedRS);
+		challengeeDiscardedRS.close();
+		
+		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
+		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size();
+		
+		/**
+		 * We make sure to remove X number of cards from the 40-card deck.
+		 * Decks are always so it's just a matter of removing the first one X times.
+		 * i.e. if we have 13 cards in play, we remove 13 cards from the top.
+		 * So now we have 27 cards left.
+		 */
+		IntStream.range(0, challengerCardsNotInDeck).forEach($ -> challengerDeck.getCards().remove(0));
+		IntStream.range(0, challengeeCardsNotInDeck).forEach($ -> challengeeDeck.getCards().remove(0));
+		
+		return new GameBoard(
+				gameId,
+				challenger, challengee,
+				challengerDeck, challengeeDeck,
+				challengerHand, challengeeHand,
+				challengerBench, challengeeBench,
+				challengerDiscarded, challengeeDiscarded,
+				gameStatus
+		);
 		
 	}
 

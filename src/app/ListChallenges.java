@@ -1,7 +1,6 @@
 package app;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,10 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.challenge.ChallengeHelper;
-import dom.model.challenge.rdg.ChallengeRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.challenge.IChallenge;
+import dom.model.challenge.mapper.ChallengeMapper;
 
 @WebServlet("/ListChallenges")
 public class ListChallenges extends PageController {
@@ -34,37 +31,7 @@ public class ListChallenges extends PageController {
 				return;
 			}
 			
-			List<ChallengeRDG> challengeRDGs = ChallengeRDG.findAll();
-			List<ChallengeHelper> challenges = new ArrayList<ChallengeHelper>();
-			
-			for (ChallengeRDG challengeRDG : challengeRDGs) {
-				
-				UserRDG userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
-				UserHelper challenger = new UserHelper(
-						userRDGChallenger.getId(),
-						userRDGChallenger.getVersion(),
-						userRDGChallenger.getUsername(),
-						""
-				);
-				
-				UserRDG userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
-				UserHelper challengee = new UserHelper(
-						userRDGChallengee.getId(),
-						userRDGChallengee.getVersion(),
-						userRDGChallengee.getUsername(),
-						""
-				);
-				
-				ChallengeHelper challenge = new ChallengeHelper(
-						challengeRDG.getId(),
-						challenger,
-						challengee,
-						challengeRDG.getStatus()
-				);
-				
-				challenges.add(challenge);
-				
-			}
+			List<IChallenge> challenges = ChallengeMapper.findAll();
 			
 			request.setAttribute("challenges", challenges);
 			request.getRequestDispatcher(Global.LIST_CHALLENGES).forward(request, response);

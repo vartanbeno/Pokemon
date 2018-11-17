@@ -1,7 +1,6 @@
 package app;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,12 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.deck.DeckHelper;
-import dom.model.deck.rdg.DeckRDG;
-import dom.model.game.GameHelper;
-import dom.model.game.rdg.GameRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.game.IGame;
+import dom.model.game.mapper.GameMapper;
 
 @WebServlet("/ListGames")
 public class ListGames extends PageController {
@@ -36,43 +31,7 @@ public class ListGames extends PageController {
 				return;
 			}
 			
-			List<GameRDG> gameRDGs = GameRDG.findAll();
-			List<GameHelper> games = new ArrayList<GameHelper>();
-			
-			for (GameRDG gameRDG : gameRDGs) {
-				
-				UserRDG challengerRDG = UserRDG.findById(gameRDG.getChallenger());
-				UserHelper challenger = new UserHelper(
-						challengerRDG.getId(),
-						challengerRDG.getVersion(),
-						challengerRDG.getUsername(),
-						""
-				);
-				
-				UserRDG challengeeRDG = UserRDG.findById(gameRDG.getChallengee());
-				UserHelper challengee = new UserHelper(
-						challengeeRDG.getId(),
-						challengeeRDG.getVersion(),
-						challengeeRDG.getUsername(),
-						""
-				);
-				
-				DeckRDG challengerDeckRDG = DeckRDG.findByPlayer(gameRDG.getChallenger());
-				DeckHelper challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
-				
-				DeckRDG challengeeDeckRDG = DeckRDG.findByPlayer(gameRDG.getChallengee());
-				DeckHelper challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
-				
-				GameHelper game = new GameHelper(
-						gameRDG.getId(),
-						challenger, challengee,
-						challengerDeck, challengeeDeck,
-						gameRDG.getStatus()
-				);
-				
-				games.add(game);
-				
-			}
+			List<IGame> games = GameMapper.findAll();
 			
 			request.setAttribute("games", games);
 			request.getRequestDispatcher(Global.LIST_GAMES).forward(request, response);

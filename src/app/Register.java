@@ -7,7 +7,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.user.rdg.UserRDG;
+import dom.model.user.User;
+import dom.model.user.mapper.UserMapper;
+import dom.model.user.tdg.UserTDG;
 
 @WebServlet("/Register")
 public class Register extends PageController {
@@ -30,25 +32,24 @@ public class Register extends PageController {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
-			
-			UserRDG userRDG = null;
-			
+						
 			String username = request.getParameter("user");
 			String password = request.getParameter("pass");
+			
+			User user = UserMapper.findByUsername(username);
 			
 			if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
 				failure(request, response, ENTER_USER_AND_PASS);
 			}
-			else if ((userRDG = UserRDG.findByUsername(username)) != null) {
+			else if (user != null) {
 				failure(request, response, String.format(USERNAME_TAKEN, username));
 			}
 			else {
-				userRDG = new UserRDG(UserRDG.getMaxId(), 1, username, password);
-				userRDG.insert();
-				request.getSession(true).setAttribute("userid", userRDG.getId());
-				success(request, response, String.format(REGISTRATION_SUCCESS, userRDG.getUsername()));
+				user = new User(UserTDG.getMaxId(), 1, username, password);
+				UserMapper.insert(user);
+				request.getSession(true).setAttribute("userid", user.getId());
+				success(request, response, String.format(REGISTRATION_SUCCESS, user.getUsername()));
 			}
-				
 			
 		}
 		catch (Exception e) {

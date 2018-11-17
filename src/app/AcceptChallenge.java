@@ -7,14 +7,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.challenge.ChallengeHelper;
+import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.rdg.ChallengeRDG;
-import dom.model.deck.DeckHelper;
-import dom.model.deck.rdg.DeckRDG;
-import dom.model.game.rdg.GameRDG;
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.deck.Deck;
+import dom.model.deck.mapper.DeckMapper;
+import dom.model.game.Game;
+import dom.model.game.GameStatus;
+import dom.model.game.mapper.GameMapper;
+import dom.model.game.tdg.GameTDG;
 
 @WebServlet("/AcceptChallenge")
 public class AcceptChallenge extends PageController {
@@ -44,51 +45,33 @@ public class AcceptChallenge extends PageController {
 			}
 			
 			long userId = getUserId(request);
-			DeckRDG deck = DeckRDG.findByPlayer(userId);
+			Deck challengeeDeck = DeckMapper.findByPlayer(userId);
 			
-			if (deck == null) {
+			if (challengeeDeck == null) {
 				failure(request, response, NO_DECK);
 				return;
 			}
 				
-			ChallengeRDG challengeRDG = getChallengeToAccept(request, response);
-			if (challengeRDG == null) return;
+			Challenge challenge = getChallengeToAccept(request, response);
+			if (challenge == null) return;
 			
-			UserRDG userRDGChallenger = UserRDG.findById(challengeRDG.getChallenger());
-			UserRDG userRDGChallengee = UserRDG.findById(challengeRDG.getChallengee());
+			Deck challengerDeck = DeckMapper.findByPlayer(challenge.getChallenger().getId());
 			
-			UserHelper challenger = new UserHelper(
-					userRDGChallenger.getId(), userRDGChallenger.getVersion(), userRDGChallenger.getUsername(), ""
-			);
-			
-			DeckRDG challengerDeckRDG = DeckRDG.findByPlayer(challenger.getId());
-			DeckHelper challengerDeck = new DeckHelper(challengerDeckRDG.getId(), challenger);
-			
-			UserHelper challengee = new UserHelper(
-					userRDGChallengee.getId(), userRDGChallengee.getVersion(), userRDGChallengee.getUsername(), ""
-			);
-			
-			DeckRDG challengeeDeckRDG = DeckRDG.findByPlayer(challengee.getId());
-			DeckHelper challengeeDeck = new DeckHelper(challengeeDeckRDG.getId(), challengee);
-			
-			ChallengeHelper challenge = new ChallengeHelper(
-					challengeRDG.getId(), challenger, challengee, challengeRDG.getStatus()
-			);
-			
-			if (challengeRDG.getChallengee() == userId) {
+			if (challenge.getChallengee().getId() == userId) {
 				
-				challengeRDG.setStatus(ChallengeStatus.accepted.ordinal());
+				challenge.setStatus(ChallengeStatus.accepted.ordinal());
 				
-				GameRDG gameRDG = new GameRDG(
-						GameRDG.getMaxId(),
-						challenger.getId(),
-						challengee.getId(),
-						challengerDeck.getId(),
-						challengeeDeck.getId()
+				Game game = new Game(
+						GameTDG.getMaxId(),
+						challenge.getChallenger(),
+						challenge.getChallengee(),
+						challengerDeck,
+						challengeeDeck,
+						GameStatus.ongoing.ordinal()
 				);
 				
-				challengeRDG.update();
-				gameRDG.insert();
+				ChallengeMapper.update(challenge);
+				GameMapper.insert(game);
 				
 				success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
 				

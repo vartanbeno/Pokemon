@@ -9,7 +9,7 @@ import java.sql.Statement;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.challenge.ChallengeStatus;
-import dom.model.user.rdg.UserRDG;
+import dom.model.user.tdg.UserTDG;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class ChallengeTDG {
 			+ "PRIMARY KEY (id),"
 			+ "FOREIGN KEY (challenger) REFERENCES %2$s (id),"
 			+ "FOREIGN KEY (challengee) REFERENCES %2$s (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, UserRDG.getTableName());
+			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
@@ -101,10 +101,7 @@ public class ChallengeTDG {
 		
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findById(long id) throws SQLException {
@@ -113,10 +110,7 @@ public class ChallengeTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByChallenger(long challenger) throws SQLException {
@@ -125,10 +119,7 @@ public class ChallengeTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGER);
 		ps.setLong(1, challenger);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByChallengee(long challengee) throws SQLException {
@@ -137,10 +128,7 @@ public class ChallengeTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGEE);
 		ps.setLong(1, challengee);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findOpenById(long id) throws SQLException {
@@ -149,10 +137,7 @@ public class ChallengeTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findOpenByChallenger(long challenger) throws SQLException {
@@ -161,10 +146,7 @@ public class ChallengeTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGER);
 		ps.setLong(1, challenger);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findOpenByChallengee(long challengee) throws SQLException {
@@ -173,10 +155,7 @@ public class ChallengeTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGEE);
 		ps.setLong(1, challengee);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findOpenByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
@@ -186,10 +165,7 @@ public class ChallengeTDG {
 		ps.setLong(1, challenger);
 		ps.setLong(2, challengee);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long challenger, long challengee) throws SQLException {

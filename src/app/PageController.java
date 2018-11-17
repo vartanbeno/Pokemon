@@ -13,12 +13,16 @@ import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 
-import dom.model.card.rdg.CardRDG;
-import dom.model.cardinplay.rdg.CardInPlayRDG;
-import dom.model.challenge.rdg.ChallengeRDG;
-import dom.model.deck.rdg.DeckRDG;
-import dom.model.game.rdg.GameRDG;
-import dom.model.user.rdg.UserRDG;
+import dom.model.card.tdg.CardTDG;
+import dom.model.cardinplay.tdg.CardInPlayTDG;
+import dom.model.challenge.Challenge;
+import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.tdg.ChallengeTDG;
+import dom.model.deck.tdg.DeckTDG;
+import dom.model.game.Game;
+import dom.model.game.mapper.GameMapper;
+import dom.model.game.tdg.GameTDG;
+import dom.model.user.tdg.UserTDG;
 
 /**
  * 
@@ -93,12 +97,12 @@ public class PageController extends HttpServlet {
     
     public static void createTables() {
     	try {
-    		UserRDG.createTable();
-			ChallengeRDG.createTable();
-			DeckRDG.createTable();
-			CardRDG.createTable();
-			GameRDG.createTable();
-			CardInPlayRDG.createTable();
+    		UserTDG.createTable();
+			ChallengeTDG.createTable();
+			DeckTDG.createTable();
+			CardTDG.createTable();
+			GameTDG.createTable();
+			CardInPlayTDG.createTable();
     	}
     	catch (Exception e) {
 			e.printStackTrace();
@@ -107,12 +111,12 @@ public class PageController extends HttpServlet {
     
     public static void dropTables() {
     	try {
-    		CardInPlayRDG.dropTable();
-			GameRDG.dropTable();
-			CardRDG.dropTable();
-			DeckRDG.dropTable();
-			ChallengeRDG.dropTable();
-			UserRDG.dropTable();
+    		CardInPlayTDG.dropTable();
+			GameTDG.dropTable();
+			CardTDG.dropTable();
+			DeckTDG.dropTable();
+			ChallengeTDG.dropTable();
+			UserTDG.dropTable();
     	}
     	catch (Exception e) { }
     }
@@ -145,23 +149,23 @@ public class PageController extends HttpServlet {
 		
 	}
 	
-	protected ChallengeRDG getChallengeToAccept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected Challenge getChallengeToAccept(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
 			long challengeId = Long.parseLong(request.getParameter("challenge"));
 			long userId = getUserId(request);
 			
-			ChallengeRDG challenge = ChallengeRDG.findById(challengeId);
+			Challenge challenge = ChallengeMapper.findById(challengeId);
 			
 			if (challenge == null) {
 				failure(request, response, ACCEPT_CHALLENGE_DOES_NOT_EXIST);
 			}
-			else if (userId == challenge.getChallenger()) {
+			else if (userId == challenge.getChallenger().getId()) {
 				challenge = null;
 				failure(request, response, ACCEPT_CHALLENGE_SAME_ID);
 			}
-			else if (userId != challenge.getChallenger() && userId != challenge.getChallengee()) {
+			else if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId()) {
 				challenge = null;
 				failure(request, response, NOT_PART_OF_CHALLENGE);
 			}
@@ -180,19 +184,19 @@ public class PageController extends HttpServlet {
 		
 	}
 	
-	protected ChallengeRDG getChallengeToRefuseOrWithdraw(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected Challenge getChallengeToRefuseOrWithdraw(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
 			long challengeId = Long.parseLong(request.getParameter("challenge"));
 			long userId = getUserId(request);
 			
-			ChallengeRDG challenge = ChallengeRDG.findById(challengeId);
+			Challenge challenge = ChallengeMapper.findById(challengeId);
 			
 			if (challenge == null) {
 				failure(request, response, REFUSE_CHALLENGE_DOES_NOT_EXIST);
 			}
-			else if (userId != challenge.getChallenger() && userId != challenge.getChallengee()) {
+			else if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId()) {
 				challenge = null;
 				failure(request, response, NOT_PART_OF_CHALLENGE);
 			}
@@ -211,19 +215,19 @@ public class PageController extends HttpServlet {
 		
 	}
 	
-	protected GameRDG getGame(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected Game getGame(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
 			
 			long gameId = Long.parseLong(request.getParameter("game"));
 			long userId = getUserId(request);
 			
-			GameRDG game = GameRDG.findById(gameId);
+			Game game = GameMapper.findById(gameId);
 			
 			if (game == null) {
 				failure(request, response, GAME_DOES_NOT_EXIST);
 			}
-			else if (userId != game.getChallenger() && userId != game.getChallengee()) {
+			else if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId()) {
 				game = null;
 				failure(request, response, NOT_YOUR_GAME);
 			}

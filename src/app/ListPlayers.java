@@ -1,7 +1,6 @@
 package app;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,8 +8,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.user.UserHelper;
-import dom.model.user.rdg.UserRDG;
+import dom.model.user.IUser;
+import dom.model.user.mapper.UserMapper;
 
 @WebServlet("/ListPlayers")
 public class ListPlayers extends PageController {
@@ -32,13 +31,7 @@ public class ListPlayers extends PageController {
 				return;
 			}
 			
-			List<UserRDG> userRDGs = UserRDG.findAll();
-			List<UserHelper> players = new ArrayList<UserHelper>();
-			
-			for (UserRDG userRDG : userRDGs) {
-				UserHelper player = new UserHelper(userRDG.getId(), userRDG.getVersion(), userRDG.getUsername(), "");
-				players.add(player);
-			}
+			List<IUser> players = UserMapper.findAll();
 			
 			request.setAttribute("players", players);
 			request.getRequestDispatcher(Global.LIST_PLAYERS).forward(request, response);

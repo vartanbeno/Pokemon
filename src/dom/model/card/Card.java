@@ -1,15 +1,13 @@
 package dom.model.card;
 
-import dom.model.deck.IDeck;
-
 public class Card implements ICard {
 	
 	private long id;
-	private IDeck deck;
+	private long deck;
 	private String type;
 	private String name;
 	
-	public Card(long id, IDeck deck, String type, String name) {
+	public Card(long id, long deck, String type, String name) {
 		this.id = id;
 		this.deck = deck;
 		this.type = type;
@@ -22,12 +20,12 @@ public class Card implements ICard {
 	}
 
 	@Override
-	public IDeck getDeck() {
+	public long getDeck() {
 		return deck;
 	}
 
 	@Override
-	public void setDeck(IDeck deck) {
+	public void setDeck(long deck) {
 		this.deck = deck;
 	}
 

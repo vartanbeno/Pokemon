@@ -84,10 +84,7 @@ public class UserTDG {
 		
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findById(long id) throws SQLException {
@@ -96,10 +93,7 @@ public class UserTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByUsername(String username) throws SQLException {
@@ -108,10 +102,7 @@ public class UserTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_USERNAME);
 		ps.setString(1, username);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByUsernameAndPassword(String username, String password) throws SQLException {
@@ -121,10 +112,7 @@ public class UserTDG {
 		ps.setString(1, username);
 		ps.setString(2, password);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, int version, String username, String password) throws SQLException {

@@ -103,10 +103,7 @@ public class CardInPlayTDG {
 
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findById(long id) throws SQLException {
@@ -115,10 +112,7 @@ public class CardInPlayTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
 		ps.setLong(1, id);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByCard(long card) throws SQLException {
@@ -127,10 +121,7 @@ public class CardInPlayTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_CARD);
 		ps.setLong(1, card);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByGameAndPlayer(long game, long player) throws SQLException {
@@ -140,10 +131,7 @@ public class CardInPlayTDG {
 		ps.setLong(1, game);
 		ps.setLong(2, player);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static ResultSet findByGameAndPlayerAndStatus(long game, long player, int status) throws SQLException {
@@ -154,10 +142,7 @@ public class CardInPlayTDG {
 		ps.setLong(2, player);
 		ps.setLong(3, status);
 		
-		ResultSet rs = ps.executeQuery();
-		ps.close();
-		
-		return rs;
+		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long game, long player, long deck, long card) throws SQLException {
