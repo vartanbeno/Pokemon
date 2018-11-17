@@ -18,6 +18,8 @@ import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.challenge.Challenge;
 import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
+import dom.model.deck.Deck;
+import dom.model.deck.mapper.DeckMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameMapper;
@@ -54,6 +56,12 @@ public class PageController extends HttpServlet {
 	 * Accept/refuse/withdraw challenge fail messages.
 	 */
 	private static final String NOT_PART_OF_CHALLENGE = "You must be part of the challenge to accept/refuse/withdraw from it.";
+	
+	/**
+	 * Deck fail messages.
+	 */
+	private static final String WRONG_DECK_ID_FORMAT = "You must specify a deck ID in the correct format (a positive integer).";
+	private static final String DECK_DOES_NOT_EXIST = "The deck you specified does not exist.";
 	
 	/**
 	 * Game fail messages.
@@ -206,6 +214,32 @@ public class PageController extends HttpServlet {
 		}
 		catch (NumberFormatException e) {
 			failure(request, response, WRONG_CHALLENGE_ID_FORMAT);
+			return null;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	protected Deck getDeck(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			
+			long deckId = Long.parseLong(request.getParameter("deck"));
+			
+			Deck deck = DeckMapper.findById(deckId);
+			
+			if (deck == null) {
+				failure(request, response, DECK_DOES_NOT_EXIST);
+			}
+			
+			return deck;
+			
+		}
+		catch (NumberFormatException e) {
+			failure(request, response, WRONG_DECK_ID_FORMAT);
 			return null;
 		}
 		catch (SQLException e) {
