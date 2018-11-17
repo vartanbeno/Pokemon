@@ -9,7 +9,7 @@ import java.sql.Statement;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.challenge.ChallengeStatus;
-import dom.model.user.rdg.UserRDG;
+import dom.model.user.tdg.UserTDG;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class ChallengeTDG {
 			+ "PRIMARY KEY (id),"
 			+ "FOREIGN KEY (challenger) REFERENCES %2$s (id),"
 			+ "FOREIGN KEY (challengee) REFERENCES %2$s (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, UserRDG.getTableName());
+			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
