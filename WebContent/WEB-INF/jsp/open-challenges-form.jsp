@@ -18,6 +18,12 @@
 	
 	<form method="POST" action="${pageContext.request.contextPath}/AcceptChallenge">
 		<input type="hidden" name="challenge" value="${challenge.id}" />
+		<select name="deck" required>
+			<option value="" selected disabled>Choose a deck</option>
+			<c:forEach items="${decks}" var="deck">
+				<option value="${deck.id}">${deck.id}</option>
+			</c:forEach>
+		</select>
 		<button type="submit">Accept</button>
 	</form>
 	

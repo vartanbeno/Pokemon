@@ -2,6 +2,8 @@ package app;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +21,7 @@ import dom.model.challenge.Challenge;
 import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
+import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
@@ -106,8 +109,8 @@ public class PageController extends HttpServlet {
     public static void createTables() {
     	try {
     		UserTDG.createTable();
-			ChallengeTDG.createTable();
 			DeckTDG.createTable();
+			ChallengeTDG.createTable();
 			CardTDG.createTable();
 			GameTDG.createTable();
 			CardInPlayTDG.createTable();
@@ -122,8 +125,8 @@ public class PageController extends HttpServlet {
     		CardInPlayTDG.dropTable();
 			GameTDG.dropTable();
 			CardTDG.dropTable();
-			DeckTDG.dropTable();
 			ChallengeTDG.dropTable();
+			DeckTDG.dropTable();
 			UserTDG.dropTable();
     	}
     	catch (Exception e) { }
@@ -245,6 +248,20 @@ public class PageController extends HttpServlet {
 		catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+		
+	}
+	
+	protected List<IDeck> getMyDecks(HttpServletRequest request) throws ServletException, IOException {
+		
+		List<IDeck> decks = new ArrayList<IDeck>();
+		try {
+			decks = DeckMapper.findByPlayer(getUserId(request));
+			return decks;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return decks;
 		}
 		
 	}

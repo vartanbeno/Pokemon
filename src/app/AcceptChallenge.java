@@ -1,6 +1,7 @@
 package app;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.deck.Deck;
+import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckMapper;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
@@ -44,10 +46,9 @@ public class AcceptChallenge extends PageController {
 				return;
 			}
 			
-			long userId = getUserId(request);
-			Deck challengeeDeck = DeckMapper.findByPlayer(userId);
+			List<IDeck> challengeeDecks = getMyDecks(request);
 			
-			if (challengeeDeck == null) {
+			if (challengeeDecks.size() == 0) {
 				failure(request, response, NO_DECK);
 				return;
 			}
@@ -55,9 +56,12 @@ public class AcceptChallenge extends PageController {
 			Challenge challenge = getChallengeToAccept(request, response);
 			if (challenge == null) return;
 			
-			Deck challengerDeck = DeckMapper.findByPlayer(challenge.getChallenger().getId());
+			Deck challengeeDeck = getDeck(request, response);
+			if (challengeeDeck == null) return;
 			
-			if (challenge.getChallengee().getId() == userId) {
+			Deck challengerDeck = DeckMapper.findById(challenge.getChallengerDeck().getId());
+			
+			if (challenge.getChallengee().getId() == getUserId(request)) {
 				
 				challenge.setStatus(ChallengeStatus.accepted.ordinal());
 				

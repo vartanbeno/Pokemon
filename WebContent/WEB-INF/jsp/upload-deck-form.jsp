@@ -10,6 +10,7 @@
 <body>
 
  <h2>Upload a Deck</h2>
+ <p>You currently have ${numberOfDecks} deck(s).</p>
  <p>Upload a deck of ${numberOfCards} cards. One line per card.</p>
  
  <p>

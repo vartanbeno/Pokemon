@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.IChallenge;
 import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.deck.IDeck;
 
 @WebServlet("/OpenChallenges")
 public class OpenChallenges extends PageController {
@@ -30,14 +31,17 @@ public class OpenChallenges extends PageController {
 				failure(request, response, NOT_LOGGED_IN);
 				return;
 			}
-				
+			
 			long userId = getUserId(request);
 			
+			List<IDeck> decks = getMyDecks(request);
 			List<IChallenge> challengesAgainstMe = ChallengeMapper.findOpenByChallengee(userId);
 			List<IChallenge> challengesAgainstOthers = ChallengeMapper.findOpenByChallenger(userId);
 			
+			request.setAttribute("decks", decks);
 			request.setAttribute("challengesAgainstMe", challengesAgainstMe);
 			request.setAttribute("challengesAgainstOthers", challengesAgainstOthers);
+			
 			request.getRequestDispatcher(Global.OPEN_CHALLENGES_FORM).forward(request, response);
     		
     	}

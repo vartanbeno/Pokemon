@@ -24,7 +24,6 @@ public class UploadDeck extends PageController {
 	private static final long serialVersionUID = 1L;
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to upload a deck.";
-	private static final String DECK_FAIL_MESSAGE = "You already have a deck.";
 	private static final String CARDS_FAIL_MESSAGE = "You have %1$d card(s) in your deck. You must have %2$d.";
 	private static final String FORMATTING_ERROR = "Make sure to adhere to the required formatting for each card.";
 	private static final String CARD_TYPE_ERROR = "One or more of your cards had an invalid type. Please make sure it's one of e/p/t.";
@@ -44,15 +43,12 @@ public class UploadDeck extends PageController {
 				return;
 			}
 				
-			Deck deck = DeckMapper.findByPlayer(getUserId(request));
+			int numberOfDecks = DeckMapper.findByPlayer(getUserId(request)).size();
+			int numberOfCards = CardTDG.getNumberOfCardsPerDeck();
 			
-			if (deck == null) {
-				request.setAttribute("numberOfCards", CardTDG.getNumberOfCardsPerDeck());
-				request.getRequestDispatcher(Global.UPLOAD_DECK_FORM).forward(request, response);
-			}
-			else {
-				failure(request, response, DECK_FAIL_MESSAGE);
-			}
+			request.setAttribute("numberOfDecks", numberOfDecks);
+			request.setAttribute("numberOfCards", numberOfCards);
+			request.getRequestDispatcher(Global.UPLOAD_DECK_FORM).forward(request, response);
 			
 		}
 		catch (Exception e) {
@@ -74,12 +70,6 @@ public class UploadDeck extends PageController {
 			}
 			
 			User player = UserMapper.findById(getUserId(request));
-			Deck deck = DeckMapper.findByPlayer(player.getId());
-			
-			if (deck != null) {
-				failure(request, response, DECK_FAIL_MESSAGE);
-				return;
-			}
 			
 			/**
 			 * We delete carriage returns (\r) by replacing them with an empty String "".
@@ -94,7 +84,7 @@ public class UploadDeck extends PageController {
 			else {
 				
 				List<ICard> cards = new ArrayList<ICard>();
-				deck = new Deck(DeckTDG.getMaxId(), player, cards);
+				Deck deck = new Deck(DeckTDG.getMaxId(), player, cards);
 				
 				for (String cardString : cardsArray) {
 					

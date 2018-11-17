@@ -8,6 +8,9 @@ import java.util.List;
 import dom.model.challenge.Challenge;
 import dom.model.challenge.IChallenge;
 import dom.model.challenge.tdg.ChallengeTDG;
+import dom.model.deck.Deck;
+import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
 import dom.model.user.tdg.UserTDG;
@@ -103,7 +106,12 @@ public class ChallengeMapper {
 	}
 	
 	public static void insert(Challenge challenge) throws SQLException {
-		ChallengeTDG.insert(challenge.getId(), challenge.getChallenger().getId(), challenge.getChallengee().getId());
+		ChallengeTDG.insert(
+				challenge.getId(),
+				challenge.getChallenger().getId(),
+				challenge.getChallengee().getId(),
+				challenge.getChallengerDeck().getId()
+		);
 	}
 	
 	public static void update(Challenge challenge) throws SQLException {
@@ -124,11 +132,16 @@ public class ChallengeMapper {
 		User challengee = challengeeRS.next() ? UserMapper.buildUser(challengeeRS) : null;
 		challengeeRS.close();
 		
+		ResultSet challengerDeckRS = DeckTDG.findById(rs.getLong("challenger_deck"));
+		Deck challengerDeck = challengerDeckRS.next() ? DeckMapper.buildDeck(challengerDeckRS) : null;
+		challengerDeckRS.close();
+		
 		return new Challenge(
 				rs.getLong("id"),
 				challenger,
 				challengee,
-				rs.getInt("status")
+				rs.getInt("status"),
+				challengerDeck
 			);
 		
 	}

@@ -12,11 +12,22 @@
 <h2>Challenge a Player</h2>
 
 <form method="POST" autocomplete="off">
+
 	<label for="player">Challengee: </label>
 	<select name="player" required>
 		<option value="" selected disabled>Choose a player</option>
 		<c:forEach items="${users}" var="user">
 			<option value="${user.id}">${user.username}</option>
+		</c:forEach>
+	</select>
+	
+	<br>
+	
+	<label for="deck">Deck: </label>
+	<select name="deck" required>
+		<option value="" selected disabled>Choose a deck</option>
+		<c:forEach items="${decks}" var="deck">
+			<option value="${deck.id}">${deck.id}</option>
 		</c:forEach>
 	</select>
 	

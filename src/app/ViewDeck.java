@@ -8,17 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckMapper;
-import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
 
 @WebServlet("/ViewDeck")
 public class ViewDeck extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String NOT_LOGGED_IN = "You must be logged in to view your deck.";
-	private static final String NO_DECK = "You do not have a deck. Upload one!";
+	private static final String NOT_LOGGED_IN = "You must be logged in to view a deck.";
 	
        
     public ViewDeck() {
@@ -33,13 +29,8 @@ public class ViewDeck extends PageController {
 				return;
 			}
 			
-			User player = UserMapper.findById(getUserId(request));
-			Deck deck = DeckMapper.findByPlayer(player.getId());
-			
-			if (deck == null) {
-				failure(request, response, NO_DECK);
-				return;
-			}
+			Deck deck = getDeck(request, response);
+			if (deck == null) return;
 						
 			request.setAttribute("deck", deck);
 			request.getRequestDispatcher(Global.VIEW_DECK).forward(request, response);
