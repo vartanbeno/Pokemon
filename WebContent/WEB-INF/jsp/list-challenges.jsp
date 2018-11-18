@@ -7,6 +7,7 @@
 		<c:forEach items="${challenges}" var="challenge" varStatus="loop">
 			{
 				"id": ${challenge.id},
+				"version": ${challenge.version},
 				"challenger": ${challenge.challenger.id},
 				"challengee": ${challenge.challengee.id},
 				"status": ${challenge.status}
