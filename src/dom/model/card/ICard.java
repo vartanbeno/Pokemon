@@ -1,8 +1,8 @@
 package dom.model.card;
 
-public interface ICard {
-	
-	public long getId();
+import org.dsrg.soenea.domain.interf.IDomainObject;
+
+public interface ICard extends IDomainObject<Long> {
 	
 	public long getDeck();
 	public void setDeck(long deck);

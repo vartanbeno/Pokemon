@@ -56,7 +56,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 		DeckTDG.insert(deck.getId(), deck.getVersion(), deck.getPlayer().getId());
 		
 		for (ICard card : deck.getCards()) {
-			CardMapper.insert((Card) card);
+			CardMapper.insertStatic((Card) card);
 		}
 		
 	}
@@ -67,10 +67,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
 	public static void deleteStatic(Deck deck) throws SQLException {
 		
-		for (ICard card : deck.getCards()) {
-			CardMapper.delete((Card) card);
-		}
-		
+		CardMapper.deleteDeck(deck.getId());
 		DeckTDG.delete(deck.getId(), deck.getVersion());
 		
 	}

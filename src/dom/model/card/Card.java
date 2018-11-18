@@ -1,22 +1,18 @@
 package dom.model.card;
 
-public class Card implements ICard {
+import org.dsrg.soenea.domain.DomainObject;
+
+public class Card extends DomainObject<Long> implements ICard {
 	
-	private long id;
 	private long deck;
 	private String type;
 	private String name;
 	
-	public Card(long id, long deck, String type, String name) {
-		this.id = id;
+	public Card(long id, long version, long deck, String type, String name) {
+		super(id, version);
 		this.deck = deck;
 		this.type = type;
 		this.name = name;
-	}
-
-	@Override
-	public long getId() {
-		return id;
 	}
 
 	@Override
