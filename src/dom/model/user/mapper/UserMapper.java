@@ -11,6 +11,7 @@ import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.user.IUser;
 import dom.model.user.User;
+import dom.model.user.tdg.UserFinder;
 import dom.model.user.tdg.UserTDG;
 
 public class UserMapper extends GenericOutputMapper<Long, User> {
@@ -61,7 +62,7 @@ public class UserMapper extends GenericOutputMapper<Long, User> {
 	
 	public static List<IUser> findAll() throws SQLException {
 		
-		ResultSet rs = UserTDG.findAll();
+		ResultSet rs = UserFinder.findAll();
 		
 		List<IUser> users = buildUsers(rs);
 		rs.close();
@@ -72,7 +73,7 @@ public class UserMapper extends GenericOutputMapper<Long, User> {
 	
 	public static User findById(long id) throws SQLException {
 		
-		ResultSet rs = UserTDG.findById(id);
+		ResultSet rs = UserFinder.findById(id);
 		
 		User user = rs.next() ? buildUser(rs) : null;
 		rs.close();
@@ -83,7 +84,7 @@ public class UserMapper extends GenericOutputMapper<Long, User> {
 	
 	public static User findByUsername(String username) throws SQLException {
 		
-		ResultSet rs = UserTDG.findByUsername(username);
+		ResultSet rs = UserFinder.findByUsername(username);
 		
 		User user = rs.next() ? buildUser(rs) : null;
 		rs.close();
@@ -94,7 +95,7 @@ public class UserMapper extends GenericOutputMapper<Long, User> {
 	
 	public static User findByUsernameAndPassword(String username, String password) throws SQLException {
 		
-		ResultSet rs = UserTDG.findByUsernameAndPassword(username, password);
+		ResultSet rs = UserFinder.findByUsernameAndPassword(username, password);
 		
 		User user = rs.next() ? buildUser(rs) : null;
 		rs.close();
