@@ -11,13 +11,11 @@ import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
 import dom.model.card.Card;
 import dom.model.card.ICard;
 import dom.model.card.mapper.CardMapper;
-import dom.model.card.tdg.CardTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
-import dom.model.user.tdg.UserTDG;
 
 public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
@@ -107,13 +105,8 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
 	public static Deck buildDeck(ResultSet rs) throws SQLException {
 		
-		ResultSet playerRS = UserTDG.findById(rs.getLong("player"));
-		User player = playerRS.next() ? UserMapper.buildUser(playerRS) : null;
-		playerRS.close();
-		
-		ResultSet cardsRS = CardTDG.findByDeck(rs.getLong("id"));
-		List<ICard> cards = CardMapper.buildCards(cardsRS);
-		cardsRS.close();
+		User player = UserMapper.findById(rs.getLong("player"));
+		List<ICard> cards = CardMapper.findByDeck(rs.getLong("id"));
 		
 		return new Deck(rs.getLong("id"), rs.getLong("version"), player, cards);
 		
