@@ -35,10 +35,11 @@ public class GameTDG {
 	
 	private static final String TABLE_NAME = "games";
 	
-	private static final String COLUMNS = "id, challenger, challengee, challenger_deck, challengee_deck, status";
+	private static final String COLUMNS = "id, version, challenger, challengee, challenger_deck, challengee_deck, status";
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
+			+ "version BIGINT NOT NULL,"
 			+ "challenger BIGINT NOT NULL,"
 			+ "challengee BIGINT NOT NULL,"
 			+ "challenger_deck BIGINT NOT NULL,"
@@ -75,11 +76,12 @@ public class GameTDG {
 	private static final String FIND_BY_CHALLENGER_OR_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE challenger = ? OR challengee = ?;", COLUMNS, TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
-	private static final String UPDATE = String.format("UPDATE %1$s SET status = ? WHERE id = ?;", TABLE_NAME);
+	private static final String UPDATE = String.format("UPDATE %1$s SET status = ?, version = (version + 1) "
+			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
 	
-	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ?;", TABLE_NAME);
+	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
 	
 	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
 	private static long maxId = 0;
@@ -171,16 +173,17 @@ public class GameTDG {
 		return ps.executeQuery();
 	}
 	
-	public static int insert(long id, long challenger, long challengee, long challengerDeck, long challengeeDeck) throws SQLException {
+	public static int insert(long id, long version, long challenger, long challengee, long challengerDeck, long challengeeDeck) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
 		ps.setLong(1, id);
-		ps.setLong(2, challenger);
-		ps.setLong(3, challengee);
-		ps.setLong(4, challengerDeck);
-		ps.setLong(5, challengeeDeck);
-		ps.setInt(6, GameStatus.ongoing.ordinal());
+		ps.setLong(2, version);
+		ps.setLong(3, challenger);
+		ps.setLong(4, challengee);
+		ps.setLong(5, challengerDeck);
+		ps.setLong(6, challengeeDeck);
+		ps.setInt(7, GameStatus.ongoing.ordinal());
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -188,12 +191,13 @@ public class GameTDG {
 		return result;
 	}
 	
-	public static int update(int status, long id) throws SQLException {
+	public static int update(int status, long id, long version) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);
 		ps.setInt(1, status);
 		ps.setLong(2, id);
+		ps.setLong(3, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -201,11 +205,12 @@ public class GameTDG {
 		return result;
 	}
 	
-	public static int delete(long id) throws SQLException {
+	public static int delete(long id, long version) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
 		ps.setLong(1, id);
+		ps.setLong(2, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();

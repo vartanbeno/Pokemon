@@ -2,13 +2,13 @@ package dom.model.game;
 
 import java.util.List;
 
+import org.dsrg.soenea.domain.interf.IDomainObject;
+
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
-public interface IGameBoard {
-	
-	public long getId();
+public interface IGameBoard extends IDomainObject<Long> {
 	
 	public IUser getChallenger();
 	public void setChallenger(IUser challenger);

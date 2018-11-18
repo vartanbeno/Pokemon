@@ -1,30 +1,25 @@
 package dom.model.game;
 
+import org.dsrg.soenea.domain.DomainObject;
+
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
-public class Game implements IGame {
+public class Game extends DomainObject<Long> implements IGame {
 	
-	private long id;
 	private IUser challenger;
 	private IUser challengee;
 	private IDeck challengerDeck;
 	private IDeck challengeeDeck;
 	private int status;
 	
-	public Game(long id, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status) {
-		super();
-		this.id = id;
+	public Game(long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status) {
+		super(id, version);
 		this.challenger = challenger;
 		this.challengee = challengee;
 		this.challengerDeck = challengerDeck;
 		this.challengeeDeck = challengeeDeck;
 		this.status = status;
-	}
-
-	@Override
-	public long getId() {
-		return id;
 	}
 
 	@Override
