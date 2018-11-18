@@ -61,7 +61,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	}
 	
 	public static void updateStatic(Deck deck) throws SQLException, LostUpdateException {
-		int count = DeckTDG.update(deck.getPlayer().getId(), deck.getId(), deck.getVersion());
+		int count = DeckTDG.update(deck.getId(), deck.getVersion(), deck.getPlayer().getId());
 		if (count == 0) throw new LostUpdateException(String.format("Cannot update deck with id: %d.", deck.getId()));
 	}
 	

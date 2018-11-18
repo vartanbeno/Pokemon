@@ -161,7 +161,7 @@ public class CardInPlayTDG {
 		return result;
 	}
 	
-	public static int update(int status, long id, long version) throws SQLException {
+	public static int update(long id, long version, int status) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);

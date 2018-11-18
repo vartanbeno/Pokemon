@@ -50,7 +50,7 @@ public class CardMapper extends GenericOutputMapper<Long, Card> {
 	}
 	
 	public static void updateStatic(Card card) throws SQLException, LostUpdateException {
-		int count = CardTDG.update(card.getType(), card.getName(), card.getId(), card.getVersion());
+		int count = CardTDG.update(card.getId(), card.getVersion(), card.getType(), card.getName());
 		if (count == 0) throw new LostUpdateException(String.format("Cannot update card with id: %d.", card.getId()));
 	}
 	

@@ -50,7 +50,7 @@ public class UserMapper extends GenericOutputMapper<Long, User> {
 	}
 
 	public static void updateStatic(User user) throws SQLException, LostUpdateException {
-		int count = UserTDG.update(user.getUsername(), user.getPassword(), user.getId(), user.getVersion());
+		int count = UserTDG.update(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
 		if (count == 0) throw new LostUpdateException(String.format("Cannot update user with id: %d.", user.getId()));
 	}
 

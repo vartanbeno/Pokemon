@@ -130,7 +130,7 @@ public class UserTDG {
 		return result;
 	}
 	
-	public static int update(String username, String password, long id, long version) throws SQLException {
+	public static int update(long id, long version, String username, String password) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);
