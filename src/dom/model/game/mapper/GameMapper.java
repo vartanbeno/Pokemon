@@ -18,6 +18,7 @@ import dom.model.deck.mapper.DeckMapper;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.IGame;
+import dom.model.game.tdg.GameFinder;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
@@ -91,7 +92,7 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static List<IGame> findAll() throws SQLException {
 		
-		ResultSet rs = GameTDG.findAll();
+		ResultSet rs = GameFinder.findAll();
 		
 		List<IGame> games = buildGames(rs);
 		rs.close();
@@ -102,7 +103,7 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static Game findById(long id) throws SQLException {
 		
-		ResultSet rs = GameTDG.findById(id);
+		ResultSet rs = GameFinder.findById(id);
 		
 		Game game = rs.next() ? buildGame(rs) : null;
 		rs.close();
@@ -113,7 +114,7 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static List<IGame> findByStatus(int status) throws SQLException {
 		
-		ResultSet rs = GameTDG.findByStatus(status);
+		ResultSet rs = GameFinder.findByStatus(status);
 		
 		List<IGame> games = buildGames(rs);
 		rs.close();
@@ -124,7 +125,7 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static List<IGame> findByChallenger(long challenger) throws SQLException {
 		
-		ResultSet rs = GameTDG.findByChallenger(challenger);
+		ResultSet rs = GameFinder.findByChallenger(challenger);
 		
 		List<IGame> games = buildGames(rs);
 		rs.close();
@@ -135,7 +136,7 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static List<IGame> findByChallengee(long challengee) throws SQLException {
 		
-		ResultSet rs = GameTDG.findByChallengee(challengee);
+		ResultSet rs = GameFinder.findByChallengee(challengee);
 		
 		List<IGame> games = buildGames(rs);
 		rs.close();
@@ -146,7 +147,7 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static List<IGame> findByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
 		
-		ResultSet rs = GameTDG.findByChallengerAndChallengee(challenger, challengee);
+		ResultSet rs = GameFinder.findByChallengerAndChallengee(challenger, challengee);
 		
 		List<IGame> games = buildGames(rs);
 		rs.close();
@@ -157,7 +158,7 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static List<IGame> findByChallengerOrChallengee(long player) throws SQLException {
 		
-		ResultSet rs = GameTDG.findByChallengerOrChallengee(player);
+		ResultSet rs = GameFinder.findByChallengerOrChallengee(player);
 		
 		List<IGame> games = buildGames(rs);
 		rs.close();
