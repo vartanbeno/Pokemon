@@ -2,24 +2,20 @@ package dom.model.deck;
 
 import java.util.List;
 
+import org.dsrg.soenea.domain.DomainObject;
+
 import dom.model.card.ICard;
 import dom.model.user.IUser;
 
-public class Deck implements IDeck {
+public class Deck extends DomainObject<Long> implements IDeck {
 	
-	private long id;
 	private IUser player;
 	private List<ICard> cards;
 	
-	public Deck(long id, IUser player, List<ICard> cards) {
-		this.id = id;
+	public Deck(long id, long version, IUser player, List<ICard> cards) {
+		super(id, version);
 		this.player = player;
 		this.cards = cards;
-	}
-
-	@Override
-	public long getId() {
-		return id;
 	}
 
 	@Override

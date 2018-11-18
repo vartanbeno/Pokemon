@@ -7,7 +7,7 @@ public class User extends DomainObject<Long> implements IUser {
 	private String username;
 	private String password;
 	
-	public User(Long id, int version, String username, String password) {
+	public User(long id, long version, String username, String password) {
 		super(id, version);
 		this.username = username;
 		this.password = password;
