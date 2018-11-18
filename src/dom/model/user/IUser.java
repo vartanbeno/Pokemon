@@ -1,11 +1,8 @@
 package dom.model.user;
 
-public interface IUser {
-	
-	public long getId();
-	
-	public int getVersion();
-	public void setVersion(int version);
+import org.dsrg.soenea.domain.interf.IDomainObject;
+
+public interface IUser extends IDomainObject<Long> {
 	
 	public String getUsername();
 	public void setUsername(String username);

@@ -5,11 +5,56 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dsrg.soenea.domain.MapperException;
+import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+
 import dom.model.user.IUser;
 import dom.model.user.User;
 import dom.model.user.tdg.UserTDG;
 
-public class UserMapper {
+public class UserMapper extends GenericOutputMapper<Long, User> {
+	
+	@Override
+	public void insert(User user) throws MapperException {
+		try {
+			insertStatic(user);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void update(User user) throws MapperException {
+		try {
+			updateStatic(user);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void delete(User user) throws MapperException {
+		try {
+			deleteStatic(user);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+	
+	public static void insertStatic(User user) throws SQLException {
+		UserTDG.insert(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
+	}
+
+	public static void updateStatic(User user) throws SQLException {
+		UserTDG.update(user.getUsername(), user.getPassword(), user.getId(), user.getVersion());
+	}
+
+	public static void deleteStatic(User user) throws SQLException {
+		UserTDG.delete(user.getId(), user.getVersion());
+	}
 	
 	public static List<IUser> findAll() throws SQLException {
 		
@@ -53,18 +98,6 @@ public class UserMapper {
 
 		return user;
 		
-	}
-	
-	public static void insert(User user) throws SQLException {
-		UserTDG.insert(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
-	}
-	
-	public static void update(User user) throws SQLException {
-		UserTDG.update(user.getUsername(), user.getPassword(), user.getId(), user.getVersion());
-	}
-	
-	public static void delete(User user) throws SQLException {
-		UserTDG.delete(user.getId(), user.getVersion());
 	}
 	
 	public static User buildUser(ResultSet rs) throws SQLException {

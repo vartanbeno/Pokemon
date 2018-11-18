@@ -46,7 +46,7 @@ public class Register extends PageController {
 			}
 			else {
 				user = new User(UserTDG.getMaxId(), 1, username, password);
-				UserMapper.insert(user);
+				UserMapper.insertStatic(user);
 				request.getSession(true).setAttribute("userid", user.getId());
 				success(request, response, String.format(REGISTRATION_SUCCESS, user.getUsername()));
 			}

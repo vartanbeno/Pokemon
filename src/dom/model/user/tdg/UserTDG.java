@@ -115,12 +115,12 @@ public class UserTDG {
 		return ps.executeQuery();
 	}
 	
-	public static int insert(long id, int version, String username, String password) throws SQLException {
+	public static int insert(long id, long version, String username, String password) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
 		ps.setLong(1, id);
-		ps.setInt(2, version);
+		ps.setLong(2, version);
 		ps.setString(3, username);
 		ps.setString(4, password);
 		
@@ -130,14 +130,14 @@ public class UserTDG {
 		return result;
 	}
 	
-	public static int update(String username, String password, long id, int version) throws SQLException {
+	public static int update(String username, String password, long id, long version) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);
 		ps.setString(1, username);
 		ps.setString(2, password);
 		ps.setLong(3, id);
-		ps.setInt(4, version);
+		ps.setLong(4, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -145,12 +145,12 @@ public class UserTDG {
 		return result;
 	}
 	
-	public static int delete(long id, int version) throws SQLException {
+	public static int delete(long id, long version) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
 		ps.setLong(1, id);
-		ps.setInt(2, version);
+		ps.setLong(2, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();
