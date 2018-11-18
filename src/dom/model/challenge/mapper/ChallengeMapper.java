@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dsrg.soenea.domain.MapperException;
+import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+
 import dom.model.challenge.Challenge;
 import dom.model.challenge.IChallenge;
 import dom.model.challenge.tdg.ChallengeTDG;
@@ -15,7 +18,55 @@ import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
 import dom.model.user.tdg.UserTDG;
 
-public class ChallengeMapper {
+public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
+	
+	@Override
+	public void insert(Challenge challenge) throws MapperException {
+		try {
+			insertStatic(challenge);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void update(Challenge challenge) throws MapperException {
+		try {
+			updateStatic(challenge);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void delete(Challenge challenge) throws MapperException {
+		try {
+			deleteStatic(challenge);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+	
+	public static void insertStatic(Challenge challenge) throws SQLException {
+		ChallengeTDG.insert(
+				challenge.getId(),
+				challenge.getVersion(),
+				challenge.getChallenger().getId(),
+				challenge.getChallengee().getId(),
+				challenge.getChallengerDeck().getId()
+		);
+	}
+	
+	public static void updateStatic(Challenge challenge) throws SQLException {
+		ChallengeTDG.update(challenge.getStatus(), challenge.getId(), challenge.getVersion());
+	}
+	
+	public static void deleteStatic(Challenge challenge) throws SQLException {
+		ChallengeTDG.delete(challenge.getId(), challenge.getVersion());
+	}
 	
 	public static List<IChallenge> findAll() throws SQLException {
 		
@@ -105,23 +156,6 @@ public class ChallengeMapper {
 		
 	}
 	
-	public static void insert(Challenge challenge) throws SQLException {
-		ChallengeTDG.insert(
-				challenge.getId(),
-				challenge.getChallenger().getId(),
-				challenge.getChallengee().getId(),
-				challenge.getChallengerDeck().getId()
-		);
-	}
-	
-	public static void update(Challenge challenge) throws SQLException {
-		ChallengeTDG.update(challenge.getStatus(), challenge.getId());
-	}
-	
-	public static void delete(Challenge challenge) throws SQLException {
-		ChallengeTDG.delete(challenge.getId());
-	}
-	
 	public static Challenge buildChallenge(ResultSet rs) throws SQLException {
 		
 		ResultSet challengerRS = UserTDG.findById(rs.getLong("challenger"));
@@ -138,6 +172,7 @@ public class ChallengeMapper {
 		
 		return new Challenge(
 				rs.getLong("id"),
+				rs.getLong("version"),
 				challenger,
 				challengee,
 				rs.getInt("status"),

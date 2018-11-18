@@ -132,11 +132,12 @@ public class DeckTDG {
 		return result;
 	}
 	
-	public static int delete(long id) throws SQLException {
+	public static int delete(long id, long version) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
 		ps.setLong(1, id);
+		ps.setLong(2, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();

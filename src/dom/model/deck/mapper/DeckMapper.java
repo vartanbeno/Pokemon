@@ -71,7 +71,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 			CardMapper.delete((Card) card);
 		}
 		
-		DeckTDG.delete(deck.getId());
+		DeckTDG.delete(deck.getId(), deck.getVersion());
 		
 	}
 	

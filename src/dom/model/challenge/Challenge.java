@@ -1,27 +1,23 @@
 package dom.model.challenge;
 
+import org.dsrg.soenea.domain.DomainObject;
+
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
-public class Challenge implements IChallenge {
+public class Challenge extends DomainObject<Long> implements IChallenge {
 	
-	private long id;
 	private IUser challenger;
 	private IUser challengee;
 	private int status;
 	private IDeck challengerDeck;
 	
-	public Challenge(long id, IUser challenger, IUser challengee, int status, IDeck challengerDeck) {
-		this.id = id;
+	public Challenge(long id, long version, IUser challenger, IUser challengee, int status, IDeck challengerDeck) {
+		super(id, version);
 		this.challenger = challenger;
 		this.challengee = challengee;
 		this.status = status;
 		this.challengerDeck = challengerDeck;
-	}
-
-	@Override
-	public long getId() {
-		return id;
 	}
 
 	@Override
