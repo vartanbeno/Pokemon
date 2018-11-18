@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.card.Card;
 import dom.model.card.ICard;
@@ -59,15 +60,15 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 		
 	}
 	
-	public static void updateStatic(Deck deck) throws SQLException {
-		DeckTDG.update(deck.getPlayer().getId(), deck.getId(), deck.getVersion());
+	public static void updateStatic(Deck deck) throws SQLException, LostUpdateException {
+		int count = DeckTDG.update(deck.getPlayer().getId(), deck.getId(), deck.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update deck with id: %d.", deck.getId()));
 	}
 	
-	public static void deleteStatic(Deck deck) throws SQLException {
-		
+	public static void deleteStatic(Deck deck) throws SQLException, LostUpdateException {
+		int count = DeckTDG.delete(deck.getId(), deck.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot delete deck with id: %d.", deck.getId()));
 		CardMapper.deleteDeck(deck.getId());
-		DeckTDG.delete(deck.getId(), deck.getVersion());
-		
 	}
 	
 	public static List<IDeck> findAll() throws SQLException {

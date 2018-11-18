@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.IChallenge;
@@ -58,12 +59,14 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 		);
 	}
 	
-	public static void updateStatic(Challenge challenge) throws SQLException {
-		ChallengeTDG.update(challenge.getStatus(), challenge.getId(), challenge.getVersion());
+	public static void updateStatic(Challenge challenge) throws SQLException, LostUpdateException {
+		int count = ChallengeTDG.update(challenge.getStatus(), challenge.getId(), challenge.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update challenge with id: %d.", challenge.getId()));
 	}
 	
-	public static void deleteStatic(Challenge challenge) throws SQLException {
-		ChallengeTDG.delete(challenge.getId(), challenge.getVersion());
+	public static void deleteStatic(Challenge challenge) throws SQLException, LostUpdateException {
+		int count = ChallengeTDG.delete(challenge.getId(), challenge.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot delete challenge with id: %d.", challenge.getId()));
 	}
 	
 	public static List<IChallenge> findAll() throws SQLException {

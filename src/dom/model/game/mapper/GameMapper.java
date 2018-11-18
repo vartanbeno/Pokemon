@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
@@ -64,12 +65,14 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 		);
 	}
 	
-	public static void updateStatic(Game game) throws SQLException {
-		GameTDG.update(game.getStatus(), game.getId(), game.getVersion());
+	public static void updateStatic(Game game) throws SQLException, LostUpdateException {
+		int count = GameTDG.update(game.getStatus(), game.getId(), game.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update game with id: %d.", game.getId()));
 	}
 	
-	public static void deleteStatic(Game game) throws SQLException {
-		GameTDG.delete(game.getId(), game.getVersion());
+	public static void deleteStatic(Game game) throws SQLException, LostUpdateException {
+		int count = GameTDG.delete(game.getId(), game.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot delete game with id: %d.", game.getId()));
 	}
 	
 	public static List<IGame> findAll() throws SQLException {

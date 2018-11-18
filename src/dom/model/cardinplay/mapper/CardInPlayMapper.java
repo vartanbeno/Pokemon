@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.card.Card;
 import dom.model.card.mapper.CardMapper;
@@ -63,12 +64,14 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 		);
 	}
 	
-	public static void updateStatic(CardInPlay cardInPlay) throws SQLException {
-		CardInPlayTDG.update(cardInPlay.getStatus(), cardInPlay.getId(), cardInPlay.getVersion());
+	public static void updateStatic(CardInPlay cardInPlay) throws SQLException, LostUpdateException {
+		int count = CardInPlayTDG.update(cardInPlay.getStatus(), cardInPlay.getId(), cardInPlay.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update card in play with id: %d.", cardInPlay.getId()));
 	}
 	
-	public static void deleteStatic(CardInPlay cardInPlay) throws SQLException {
-		CardInPlayTDG.delete(cardInPlay.getId(), cardInPlay.getVersion());
+	public static void deleteStatic(CardInPlay cardInPlay) throws SQLException, LostUpdateException {
+		int count = CardInPlayTDG.delete(cardInPlay.getId(), cardInPlay.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot delete card in play with id: %d.", cardInPlay.getId()));
 	}
 	
 	public static List<ICardInPlay> findAll() throws SQLException {
