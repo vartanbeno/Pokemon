@@ -59,7 +59,7 @@ public class Retire extends PageController {
 				opponent = UserMapper.findById(game.getChallenger().getId());
 			}
 			
-			GameMapper.update(game);
+			GameMapper.updateStatic(game);
 			success(request, response, String.format(RETIRE_SUCCESS, opponent.getUsername()));
 			
 		}

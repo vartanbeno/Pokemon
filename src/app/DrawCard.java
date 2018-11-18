@@ -77,12 +77,12 @@ public class DrawCard extends PageController {
 			
 			Card card = (Card) deck.getCards().remove(0);
 			CardInPlay cardInPlay = new CardInPlay(
-					CardInPlayTDG.getMaxId(),
+					CardInPlayTDG.getMaxId(), 1,
 					game, player, deck, card,
 					CardStatus.hand.ordinal()
 			);
 			
-			CardInPlayMapper.insert(cardInPlay);
+			CardInPlayMapper.insertStatic(cardInPlay);
 			
 			success(request, response, String.format(DRAW_SUCCESS, card.getType(), card.getName()));
 			

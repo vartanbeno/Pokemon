@@ -49,12 +49,12 @@ public class RefuseChallenge extends PageController {
 			 */
 			if (challenge.getChallengee().getId() == userId) {
 				challenge.setStatus(ChallengeStatus.refused.ordinal());
-				ChallengeMapper.update(challenge);
+				ChallengeMapper.updateStatic(challenge);
 				success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
 			}
 			else if (challenge.getChallenger().getId() == userId) {
 				challenge.setStatus(ChallengeStatus.withdrawn.ordinal());
-				ChallengeMapper.update(challenge);
+				ChallengeMapper.updateStatic(challenge);
 				success(request, response, String.format(WITHDRAW_SUCCESS, challenge.getChallengee().getUsername()));
 			}
 			
