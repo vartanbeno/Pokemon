@@ -11,6 +11,7 @@ import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.card.Card;
 import dom.model.card.ICard;
+import dom.model.card.tdg.CardFinder;
 import dom.model.card.tdg.CardTDG;
 
 public class CardMapper extends GenericOutputMapper<Long, Card> {
@@ -65,7 +66,7 @@ public class CardMapper extends GenericOutputMapper<Long, Card> {
 	
 	public static Card findById(long id) throws SQLException {
 		
-		ResultSet rs = CardTDG.findById(id);
+		ResultSet rs = CardFinder.findById(id);
 		
 		Card card = rs.next() ? buildCard(rs) : null;
 		rs.close();
@@ -76,7 +77,7 @@ public class CardMapper extends GenericOutputMapper<Long, Card> {
 	
 	public static List<ICard> findByDeck(long deck) throws SQLException {
 		
-		ResultSet rs = CardTDG.findByDeck(deck);
+		ResultSet rs = CardFinder.findByDeck(deck);
 		
 		List<ICard> cards = buildCards(rs);
 		rs.close();

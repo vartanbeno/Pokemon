@@ -23,7 +23,7 @@ import dom.model.deck.tdg.DeckTDG;
  */
 public class CardTDG {
 	
-	private static final String TABLE_NAME = "cards";
+	private static final String TABLE_NAME = "Card";
 	
 	private static final String COLUMNS = "id, version, deck, type, name";
 	
@@ -42,12 +42,6 @@ public class CardTDG {
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
 	
-	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
-		
-	private static final String FIND_BY_DECK = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE deck = ? ORDER BY ID;", COLUMNS, TABLE_NAME);
-	
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
 	private static final String UPDATE = String.format("UPDATE %1$s SET type = ?, name = ?, version = (version + 1) "
@@ -62,6 +56,10 @@ public class CardTDG {
 	
 	public static String getTableName() {
 		return TABLE_NAME;
+	}
+	
+	public static String getColumns() {
+		return COLUMNS;
 	}
 	
 	public static int getNumberOfCardsPerDeck() {
@@ -85,24 +83,6 @@ public class CardTDG {
 		s = con.createStatement();
 		s.execute(DROP_TABLE);
 		s.close();
-	}
-	
-	public static ResultSet findById(long id) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
-		ps.setLong(1, id);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByDeck(long deck) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_DECK);
-		ps.setLong(1, deck);
-		
-		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long version, long deck, String type, String name) throws SQLException {
