@@ -117,7 +117,7 @@ public class DeckTDG {
 		return result;
 	}
 	
-	public static int update(long player, long id, long version) throws SQLException {
+	public static int update(long id, long version, long player) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);

@@ -121,7 +121,7 @@ public class CardTDG {
 		return result;
 	}
 	
-	public static int update(String type, String name, long id, long version) throws SQLException {
+	public static int update(long id, long version, String type, String name) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);

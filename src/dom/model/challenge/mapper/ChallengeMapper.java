@@ -60,7 +60,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	}
 	
 	public static void updateStatic(Challenge challenge) throws SQLException, LostUpdateException {
-		int count = ChallengeTDG.update(challenge.getStatus(), challenge.getId(), challenge.getVersion());
+		int count = ChallengeTDG.update(challenge.getId(), challenge.getVersion(), challenge.getStatus());
 		if (count == 0) throw new LostUpdateException(String.format("Cannot update challenge with id: %d.", challenge.getId()));
 	}
 	

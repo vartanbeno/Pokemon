@@ -77,6 +77,9 @@ public class GameTDG {
 	private static final String UPDATE = String.format("UPDATE %1$s SET status = ?, version = (version + 1) "
 			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
 	
+	private static final String UPDATE_VERSION = String.format("UPDATE %1$s SET version = (version + 1) "
+			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
+	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
 	
 	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
@@ -187,13 +190,26 @@ public class GameTDG {
 		return result;
 	}
 	
-	public static int update(int status, long id, long version) throws SQLException {
+	public static int update(long id, long version, int status) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);
 		ps.setInt(1, status);
 		ps.setLong(2, id);
 		ps.setLong(3, version);
+		
+		int result = ps.executeUpdate();
+		ps.close();
+		
+		return result;
+	}
+	
+	public static int updateVersion(long id, long version) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(UPDATE_VERSION);
+		ps.setLong(1, id);
+		ps.setLong(2, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();
