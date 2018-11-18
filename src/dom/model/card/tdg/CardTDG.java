@@ -25,12 +25,13 @@ public class CardTDG {
 	
 	private static final String TABLE_NAME = "cards";
 	
-	private static final String COLUMNS = "id, deck, type, name";
+	private static final String COLUMNS = "id, version, deck, type, name";
 	
 	private static final int CARDS_PER_DECK = 40;
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
+			+ "version BIGINT NOT NULL,"
 			+ "deck BIGINT NOT NULL,"
 			+ "type VARCHAR(1) NOT NULL,"
 			+ "name VARCHAR(30) NOT NULL,"
@@ -48,11 +49,14 @@ public class CardTDG {
 	private static final String FIND_BY_DECK = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE deck = ? ORDER BY ID;", COLUMNS, TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
-	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ?;", TABLE_NAME);
+	private static final String UPDATE = String.format("UPDATE %1$s SET type = ?, name = ?, version = (version + 1) "
+			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
 	
-	private static final String DELETE_DECK = String.format("DELETE FROM %1$s WHERE deck = ?;", TABLE_NAME);
+	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
+	
+	private static final String DELETE_DECK = String.format("DELETE FROM %1$s WHERE deck = ? AND version = ?;", TABLE_NAME);
 	
 	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
 	private static long maxId = 0;
@@ -102,14 +106,15 @@ public class CardTDG {
 		return ps.executeQuery();
 	}
 	
-	public static int insert(long id, long deck, String type, String name) throws SQLException {
+	public static int insert(long id, long version, long deck, String type, String name) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
 		ps.setLong(1, id);
-		ps.setLong(2, deck);
-		ps.setString(3, type);
-		ps.setString(4, name);
+		ps.setLong(2, version);
+		ps.setLong(3, deck);
+		ps.setString(4, type);
+		ps.setString(5, name);
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -117,11 +122,27 @@ public class CardTDG {
 		return result;
 	}
 	
-	public static int delete(long id) throws SQLException {
+	public static int update(String type, String name, long id, long version) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(UPDATE);
+		ps.setString(1, type);
+		ps.setString(2, name);
+		ps.setLong(3, id);
+		ps.setLong(4, version);
+		
+		int result = ps.executeUpdate();
+		ps.close();
+		
+		return result;
+	}
+	
+	public static int delete(long id, long version) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
 		ps.setLong(1, id);
+		ps.setLong(2, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();

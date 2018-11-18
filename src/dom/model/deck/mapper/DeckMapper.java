@@ -5,18 +5,70 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dsrg.soenea.domain.MapperException;
+import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+
 import dom.model.card.Card;
 import dom.model.card.ICard;
 import dom.model.card.mapper.CardMapper;
-import dom.model.card.tdg.CardTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
-import dom.model.user.tdg.UserTDG;
 
-public class DeckMapper {
+public class DeckMapper extends GenericOutputMapper<Long, Deck> {
+	
+	@Override
+	public void insert(Deck deck) throws MapperException {
+		try {
+			insertStatic(deck);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void update(Deck deck) throws MapperException {
+		try {
+			updateStatic(deck);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void delete(Deck deck) throws MapperException {
+		try {
+			deleteStatic(deck);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+	
+	public static void insertStatic(Deck deck) throws SQLException {
+		
+		DeckTDG.insert(deck.getId(), deck.getVersion(), deck.getPlayer().getId());
+		
+		for (ICard card : deck.getCards()) {
+			CardMapper.insertStatic((Card) card);
+		}
+		
+	}
+	
+	public static void updateStatic(Deck deck) throws SQLException {
+		DeckTDG.update(deck.getPlayer().getId(), deck.getId(), deck.getVersion());
+	}
+	
+	public static void deleteStatic(Deck deck) throws SQLException {
+		
+		CardMapper.deleteDeck(deck.getId());
+		DeckTDG.delete(deck.getId(), deck.getVersion());
+		
+	}
 	
 	public static List<IDeck> findAll() throws SQLException {
 		
@@ -51,37 +103,12 @@ public class DeckMapper {
 		
 	}
 	
-	public static void insert(Deck deck) throws SQLException {
-		
-		DeckTDG.insert(deck.getId(), deck.getPlayer().getId());
-		
-		for (ICard card : deck.getCards()) {
-			CardMapper.insert((Card) card);
-		}
-		
-	}
-	
-	public static void delete(Deck deck) throws SQLException {
-		
-		for (ICard card : deck.getCards()) {
-			CardMapper.delete((Card) card);
-		}
-		
-		DeckTDG.delete(deck.getId());
-		
-	}
-	
 	public static Deck buildDeck(ResultSet rs) throws SQLException {
 		
-		ResultSet playerRS = UserTDG.findById(rs.getLong("player"));
-		User player = playerRS.next() ? UserMapper.buildUser(playerRS) : null;
-		playerRS.close();
+		User player = UserMapper.findById(rs.getLong("player"));
+		List<ICard> cards = CardMapper.findByDeck(rs.getLong("id"));
 		
-		ResultSet cardsRS = CardTDG.findByDeck(rs.getLong("id"));
-		List<ICard> cards = CardMapper.buildCards(cardsRS);
-		cardsRS.close();
-		
-		return new Deck(rs.getLong("id"), player, cards);
+		return new Deck(rs.getLong("id"), rs.getLong("version"), player, cards);
 		
 	}
 	

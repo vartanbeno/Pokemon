@@ -110,7 +110,7 @@ public class PlayPokemonToBench extends PageController {
 			
 			if (card.getType().equals("p")) {
 				cardInHand.setStatus(CardStatus.benched.ordinal());
-				CardInPlayMapper.update(cardInHand);
+				CardInPlayMapper.updateStatic(cardInHand);
 				success(request, response, String.format(BENCH_SUCCESS, card.getName()));
 			}
 			else {

@@ -66,7 +66,7 @@ public class AcceptChallenge extends PageController {
 				challenge.setStatus(ChallengeStatus.accepted.ordinal());
 				
 				Game game = new Game(
-						GameTDG.getMaxId(),
+						GameTDG.getMaxId(), 1,
 						challenge.getChallenger(),
 						challenge.getChallengee(),
 						challengerDeck,
@@ -74,8 +74,8 @@ public class AcceptChallenge extends PageController {
 						GameStatus.ongoing.ordinal()
 				);
 				
-				ChallengeMapper.update(challenge);
-				GameMapper.insert(game);
+				ChallengeMapper.updateStatic(challenge);
+				GameMapper.insertStatic(game);
 				
 				success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
 				

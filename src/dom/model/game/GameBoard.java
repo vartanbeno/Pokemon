@@ -2,13 +2,13 @@ package dom.model.game;
 
 import java.util.List;
 
+import org.dsrg.soenea.domain.DomainObject;
+
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
-public class GameBoard implements IGameBoard {
-	
-	private long id;
+public class GameBoard extends DomainObject<Long> implements IGameBoard {
 	
 	private IUser challenger;
 	private IUser challengee;
@@ -28,7 +28,7 @@ public class GameBoard implements IGameBoard {
 	private int status;
 	
 	public GameBoard(
-			long id,
+			long id, Long version,
 			IUser challenger, IUser challengee,
 			IDeck challengerDeck, IDeck challengeeDeck,
 			List<ICardInPlay> challengerHand, List<ICardInPlay> challengeeHand,
@@ -36,7 +36,7 @@ public class GameBoard implements IGameBoard {
 			List<ICardInPlay> challengerDiscarded, List<ICardInPlay> challengeeDiscarded,
 			int status
 	) {
-		this.id = id;
+		super(id, version);
 		this.challenger = challenger;
 		this.challengee = challengee;
 		this.challengerDeck = challengerDeck;
@@ -48,11 +48,6 @@ public class GameBoard implements IGameBoard {
 		this.challengerDiscarded = challengerDiscarded;
 		this.challengeeDiscarded = challengeeDiscarded;
 		this.status = status;
-	}
-
-	@Override
-	public long getId() {
-		return id;
 	}
 
 	@Override

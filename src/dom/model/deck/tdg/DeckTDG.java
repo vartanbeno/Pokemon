@@ -25,10 +25,11 @@ public class DeckTDG {
 	
 	private static final String TABLE_NAME = "decks";
 	
-	private static final String COLUMNS = "id, player";
+	private static final String COLUMNS = "id, version, player";
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
+			+ "version BIGINT NOT NULL,"
 			+ "player BIGINT NOT NULL,"
 			+ "PRIMARY KEY (id),"
 			+ "FOREIGN KEY (player) REFERENCES %2$s (id)"
@@ -46,9 +47,12 @@ public class DeckTDG {
 	private static final String FIND_BY_PLAYER = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE player = ?;", COLUMNS, TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?);", TABLE_NAME, COLUMNS);
 	
-	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ?;", TABLE_NAME);
+	private static final String UPDATE = String.format("UPDATE %1$s SET player = ?, version = (version + 1) "
+			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
+	
+	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
 	
 	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
 	private static long maxId = 0;
@@ -100,12 +104,13 @@ public class DeckTDG {
 		return ps.executeQuery();
 	}
 	
-	public static int insert(long id, long player) throws SQLException {
+	public static int insert(long id, long version, long player) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
 		ps.setLong(1, id);
-		ps.setLong(2, player);
+		ps.setLong(2, version);
+		ps.setLong(3, player);
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -113,11 +118,26 @@ public class DeckTDG {
 		return result;
 	}
 	
-	public static int delete(long id) throws SQLException {
+	public static int update(long player, long id, long version) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(UPDATE);
+		ps.setLong(1, player);
+		ps.setLong(2, id);
+		ps.setLong(3, version);
+		
+		int result = ps.executeUpdate();
+		ps.close();
+		
+		return result;
+	}
+	
+	public static int delete(long id, long version) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(DELETE);
 		ps.setLong(1, id);
+		ps.setLong(2, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();

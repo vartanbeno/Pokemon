@@ -1,11 +1,11 @@
 package dom.model.game;
 
+import org.dsrg.soenea.domain.interf.IDomainObject;
+
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
-public interface IGame {
-	
-	public long getId();
+public interface IGame extends IDomainObject<Long> {
 	
 	public IUser getChallenger();
 	public void setChallenger(IUser challenger);

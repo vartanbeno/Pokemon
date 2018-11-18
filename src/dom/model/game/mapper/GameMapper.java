@@ -6,22 +6,71 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.dsrg.soenea.domain.MapperException;
+import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayMapper;
-import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
-import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.IGame;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
-import dom.model.user.tdg.UserTDG;
 
-public class GameMapper {
+public class GameMapper extends GenericOutputMapper<Long, Game> {
+	
+	@Override
+	public void insert(Game game) throws MapperException {
+		try {
+			insertStatic(game);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void update(Game game) throws MapperException {
+		try {
+			updateStatic(game);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+
+	@Override
+	public void delete(Game game) throws MapperException {
+		try {
+			deleteStatic(game);
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+	
+	public static void insertStatic(Game game) throws SQLException {
+		GameTDG.insert(
+				game.getId(),
+				game.getVersion(),
+				game.getChallenger().getId(),
+				game.getChallengee().getId(),
+				game.getChallengerDeck().getId(),
+				game.getChallengeeDeck().getId()
+		);
+	}
+	
+	public static void updateStatic(Game game) throws SQLException {
+		GameTDG.update(game.getStatus(), game.getId(), game.getVersion());
+	}
+	
+	public static void deleteStatic(Game game) throws SQLException {
+		GameTDG.delete(game.getId(), game.getVersion());
+	}
 	
 	public static List<IGame> findAll() throws SQLException {
 		
@@ -100,48 +149,18 @@ public class GameMapper {
 		
 	}
 	
-	public static void insert(Game game) throws SQLException {
-		GameTDG.insert(
-				game.getId(),
-				game.getChallenger().getId(),
-				game.getChallengee().getId(),
-				game.getChallengerDeck().getId(),
-				game.getChallengeeDeck().getId()
-		);
-	}
-	
-	public static void update(Game game) throws SQLException {
-		GameTDG.update(game.getStatus(), game.getId());
-	}
-	
-	public static void delete(Game game) throws SQLException {
-		GameTDG.delete(game.getId());
-	}
-	
 	public static Game buildGame(ResultSet rs) throws SQLException {
 		
-		ResultSet challengerRS = UserTDG.findById(rs.getLong("challenger"));
-		User challenger = challengerRS.next() ? UserMapper.buildUser(challengerRS) : null;
-		challengerRS.close();
-		
-		ResultSet challengeeRS = UserTDG.findById(rs.getLong("challengee"));
-		User challengee = challengeeRS.next() ? UserMapper.buildUser(challengeeRS) : null;
-		challengeeRS.close();
-		
-		ResultSet challengerDeckRS = DeckTDG.findById(rs.getLong("challenger_deck"));
-		Deck challengerDeck = challengerDeckRS.next() ? DeckMapper.buildDeck(challengerDeckRS) : null;
-		challengerDeckRS.close();
-		
-		ResultSet challengeeDeckRS = DeckTDG.findById(rs.getLong("challengee_deck"));
-		Deck challengeeDeck = challengeeDeckRS.next() ? DeckMapper.buildDeck(challengeeDeckRS) : null;
-		challengeeDeckRS.close();
+		User challenger = UserMapper.findById(rs.getLong("challenger"));
+		User challengee = UserMapper.findById(rs.getLong("challengee"));
+		Deck challengerDeck = DeckMapper.findById(rs.getLong("challenger_deck"));
+		Deck challengeeDeck = DeckMapper.findById(rs.getLong("challengee_deck"));
 		
 		return new Game(
 				rs.getLong("id"),
-				challenger,
-				challengee,
-				challengerDeck,
-				challengeeDeck,
+				rs.getLong("version"),
+				challenger, challengee,
+				challengerDeck, challengeeDeck,
 				rs.getInt("status")
 		);
 		
@@ -167,6 +186,7 @@ public class GameMapper {
 	public static GameBoard buildGameBoard(Game game) throws SQLException {
 		
 		long gameId = game.getId();
+		long gameVersion = game.getVersion();
 		int gameStatus = game.getStatus();
 		
 		User challenger = (User) game.getChallenger();
@@ -174,29 +194,12 @@ public class GameMapper {
 		Deck challengerDeck = (Deck) game.getChallengerDeck();
 		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
 		
-		ResultSet challengerHandRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengerHand = CardInPlayMapper.buildCardsInPlay(challengerHandRS);
-		challengerHandRS.close();
-		
-		ResultSet challengeeHandRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengeeHand = CardInPlayMapper.buildCardsInPlay(challengeeHandRS);
-		challengeeHandRS.close();
-		
-		ResultSet challengerBenchRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengerBench = CardInPlayMapper.buildCardsInPlay(challengerBenchRS);
-		challengerBenchRS.close();
-		
-		ResultSet challengeeBenchRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengeeBench = CardInPlayMapper.buildCardsInPlay(challengeeBenchRS);
-		challengeeBenchRS.close();
-		
-		ResultSet challengerDiscardedRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
-		List<ICardInPlay> challengerDiscarded = CardInPlayMapper.buildCardsInPlay(challengerDiscardedRS);
-		challengerDiscardedRS.close();
-		
-		ResultSet challengeeDiscardedRS = CardInPlayTDG.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
-		List<ICardInPlay> challengeeDiscarded = CardInPlayMapper.buildCardsInPlay(challengeeDiscardedRS);
-		challengeeDiscardedRS.close();
+		List<ICardInPlay> challengerHand = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengeeHand = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengerBench = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengeeBench = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengerDiscarded = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengeeDiscarded = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
 		
 		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
 		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size();
@@ -211,7 +214,7 @@ public class GameMapper {
 		IntStream.range(0, challengeeCardsNotInDeck).forEach($ -> challengeeDeck.getCards().remove(0));
 		
 		return new GameBoard(
-				gameId,
+				gameId, gameVersion,
 				challenger, challengee,
 				challengerDeck, challengeeDeck,
 				challengerHand, challengeeHand,

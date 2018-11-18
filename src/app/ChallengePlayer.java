@@ -112,14 +112,14 @@ public class ChallengePlayer extends PageController {
 			
 			if (challenge == null) {
 				challenge = new Challenge(
-						ChallengeTDG.getMaxId(),
+						ChallengeTDG.getMaxId(), 1,
 						UserMapper.findById(challengerId),
 						UserMapper.findById(challengeeId),
 						ChallengeStatus.open.ordinal(),
 						challengerDeck
 				);
 				try {
-					ChallengeMapper.insert(challenge);
+					ChallengeMapper.insertStatic(challenge);
 					success(request, response, String.format(CHALLENGE_SUCCESS, challenge.getChallengee().getUsername()));
 				}
 				catch (NullPointerException | SQLIntegrityConstraintViolationException e) {

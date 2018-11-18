@@ -1,13 +1,13 @@
 package dom.model.cardinplay;
 
+import org.dsrg.soenea.domain.interf.IDomainObject;
+
 import dom.model.card.ICard;
 import dom.model.deck.IDeck;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
 
-public interface ICardInPlay {
-	
-	public long getId();
+public interface ICardInPlay extends IDomainObject<Long> {
 	
 	public IGame getGame();
 	public void setGame(IGame game);

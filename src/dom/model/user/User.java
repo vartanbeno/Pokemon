@@ -1,32 +1,16 @@
 package dom.model.user;
 
-public class User implements IUser {
+import org.dsrg.soenea.domain.DomainObject;
+
+public class User extends DomainObject<Long> implements IUser {
 	
-	private long id;
-	private int version;
 	private String username;
 	private String password;
 	
-	public User(long id, int version, String username, String password) {
-		this.id = id;
-		this.version = version;
+	public User(long id, long version, String username, String password) {
+		super(id, version);
 		this.username = username;
 		this.password = password;
-	}
-	
-	@Override
-	public long getId() {
-		return id;
-	}
-	
-	@Override
-	public int getVersion() {
-		return version;
-	}
-	
-	@Override
-	public void setVersion(int version) {
-		this.version = version;
 	}
 	
 	@Override

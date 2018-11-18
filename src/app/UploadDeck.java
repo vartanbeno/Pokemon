@@ -84,7 +84,7 @@ public class UploadDeck extends PageController {
 			else {
 				
 				List<ICard> cards = new ArrayList<ICard>();
-				Deck deck = new Deck(DeckTDG.getMaxId(), player, cards);
+				Deck deck = new Deck(DeckTDG.getMaxId(), 1, player, cards);
 				
 				for (String cardString : cardsArray) {
 					
@@ -104,13 +104,13 @@ public class UploadDeck extends PageController {
 						return;
 					}
 					
-					Card card = new Card(CardTDG.getMaxId(), deck.getId(), type, name);
+					Card card = new Card(CardTDG.getMaxId(), 1, deck.getId(), type, name);
 					cards.add(card);
 					
 				}
 				
 				deck.setCards(cards);
-				DeckMapper.insert(deck);
+				DeckMapper.insertStatic(deck);
 				
 				success(request, response, DECK_SUCCESS_MESSAGE);
 				
