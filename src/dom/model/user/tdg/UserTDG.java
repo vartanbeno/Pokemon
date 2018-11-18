@@ -12,7 +12,7 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
  * 
  * UserTDG: User Table Data Gateway.
  * Points to the users table.
- * Provides methods to find, insert, update, and delete users.
+ * Provides methods to insert, update, and delete users.
  * 
  * Also includes create/truncate/drop queries.
  * 
@@ -21,7 +21,7 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
  */
 public class UserTDG {
 	
-	private static final String TABLE_NAME = "users";
+	private static final String TABLE_NAME = "User";
 	
 	private static final String COLUMNS = "id, version, username, password";
 	
@@ -36,15 +36,6 @@ public class UserTDG {
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
-	
-	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", COLUMNS, TABLE_NAME);
-
-	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s WHERE id = ?;", COLUMNS, TABLE_NAME);
-
-	private static final String FIND_BY_USERNAME = String.format("SELECT %1$s FROM %2$s WHERE username = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_USERNAME_AND_PASSWORD = String.format("SELECT %1$s "
-			+ "FROM %2$s WHERE username = ? AND password = SHA2(?, 256);", COLUMNS, TABLE_NAME);
 		
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, SHA2(?, 256));", TABLE_NAME, COLUMNS);
 	
@@ -58,6 +49,10 @@ public class UserTDG {
 	
 	public static String getTableName() {
 		return TABLE_NAME;
+	}
+	
+	public static String getColumns() {
+		return COLUMNS;
 	}
 	
 	public static void createTable() throws SQLException {
@@ -77,42 +72,6 @@ public class UserTDG {
 		s = con.createStatement();
 		s.execute(DROP_TABLE);
 		s.close();
-	}
-	
-	public static ResultSet findAll() throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_ALL);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findById(long id) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
-		ps.setLong(1, id);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByUsername(String username) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_USERNAME);
-		ps.setString(1, username);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByUsernameAndPassword(String username, String password) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_USERNAME_AND_PASSWORD);
-		ps.setString(1, username);
-		ps.setString(2, password);
-		
-		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long version, String username, String password) throws SQLException {

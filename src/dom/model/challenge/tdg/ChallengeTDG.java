@@ -25,7 +25,7 @@ import dom.model.user.tdg.UserTDG;
  */
 public class ChallengeTDG {
 	
-	private static final String TABLE_NAME = "challenges";
+	private static final String TABLE_NAME = "Challenge";
 	
 	private static final String COLUMNS = "id, version, challenger, challengee, status, challenger_deck";
 	
@@ -42,26 +42,6 @@ public class ChallengeTDG {
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
-	
-	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", COLUMNS, TABLE_NAME);
-
-	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s WHERE id = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_CHALLENGER = String.format("SELECT %1$s FROM %2$s WHERE challenger = ?;", COLUMNS, TABLE_NAME);
-
-	private static final String FIND_BY_CHALLENGEE = String.format("SELECT %1$s FROM %2$s WHERE challengee = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_OPEN_BY_ID = String.format("SELECT %1$s FROM %2$s WHERE id = ? AND status = %3$d;",
-			COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
-	
-	private static final String FIND_OPEN_BY_CHALLENGER = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE challenger = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
-
-	private static final String FIND_OPEN_BY_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE challengee = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
-	
-	private static final String FIND_OPEN_BY_CHALLENGER_AND_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE challenger = ? AND challengee = ? AND status = %3$d;", COLUMNS, TABLE_NAME, ChallengeStatus.open.ordinal());
 			
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
@@ -74,6 +54,10 @@ public class ChallengeTDG {
 	
 	public static String getTableName() {
 		return TABLE_NAME;
+	}
+	
+	public static String getColumns() {
+		return COLUMNS;
 	}
 
 	public static void createTable() throws SQLException {
@@ -95,78 +79,6 @@ public class ChallengeTDG {
 		s.execute(DROP_TABLE);
 		
 		s.close();
-	}
-	
-	public static ResultSet findAll() throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_ALL);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findById(long id) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
-		ps.setLong(1, id);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByChallenger(long challenger) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGER);
-		ps.setLong(1, challenger);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByChallengee(long challengee) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGEE);
-		ps.setLong(1, challengee);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findOpenById(long id) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_ID);
-		ps.setLong(1, id);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findOpenByChallenger(long challenger) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGER);
-		ps.setLong(1, challenger);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findOpenByChallengee(long challengee) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGEE);
-		ps.setLong(1, challengee);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findOpenByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_OPEN_BY_CHALLENGER_AND_CHALLENGEE);
-		ps.setLong(1, challenger);
-		ps.setLong(2, challengee);
-		
-		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long version, long challenger, long challengee, long challengerDeck) throws SQLException {

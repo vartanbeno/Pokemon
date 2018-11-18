@@ -33,7 +33,7 @@ import dom.model.user.tdg.UserTDG;
  */
 public class GameTDG {
 	
-	private static final String TABLE_NAME = "games";
+	private static final String TABLE_NAME = "Game";
 	
 	private static final String COLUMNS = "id, version, challenger, challengee, challenger_deck, challengee_deck, status";
 	
@@ -52,26 +52,6 @@ public class GameTDG {
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
 	
-	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_STATUS = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE status = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_CHALLENGER = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE challenger = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE challengee = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_CHALLENGER_AND_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE challenger = ? AND challengee = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_CHALLENGER_OR_CHALLENGEE = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE challenger = ? OR challengee = ?;", COLUMNS, TABLE_NAME);
-	
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
 	private static final String UPDATE = String.format("UPDATE %1$s SET status = ?, version = (version + 1) "
@@ -87,6 +67,10 @@ public class GameTDG {
 	
 	public static String getTableName() {
 		return TABLE_NAME;
+	}
+	
+	public static String getColumns() {
+		return COLUMNS;
 	}
 
 	public static void createTable() throws SQLException {
@@ -106,70 +90,6 @@ public class GameTDG {
 		s = con.createStatement();
 		s.execute(DROP_TABLE);
 		s.close();
-	}
-	
-	public static ResultSet findAll() throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_ALL);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findById(long id) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
-		ps.setLong(1, id);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByStatus(int status) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_STATUS);
-		ps.setInt(1, status);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByChallenger(long challenger) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGER);
-		ps.setLong(1, challenger);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByChallengee(long challengee) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGEE);
-		ps.setLong(1, challengee);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGER_AND_CHALLENGEE);
-		ps.setLong(1, challenger);
-		ps.setLong(2, challengee);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByChallengerOrChallengee(long player) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_CHALLENGER_OR_CHALLENGEE);
-		ps.setLong(1, player);
-		ps.setLong(2, player);
-		
-		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long version, long challenger, long challengee, long challengerDeck, long challengeeDeck) throws SQLException {

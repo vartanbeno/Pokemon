@@ -31,7 +31,7 @@ import dom.model.user.tdg.UserTDG;
 */
 public class CardInPlayTDG {
 	
-	private static final String TABLE_NAME = "cards_in_play";
+	private static final String TABLE_NAME = "CardInPlay";
 
 	private static final String COLUMNS = "id, version, game, player, deck, card, status";
 
@@ -50,20 +50,6 @@ public class CardInPlayTDG {
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
-
-	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_CARD = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE card = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_GAME_AND_PLAYER = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE game = ? AND player = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_GAME_AND_PLAYER_AND_STATUS = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE game = ? AND player = ? AND status = ?;", COLUMNS, TABLE_NAME);
 	
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
@@ -77,6 +63,10 @@ public class CardInPlayTDG {
 	
 	public static String getTableName() {
 		return TABLE_NAME;
+	}
+	
+	public static String getColumns() {
+		return COLUMNS;
 	}
 
 	public static void createTable() throws SQLException {
@@ -94,53 +84,6 @@ public class CardInPlayTDG {
 
 		s = con.createStatement();
 		s.execute(DROP_TABLE);
-	}
-
-	public static ResultSet findAll() throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-
-		PreparedStatement ps = con.prepareStatement(FIND_ALL);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findById(long id) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-
-		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
-		ps.setLong(1, id);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByCard(long card) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-
-		PreparedStatement ps = con.prepareStatement(FIND_BY_CARD);
-		ps.setLong(1, card);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByGameAndPlayer(long game, long player) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-
-		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME_AND_PLAYER);
-		ps.setLong(1, game);
-		ps.setLong(2, player);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByGameAndPlayerAndStatus(long game, long player, int status) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-
-		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME_AND_PLAYER_AND_STATUS);
-		ps.setLong(1, game);
-		ps.setLong(2, player);
-		ps.setLong(3, status);
-		
-		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long version, long game, long player, long deck, long card) throws SQLException {

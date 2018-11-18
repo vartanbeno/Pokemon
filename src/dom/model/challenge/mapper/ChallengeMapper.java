@@ -11,6 +11,7 @@ import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.IChallenge;
+import dom.model.challenge.tdg.ChallengeFinder;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
@@ -71,7 +72,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static List<IChallenge> findAll() throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findAll();
+		ResultSet rs = ChallengeFinder.findAll();
 		
 		List<IChallenge> challenges = buildChallenges(rs);
 		rs.close();
@@ -82,7 +83,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static Challenge findById(long id) throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findById(id);
+		ResultSet rs = ChallengeFinder.findById(id);
 		
 		Challenge challenge = rs.next() ? buildChallenge(rs) : null;
 		rs.close();
@@ -93,7 +94,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static List<IChallenge> findByChallenger(long challenger) throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findByChallenger(challenger);
+		ResultSet rs = ChallengeFinder.findByChallenger(challenger);
 		
 		List<IChallenge> challenges = buildChallenges(rs);
 		rs.close();
@@ -104,7 +105,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static List<IChallenge> findByChallengee(long challengee) throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findByChallengee(challengee);
+		ResultSet rs = ChallengeFinder.findByChallengee(challengee);
 		
 		List<IChallenge> challenges = buildChallenges(rs);
 		rs.close();
@@ -115,7 +116,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static Challenge findOpenById(long id) throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findOpenById(id);
+		ResultSet rs = ChallengeFinder.findOpenById(id);
 		
 		Challenge challenge = rs.next() ? buildChallenge(rs) : null;
 		rs.close();
@@ -126,7 +127,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static List<IChallenge> findOpenByChallenger(long challenger) throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findOpenByChallenger(challenger);
+		ResultSet rs = ChallengeFinder.findOpenByChallenger(challenger);
 		
 		List<IChallenge> challenges = buildChallenges(rs);
 		rs.close();
@@ -137,7 +138,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static List<IChallenge> findOpenByChallengee(long challengee) throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findOpenByChallengee(challengee);
+		ResultSet rs = ChallengeFinder.findOpenByChallengee(challengee);
 		
 		List<IChallenge> challenges = buildChallenges(rs);
 		rs.close();
@@ -148,7 +149,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static Challenge findOpenByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
 		
-		ResultSet rs = ChallengeTDG.findOpenByChallengerAndChallengee(challenger, challengee);
+		ResultSet rs = ChallengeFinder.findOpenByChallengerAndChallengee(challenger, challengee);
 		
 		Challenge challenge = rs.next() ? buildChallenge(rs) : null;
 		rs.close();

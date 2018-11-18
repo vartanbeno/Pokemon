@@ -13,6 +13,7 @@ import dom.model.card.Card;
 import dom.model.card.mapper.CardMapper;
 import dom.model.cardinplay.CardInPlay;
 import dom.model.cardinplay.ICardInPlay;
+import dom.model.cardinplay.tdg.CardInPlayFinder;
 import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
@@ -79,7 +80,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 	
 	public static List<ICardInPlay> findAll() throws SQLException {
 		
-		ResultSet rs = CardInPlayTDG.findAll();
+		ResultSet rs = CardInPlayFinder.findAll();
 		List<ICardInPlay> cardsInPlay = buildCardsInPlay(rs);
 		rs.close();
 		
@@ -89,7 +90,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 	
 	public static CardInPlay findById(long id) throws SQLException {
 		
-		ResultSet rs = CardInPlayTDG.findById(id);
+		ResultSet rs = CardInPlayFinder.findById(id);
 		CardInPlay cardInPlay = rs.next() ? buildCardInPlay(rs) : null;
 		rs.close();
 		
@@ -99,7 +100,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 	
 	public static CardInPlay findByCard(long card) throws SQLException {
 		
-		ResultSet rs = CardInPlayTDG.findByCard(card);
+		ResultSet rs = CardInPlayFinder.findByCard(card);
 		CardInPlay cardInPlay = rs.next() ? buildCardInPlay(rs) : null;
 		rs.close();
 		
@@ -109,7 +110,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 	
 	public static List<ICardInPlay> findByGameAndPlayer(long game, long player) throws SQLException {
 		
-		ResultSet rs = CardInPlayTDG.findByGameAndPlayer(game, player);
+		ResultSet rs = CardInPlayFinder.findByGameAndPlayer(game, player);
 		List<ICardInPlay> cardsInPlay = buildCardsInPlay(rs);
 		rs.close();
 		
@@ -119,7 +120,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 	
 	public static List<ICardInPlay> findByGameAndPlayerAndStatus(long game, long player, int status) throws SQLException {
 		
-		ResultSet rs = CardInPlayTDG.findByGameAndPlayerAndStatus(game, player, status);
+		ResultSet rs = CardInPlayFinder.findByGameAndPlayerAndStatus(game, player, status);
 		List<ICardInPlay> cardsInPlay = buildCardsInPlay(rs);
 		rs.close();
 		
