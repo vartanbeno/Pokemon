@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.user.IUser;
 import dom.model.user.User;
@@ -48,12 +49,14 @@ public class UserMapper extends GenericOutputMapper<Long, User> {
 		UserTDG.insert(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
 	}
 
-	public static void updateStatic(User user) throws SQLException {
-		UserTDG.update(user.getUsername(), user.getPassword(), user.getId(), user.getVersion());
+	public static void updateStatic(User user) throws SQLException, LostUpdateException {
+		int count = UserTDG.update(user.getUsername(), user.getPassword(), user.getId(), user.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update user with id: %d.", user.getId()));
 	}
 
-	public static void deleteStatic(User user) throws SQLException {
-		UserTDG.delete(user.getId(), user.getVersion());
+	public static void deleteStatic(User user) throws SQLException, LostUpdateException {
+		int count = UserTDG.delete(user.getId(), user.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot delete user with id: %d.", user.getId()));
 	}
 	
 	public static List<IUser> findAll() throws SQLException {

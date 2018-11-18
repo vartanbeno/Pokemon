@@ -109,11 +109,11 @@ public class PageController extends HttpServlet {
     public static void createTables() {
     	try {
     		UserTDG.createTable();
-			DeckTDG.createTable();
-			ChallengeTDG.createTable();
-			CardTDG.createTable();
-			GameTDG.createTable();
-			CardInPlayTDG.createTable();
+    		DeckTDG.createTable();
+    		ChallengeTDG.createTable();
+    		CardTDG.createTable();
+    		GameTDG.createTable();
+    		CardInPlayTDG.createTable();
     	}
     	catch (Exception e) {
 			e.printStackTrace();
@@ -121,16 +121,18 @@ public class PageController extends HttpServlet {
     }
     
     public static void dropTables() {
-    	try {
-    		CardInPlayTDG.dropTable();
-			GameTDG.dropTable();
-			CardTDG.dropTable();
-			ChallengeTDG.dropTable();
-			DeckTDG.dropTable();
+		try {
 			UserTDG.dropTable();
-    	}
-    	catch (Exception e) { }
-    }
+			DeckTDG.dropTable();
+			ChallengeTDG.dropTable();
+			CardTDG.dropTable();
+			GameTDG.dropTable();
+			CardInPlayTDG.dropTable();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	protected void success(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("message", message);

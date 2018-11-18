@@ -36,10 +36,7 @@ public class ChallengeTDG {
 			+ "challengee BIGINT NOT NULL,"
 			+ "status INT NOT NULL,"
 			+ "challenger_deck BIGINT NOT NULL,"
-			+ "PRIMARY KEY (id),"
-			+ "FOREIGN KEY (challenger) REFERENCES %2$s (id),"
-			+ "FOREIGN KEY (challengee) REFERENCES %2$s (id),"
-			+ "FOREIGN KEY (challenger_deck) REFERENCES %3$s (id)"
+			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName(), DeckTDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);

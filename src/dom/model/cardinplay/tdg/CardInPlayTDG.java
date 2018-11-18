@@ -43,11 +43,7 @@ public class CardInPlayTDG {
 			+ "deck BIGINT NOT NULL,"
 			+ "card BIGINT NOT NULL,"
 			+ "status INT NOT NULL,"
-			+ "PRIMARY KEY (id),"
-			+ "FOREIGN KEY (game) REFERENCES %2$s (id),"
-			+ "FOREIGN KEY (player) REFERENCES %3$s (id),"
-			+ "FOREIGN KEY (deck) REFERENCES %4$s (id),"
-			+ "FOREIGN KEY (card) REFERENCES %5$s (id)"
+			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;",
 			TABLE_NAME, GameTDG.getTableName(), UserTDG.getTableName(), DeckTDG.getTableName(), CardTDG.getTableName());
 

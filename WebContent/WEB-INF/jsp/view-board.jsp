@@ -6,6 +6,7 @@
 {
 	"board": {
 		"id": ${game.id},
+		"version": ${game.version},
 		"players": [${game.challenger.id}, ${game.challengee.id}],
 		"decks": [${game.challengerDeck.id}, ${game.challengeeDeck.id}],
 		"play": {

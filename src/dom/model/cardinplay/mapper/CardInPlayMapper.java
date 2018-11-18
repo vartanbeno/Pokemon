@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
+import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.card.Card;
 import dom.model.card.mapper.CardMapper;
@@ -16,7 +17,9 @@ import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
 import dom.model.game.Game;
+import dom.model.game.GameStatus;
 import dom.model.game.mapper.GameMapper;
+import dom.model.game.tdg.GameTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
 
@@ -52,7 +55,9 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 		}
 	}
 	
-	public static void insertStatic(CardInPlay cardInPlay) throws SQLException {
+	public static void insertStatic(CardInPlay cardInPlay) throws SQLException, LostUpdateException {
+		int count = GameTDG.update(GameStatus.ongoing.ordinal(), cardInPlay.getGame().getId(), cardInPlay.getGame().getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot draw card in game with id: %d.", cardInPlay.getGame().getId()));
 		CardInPlayTDG.insert(
 				cardInPlay.getId(),
 				cardInPlay.getVersion(),
@@ -63,12 +68,20 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 		);
 	}
 	
-	public static void updateStatic(CardInPlay cardInPlay) throws SQLException {
-		CardInPlayTDG.update(cardInPlay.getStatus(), cardInPlay.getId(), cardInPlay.getVersion());
+	public static void updateStatic(CardInPlay cardInPlay) throws SQLException, LostUpdateException {
+		int count = GameTDG.update(GameStatus.ongoing.ordinal(), cardInPlay.getGame().getId(), cardInPlay.getGame().getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update game with id: %d.", cardInPlay.getGame().getId()));
+		
+		count = CardInPlayTDG.update(cardInPlay.getStatus(), cardInPlay.getId(), cardInPlay.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update card in play with id: %d.", cardInPlay.getId()));
 	}
 	
-	public static void deleteStatic(CardInPlay cardInPlay) throws SQLException {
-		CardInPlayTDG.delete(cardInPlay.getId(), cardInPlay.getVersion());
+	public static void deleteStatic(CardInPlay cardInPlay) throws SQLException, LostUpdateException {
+		int count = GameTDG.update(GameStatus.ongoing.ordinal(), cardInPlay.getGame().getId(), cardInPlay.getGame().getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot update game with id: %d.", cardInPlay.getGame().getId()));
+		
+		count = CardInPlayTDG.delete(cardInPlay.getId(), cardInPlay.getVersion());
+		if (count == 0) throw new LostUpdateException(String.format("Cannot delete card in play with id: %d.", cardInPlay.getId()));
 	}
 	
 	public static List<ICardInPlay> findAll() throws SQLException {
