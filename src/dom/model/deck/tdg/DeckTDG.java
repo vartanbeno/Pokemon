@@ -23,7 +23,7 @@ import dom.model.user.tdg.UserTDG;
  */
 public class DeckTDG {
 	
-	private static final String TABLE_NAME = "decks";
+	private static final String TABLE_NAME = "Deck";
 	
 	private static final String COLUMNS = "id, version, player";
 	
@@ -38,14 +38,6 @@ public class DeckTDG {
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
 	
-	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE id = ?;", COLUMNS, TABLE_NAME);
-	
-	private static final String FIND_BY_PLAYER = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE player = ?;", COLUMNS, TABLE_NAME);
-	
 	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?);", TABLE_NAME, COLUMNS);
 	
 	private static final String UPDATE = String.format("UPDATE %1$s SET player = ?, version = (version + 1) "
@@ -58,6 +50,10 @@ public class DeckTDG {
 	
 	public static String getTableName() {
 		return TABLE_NAME;
+	}
+	
+	public static String getColumns() {
+		return COLUMNS;
 	}
 	
 	public static void createTable() throws SQLException {
@@ -75,32 +71,6 @@ public class DeckTDG {
 		
 		s = con.createStatement();
 		s.execute(DROP_TABLE);
-	}
-	
-	public static ResultSet findAll() throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_ALL);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findById(long id) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_ID);
-		ps.setLong(1, id);
-		
-		return ps.executeQuery();
-	}
-	
-	public static ResultSet findByPlayer(long player) throws SQLException {
-		Connection con = DbRegistry.getDbConnection();
-		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_PLAYER);
-		ps.setLong(1, player);
-		
-		return ps.executeQuery();
 	}
 	
 	public static int insert(long id, long version, long player) throws SQLException {

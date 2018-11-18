@@ -14,6 +14,7 @@ import dom.model.card.ICard;
 import dom.model.card.mapper.CardMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
+import dom.model.deck.tdg.DeckFinder;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserMapper;
@@ -73,7 +74,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
 	public static List<IDeck> findAll() throws SQLException {
 		
-		ResultSet rs = DeckTDG.findAll();
+		ResultSet rs = DeckFinder.findAll();
 		
 		List<IDeck> decks = buildDecks(rs);
 		rs.close();
@@ -84,7 +85,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
 	public static Deck findById(long id) throws SQLException {
 		
-		ResultSet rs = DeckTDG.findById(id);
+		ResultSet rs = DeckFinder.findById(id);
 		
 		Deck deck = rs.next() ? buildDeck(rs) : null;
 		rs.close();
@@ -95,7 +96,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
 	public static List<IDeck> findByPlayer(long player) throws SQLException {
 		
-		ResultSet rs = DeckTDG.findByPlayer(player);
+		ResultSet rs = DeckFinder.findByPlayer(player);
 		
 		List<IDeck> decks = buildDecks(rs);
 		rs.close();
