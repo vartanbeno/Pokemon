@@ -35,8 +35,7 @@ public class CardTDG {
 			+ "deck BIGINT NOT NULL,"
 			+ "type VARCHAR(1) NOT NULL,"
 			+ "name VARCHAR(30) NOT NULL,"
-			+ "PRIMARY KEY (id),"
-			+ "FOREIGN KEY (deck) REFERENCES %2$s (id)"
+			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME, DeckTDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);

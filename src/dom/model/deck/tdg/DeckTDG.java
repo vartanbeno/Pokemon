@@ -31,8 +31,7 @@ public class DeckTDG {
 			+ "id BIGINT NOT NULL,"
 			+ "version BIGINT NOT NULL,"
 			+ "player BIGINT NOT NULL,"
-			+ "PRIMARY KEY (id),"
-			+ "FOREIGN KEY (player) REFERENCES %2$s (id)"
+			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName());
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
