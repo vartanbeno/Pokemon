@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeOutputMapper;
 
 @WebServlet("/RefuseChallenge")
 public class RefuseChallenge extends PageController {
@@ -49,12 +49,12 @@ public class RefuseChallenge extends PageController {
 			 */
 			if (challenge.getChallengee().getId() == userId) {
 				challenge.setStatus(ChallengeStatus.refused.ordinal());
-				ChallengeMapper.updateStatic(challenge);
+				ChallengeOutputMapper.updateStatic(challenge);
 				success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
 			}
 			else if (challenge.getChallenger().getId() == userId) {
 				challenge.setStatus(ChallengeStatus.withdrawn.ordinal());
-				ChallengeMapper.updateStatic(challenge);
+				ChallengeOutputMapper.updateStatic(challenge);
 				success(request, response, String.format(WITHDRAW_SUCCESS, challenge.getChallengee().getUsername()));
 			}
 			

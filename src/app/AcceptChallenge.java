@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeOutputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
@@ -74,7 +74,7 @@ public class AcceptChallenge extends PageController {
 						GameStatus.ongoing.ordinal()
 				);
 				
-				ChallengeMapper.updateStatic(challenge);
+				ChallengeOutputMapper.updateStatic(challenge);
 				GameMapper.insertStatic(game);
 				
 				success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));

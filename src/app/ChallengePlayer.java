@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeInputMapper;
+import dom.model.challenge.mapper.ChallengeOutputMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
@@ -105,7 +106,7 @@ public class ChallengePlayer extends PageController {
 				return;
 			}
 			
-			Challenge challenge = ChallengeMapper.findOpenByChallengerAndChallengee(challengerId, challengeeId);
+			Challenge challenge = ChallengeInputMapper.findOpenByChallengerAndChallengee(challengerId, challengeeId);
 			
 			Deck challengerDeck = getDeck(request, response);
 			if (challengerDeck == null) return;
@@ -119,7 +120,7 @@ public class ChallengePlayer extends PageController {
 						challengerDeck
 				);
 				try {
-					ChallengeMapper.insertStatic(challenge);
+					ChallengeOutputMapper.insertStatic(challenge);
 					success(request, response, String.format(CHALLENGE_SUCCESS, challenge.getChallengee().getUsername()));
 				}
 				catch (NullPointerException | SQLIntegrityConstraintViolationException e) {

@@ -18,7 +18,7 @@ import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 import dom.model.card.tdg.CardTDG;
 import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.challenge.Challenge;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
@@ -169,7 +169,7 @@ public class PageController extends HttpServlet {
 			long challengeId = Long.parseLong(request.getParameter("challenge"));
 			long userId = getUserId(request);
 			
-			Challenge challenge = ChallengeMapper.findById(challengeId);
+			Challenge challenge = ChallengeInputMapper.findById(challengeId);
 			
 			if (challenge == null) {
 				failure(request, response, ACCEPT_CHALLENGE_DOES_NOT_EXIST);
@@ -204,7 +204,7 @@ public class PageController extends HttpServlet {
 			long challengeId = Long.parseLong(request.getParameter("challenge"));
 			long userId = getUserId(request);
 			
-			Challenge challenge = ChallengeMapper.findById(challengeId);
+			Challenge challenge = ChallengeInputMapper.findById(challengeId);
 			
 			if (challenge == null) {
 				failure(request, response, REFUSE_CHALLENGE_DOES_NOT_EXIST);

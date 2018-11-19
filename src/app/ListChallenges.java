@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.IChallenge;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeInputMapper;
 
 @WebServlet("/ListChallenges")
 public class ListChallenges extends PageController {
@@ -31,7 +31,7 @@ public class ListChallenges extends PageController {
 				return;
 			}
 			
-			List<IChallenge> challenges = ChallengeMapper.findAll();
+			List<IChallenge> challenges = ChallengeInputMapper.findAll();
 			
 			request.setAttribute("challenges", challenges);
 			request.getRequestDispatcher(Global.LIST_CHALLENGES).forward(request, response);
