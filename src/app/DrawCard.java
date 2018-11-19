@@ -17,6 +17,7 @@ import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
+import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.User;
@@ -85,6 +86,11 @@ public class DrawCard extends PageController {
 					CardStatus.hand.ordinal()
 			);
 			
+			/**
+			 * Register the game as well, since we want to increment its version.
+			 * Drawing a card counts as a turn, meaning the game is in a different state.
+			 */
+			GameFactory.registerDirty(game);
 			CardInPlayFactory.createNew(cardInPlay);
 			UoW.getCurrent().commit();
 			

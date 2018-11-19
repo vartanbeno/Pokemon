@@ -18,6 +18,7 @@ import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
 import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.game.Game;
+import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 
 @WebServlet("/PlayPokemonToBench")
@@ -115,6 +116,7 @@ public class PlayPokemonToBench extends PageController {
 				
 				cardInHand.setStatus(CardStatus.benched.ordinal());
 				
+				GameFactory.registerDirty(game);
 				CardInPlayFactory.registerDirty(cardInHand);
 				UoW.getCurrent().commit();
 				
