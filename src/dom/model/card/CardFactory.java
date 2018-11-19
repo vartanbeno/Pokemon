@@ -16,6 +16,11 @@ public class CardFactory {
 		
 	}
 	
+	public static Card createNew(ICard card)
+			throws MissingMappingException, MapperException {
+		return createNew(card.getId(), card.getVersion(), card.getDeck(), card.getType(), card.getName());
+	}
+	
 	public static Card createClean(long id, long version, long deck, String type, String name) {
 		
 		Card card = new Card(id, version, deck, type, name);
@@ -23,6 +28,10 @@ public class CardFactory {
 		
 		return card;
 		
+	}
+	
+	public static Card createClean(ICard card) {
+		return createClean(card.getId(), card.getVersion(), card.getDeck(), card.getType(), card.getName());
 	}
 
 }

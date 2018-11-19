@@ -21,6 +21,19 @@ public class CardInPlayFactory {
 		
 	}
 	
+	public static CardInPlay createNew(ICardInPlay cardInPlay)
+			throws MissingMappingException, MapperException {
+		return createNew(
+				cardInPlay.getId(),
+				cardInPlay.getVersion(),
+				cardInPlay.getGame(),
+				cardInPlay.getPlayer(),
+				cardInPlay.getDeck(),
+				cardInPlay.getCard(),
+				cardInPlay.getStatus()
+		);
+	}
+	
 	public static CardInPlay createClean(long id, long version, IGame game, IUser player, IDeck deck, ICard card, int status) {
 		
 		CardInPlay cardInPlay = new CardInPlay(id, version, game, player, deck, card, status);
@@ -28,6 +41,18 @@ public class CardInPlayFactory {
 		
 		return cardInPlay;
 		
+	}
+	
+	public static CardInPlay createClean(ICardInPlay cardInPlay) {
+		return createClean(
+				cardInPlay.getId(),
+				cardInPlay.getVersion(),
+				cardInPlay.getGame(),
+				cardInPlay.getPlayer(),
+				cardInPlay.getDeck(),
+				cardInPlay.getCard(),
+				cardInPlay.getStatus()
+		);
 	}
 	
 	public static CardInPlay registerDirty(long id, long version, IGame game, IUser player, IDeck deck, ICard card, int status)
@@ -38,6 +63,19 @@ public class CardInPlayFactory {
 		
 		return cardInPlay;
 		
+	}
+	
+	public static CardInPlay registerDirty(ICardInPlay cardInPlay)
+			throws MissingMappingException, MapperException {
+		return registerDirty(
+				cardInPlay.getId(),
+				cardInPlay.getVersion(),
+				cardInPlay.getGame(),
+				cardInPlay.getPlayer(),
+				cardInPlay.getDeck(),
+				cardInPlay.getCard(),
+				cardInPlay.getStatus()
+		);
 	}
 
 }

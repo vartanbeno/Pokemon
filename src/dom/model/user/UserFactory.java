@@ -8,7 +8,7 @@ import org.dsrg.soenea.uow.UoW;
 
 public class UserFactory {
 	
-	public static User createNew(Long id, int version, String username, String password)
+	public static User createNew(Long id, long version, String username, String password)
 			throws SQLException, MissingMappingException, MapperException {
 		
 		User user = new User(id, version, username, password);
@@ -18,13 +18,22 @@ public class UserFactory {
 		
 	}
 	
-	public static User createClean(long id, int version, String username, String password) {
+	public static User createNew(IUser user)
+			throws MissingMappingException, SQLException, MapperException {
+		return createNew(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
+	}
+	
+	public static User createClean(long id, long version, String username, String password) {
 		
 		User user = new User(id, version, username, password);
 		UoW.getCurrent().registerClean(user);
 		
 		return user;
 		
+	}
+	
+	public static User createClean(IUser user) {
+		return createClean(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
 	}
 
 }

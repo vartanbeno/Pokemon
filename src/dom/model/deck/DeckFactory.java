@@ -21,6 +21,11 @@ public class DeckFactory {
 		
 	}
 	
+	public static Deck createNew(IDeck deck)
+			throws MissingMappingException, MapperException {
+		return createNew(deck.getId(), deck.getVersion(), deck.getPlayer(), deck.getCards());
+	}
+	
 	public static Deck createClean(long id, long version, IUser player, List<ICard> cards) {
 		
 		Deck deck = new Deck(id, version, player, cards);
@@ -28,6 +33,10 @@ public class DeckFactory {
 		
 		return deck;
 		
+	}
+	
+	public static Deck createClean(IDeck deck) {
+		return createClean(deck.getId(), deck.getVersion(), deck.getPlayer(), deck.getCards());
 	}
 
 }

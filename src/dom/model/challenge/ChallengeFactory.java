@@ -19,6 +19,18 @@ public class ChallengeFactory {
 		
 	}
 	
+	public static Challenge createNew(IChallenge challenge)
+			throws MissingMappingException, MapperException {
+		return createNew(
+				challenge.getId(),
+				challenge.getVersion(),
+				challenge.getChallenger(),
+				challenge.getChallengee(),
+				challenge.getStatus(),
+				challenge.getChallengerDeck()
+		);
+	}
+	
 	public static Challenge createClean(long id, long version, IUser challenger, IUser challengee, int status, IDeck challengerDeck) {
 		
 		Challenge challenge = new Challenge(id, version, challenger, challengee, status, challengerDeck);
@@ -26,6 +38,17 @@ public class ChallengeFactory {
 		
 		return challenge;
 		
+	}
+	
+	public static Challenge createClean(IChallenge challenge) {
+		return createClean(
+				challenge.getId(),
+				challenge.getVersion(),
+				challenge.getChallenger(),
+				challenge.getChallengee(),
+				challenge.getStatus(),
+				challenge.getChallengerDeck()
+		);
 	}
 	
 	public static Challenge registerDirty(long id, long version, IUser challenger, IUser challengee, int status, IDeck challengerDeck)
@@ -36,6 +59,18 @@ public class ChallengeFactory {
 		
 		return challenge;
 		
+	}
+	
+	public static Challenge registerDirty(IChallenge challenge)
+			throws MissingMappingException, MapperException {
+		return registerDirty(
+				challenge.getId(),
+				challenge.getVersion(),
+				challenge.getChallenger(),
+				challenge.getChallengee(),
+				challenge.getStatus(),
+				challenge.getChallengerDeck()
+		);
 	}
 
 }

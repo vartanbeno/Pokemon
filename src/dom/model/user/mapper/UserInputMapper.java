@@ -87,7 +87,7 @@ public class UserInputMapper {
 		
 		return UserFactory.createClean(
 				rs.getLong("id"),
-				rs.getInt("version"),
+				rs.getLong("version"),
 				rs.getString("username"),
 				rs.getString("password")
 		);
