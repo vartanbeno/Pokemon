@@ -21,7 +21,7 @@ import dom.model.game.IGame;
 import dom.model.game.tdg.GameFinder;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
@@ -169,8 +169,8 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static Game buildGame(ResultSet rs) throws SQLException {
 		
-		User challenger = UserMapper.findById(rs.getLong("challenger"));
-		User challengee = UserMapper.findById(rs.getLong("challengee"));
+		User challenger = UserInputMapper.findById(rs.getLong("challenger"));
+		User challengee = UserInputMapper.findById(rs.getLong("challengee"));
 		Deck challengerDeck = DeckMapper.findById(rs.getLong("challenger_deck"));
 		Deck challengeeDeck = DeckMapper.findById(rs.getLong("challengee_deck"));
 		

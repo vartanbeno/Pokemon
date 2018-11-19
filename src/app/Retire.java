@@ -10,7 +10,7 @@ import dom.model.game.Game;
 import dom.model.game.GameStatus;
 import dom.model.game.mapper.GameMapper;
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 @WebServlet("/Retire")
 public class Retire extends PageController {
@@ -52,11 +52,11 @@ public class Retire extends PageController {
 			
 			if (userId == game.getChallenger().getId()) {
 				game.setStatus(GameStatus.challengerRetired.ordinal());
-				opponent = UserMapper.findById(game.getChallengee().getId());
+				opponent = UserInputMapper.findById(game.getChallengee().getId());
 			}
 			else if (userId == game.getChallengee().getId()) {
 				game.setStatus(GameStatus.challengeeRetired.ordinal());
-				opponent = UserMapper.findById(game.getChallenger().getId());
+				opponent = UserInputMapper.findById(game.getChallenger().getId());
 			}
 			
 			GameMapper.updateStatic(game);

@@ -20,7 +20,7 @@ import dom.model.deck.mapper.DeckMapper;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameMapper;
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 
@@ -131,7 +131,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 	public static CardInPlay buildCardInPlay(ResultSet rs) throws SQLException {
 		
 		Game game = GameMapper.findById(rs.getLong("game"));
-		User player = UserMapper.findById(rs.getLong("player"));
+		User player = UserInputMapper.findById(rs.getLong("player"));
 		Deck deck = DeckMapper.findById(rs.getLong("deck"));
 		Card card = CardMapper.findById(rs.getLong("card"));
 		

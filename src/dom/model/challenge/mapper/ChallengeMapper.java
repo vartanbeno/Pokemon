@@ -16,7 +16,7 @@ import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
@@ -160,8 +160,8 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 	
 	public static Challenge buildChallenge(ResultSet rs) throws SQLException {
 		
-		User challenger = UserMapper.findById(rs.getLong("challenger"));
-		User challengee = UserMapper.findById(rs.getLong("challengee"));
+		User challenger = UserInputMapper.findById(rs.getLong("challenger"));
+		User challengee = UserInputMapper.findById(rs.getLong("challengee"));
 		Deck challengerDeck = DeckMapper.findById(rs.getLong("challenger_deck"));
 		
 		return new Challenge(

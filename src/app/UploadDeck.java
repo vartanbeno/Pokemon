@@ -16,7 +16,7 @@ import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 @WebServlet("/UploadDeck")
 public class UploadDeck extends PageController {
@@ -69,7 +69,7 @@ public class UploadDeck extends PageController {
 				return;
 			}
 			
-			User player = UserMapper.findById(getUserId(request));
+			User player = UserInputMapper.findById(getUserId(request));
 			
 			/**
 			 * We delete carriage returns (\r) by replacing them with an empty String "".

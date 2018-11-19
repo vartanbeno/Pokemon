@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 import dom.model.user.User;
 
 @WebServlet("/Login")
@@ -35,7 +35,7 @@ public class Login extends PageController {
 			String username = request.getParameter("user");
 			String password = request.getParameter("pass");
 			
-			User user = UserMapper.findByUsernameAndPassword(username, password);
+			User user = UserInputMapper.findByUsernameAndPassword(username, password);
 			
 			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				failure(request, response, ENTER_USER_AND_PASS);

@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
+import dom.model.user.mapper.UserOutputMapper;
 import dom.model.user.tdg.UserTDG;
 
 @WebServlet("/Register")
@@ -36,7 +37,7 @@ public class Register extends PageController {
 			String username = request.getParameter("user");
 			String password = request.getParameter("pass");
 			
-			User user = UserMapper.findByUsername(username);
+			User user = UserInputMapper.findByUsername(username);
 			
 			if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
 				failure(request, response, ENTER_USER_AND_PASS);
@@ -46,7 +47,7 @@ public class Register extends PageController {
 			}
 			else {
 				user = new User(UserTDG.getMaxId(), 1, username, password);
-				UserMapper.insertStatic(user);
+				UserOutputMapper.insertStatic(user);
 				request.getSession(true).setAttribute("userid", user.getId());
 				success(request, response, String.format(REGISTRATION_SUCCESS, user.getUsername()));
 			}

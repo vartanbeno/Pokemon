@@ -4,7 +4,7 @@ import org.dsrg.soenea.domain.DomainObjectCreationException;
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 public class UserProxy extends DomainObjectProxy<Long, User> implements IUser {
 
@@ -35,7 +35,7 @@ public class UserProxy extends DomainObjectProxy<Long, User> implements IUser {
 	@Override
 	protected User getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
 		try {
-			return UserMapper.findById(id);
+			return UserInputMapper.findById(id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

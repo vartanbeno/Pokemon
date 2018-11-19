@@ -16,7 +16,7 @@ import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 @WebServlet("/ChallengePlayer")
 public class ChallengePlayer extends PageController {
@@ -52,7 +52,7 @@ public class ChallengePlayer extends PageController {
 				return;
 			}
 			
-			List<IUser> challengees = UserMapper.findAll();
+			List<IUser> challengees = UserInputMapper.findAll();
 			
 			/**
 			 * We want a list of users to be able to challenge.
@@ -113,8 +113,8 @@ public class ChallengePlayer extends PageController {
 			if (challenge == null) {
 				challenge = new Challenge(
 						ChallengeTDG.getMaxId(), 1,
-						UserMapper.findById(challengerId),
-						UserMapper.findById(challengeeId),
+						UserInputMapper.findById(challengerId),
+						UserInputMapper.findById(challengeeId),
 						ChallengeStatus.open.ordinal(),
 						challengerDeck
 				);

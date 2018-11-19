@@ -17,7 +17,7 @@ import dom.model.deck.IDeck;
 import dom.model.deck.tdg.DeckFinder;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
@@ -107,7 +107,7 @@ public class DeckMapper extends GenericOutputMapper<Long, Deck> {
 	
 	public static Deck buildDeck(ResultSet rs) throws SQLException {
 		
-		User player = UserMapper.findById(rs.getLong("player"));
+		User player = UserInputMapper.findById(rs.getLong("player"));
 		List<ICard> cards = CardMapper.findByDeck(rs.getLong("id"));
 		
 		return new Deck(rs.getLong("id"), rs.getLong("version"), player, cards);
