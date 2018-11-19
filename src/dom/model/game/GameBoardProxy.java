@@ -8,7 +8,7 @@ import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.deck.IDeck;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.IUser;
 
 public class GameBoardProxy extends DomainObjectProxy<Long, GameBoard> implements IGameBoard {
@@ -130,7 +130,7 @@ public class GameBoardProxy extends DomainObjectProxy<Long, GameBoard> implement
 	@Override
 	protected GameBoard getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
 		try {
-			return GameMapper.buildGameBoard(GameMapper.findById(id));
+			return GameInputMapper.buildGameBoard(GameInputMapper.findById(id));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

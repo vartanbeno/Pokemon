@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 @WebServlet("/Logout")
 public class Logout extends PageController {
@@ -45,7 +45,7 @@ public class Logout extends PageController {
 				return;
 			}
 				
-			User user = UserMapper.findById(getUserId(request));
+			User user = UserInputMapper.findById(getUserId(request));
 			
 			try {
 				request.getSession(true).invalidate();

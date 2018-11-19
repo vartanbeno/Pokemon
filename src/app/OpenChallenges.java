@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.IChallenge;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.IDeck;
 
 @WebServlet("/OpenChallenges")
@@ -35,8 +35,8 @@ public class OpenChallenges extends PageController {
 			long userId = getUserId(request);
 			
 			List<IDeck> decks = getMyDecks(request);
-			List<IChallenge> challengesAgainstMe = ChallengeMapper.findOpenByChallengee(userId);
-			List<IChallenge> challengesAgainstOthers = ChallengeMapper.findOpenByChallenger(userId);
+			List<IChallenge> challengesAgainstMe = ChallengeInputMapper.findOpenByChallengee(userId);
+			List<IChallenge> challengesAgainstOthers = ChallengeInputMapper.findOpenByChallenger(userId);
 			
 			request.setAttribute("decks", decks);
 			request.setAttribute("challengesAgainstMe", challengesAgainstMe);

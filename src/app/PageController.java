@@ -18,14 +18,14 @@ import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 import dom.model.card.tdg.CardTDG;
 import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.challenge.Challenge;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameInputMapper;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.tdg.UserTDG;
 
@@ -169,7 +169,7 @@ public class PageController extends HttpServlet {
 			long challengeId = Long.parseLong(request.getParameter("challenge"));
 			long userId = getUserId(request);
 			
-			Challenge challenge = ChallengeMapper.findById(challengeId);
+			Challenge challenge = ChallengeInputMapper.findById(challengeId);
 			
 			if (challenge == null) {
 				failure(request, response, ACCEPT_CHALLENGE_DOES_NOT_EXIST);
@@ -204,7 +204,7 @@ public class PageController extends HttpServlet {
 			long challengeId = Long.parseLong(request.getParameter("challenge"));
 			long userId = getUserId(request);
 			
-			Challenge challenge = ChallengeMapper.findById(challengeId);
+			Challenge challenge = ChallengeInputMapper.findById(challengeId);
 			
 			if (challenge == null) {
 				failure(request, response, REFUSE_CHALLENGE_DOES_NOT_EXIST);
@@ -234,7 +234,7 @@ public class PageController extends HttpServlet {
 			
 			long deckId = Long.parseLong(request.getParameter("deck"));
 			
-			Deck deck = DeckMapper.findById(deckId);
+			Deck deck = DeckInputMapper.findById(deckId);
 			
 			if (deck == null) {
 				failure(request, response, DECK_DOES_NOT_EXIST);
@@ -258,7 +258,7 @@ public class PageController extends HttpServlet {
 		
 		List<IDeck> decks = new ArrayList<IDeck>();
 		try {
-			decks = DeckMapper.findByPlayer(getUserId(request));
+			decks = DeckInputMapper.findByPlayer(getUserId(request));
 			return decks;
 		}
 		catch (SQLException e) {
@@ -275,7 +275,7 @@ public class PageController extends HttpServlet {
 			long gameId = Long.parseLong(request.getParameter("game"));
 			long userId = getUserId(request);
 			
-			Game game = GameMapper.findById(gameId);
+			Game game = GameInputMapper.findById(gameId);
 			
 			if (game == null) {
 				failure(request, response, GAME_DOES_NOT_EXIST);

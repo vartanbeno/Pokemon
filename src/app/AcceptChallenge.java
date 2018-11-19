@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeOutputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameOutputMapper;
 import dom.model.game.tdg.GameTDG;
 
 @WebServlet("/AcceptChallenge")
@@ -59,7 +59,7 @@ public class AcceptChallenge extends PageController {
 			Deck challengeeDeck = getDeck(request, response);
 			if (challengeeDeck == null) return;
 			
-			Deck challengerDeck = DeckMapper.findById(challenge.getChallengerDeck().getId());
+			Deck challengerDeck = DeckInputMapper.findById(challenge.getChallengerDeck().getId());
 			
 			if (challenge.getChallengee().getId() == getUserId(request)) {
 				
@@ -74,8 +74,8 @@ public class AcceptChallenge extends PageController {
 						GameStatus.ongoing.ordinal()
 				);
 				
-				ChallengeMapper.updateStatic(challenge);
-				GameMapper.insertStatic(game);
+				ChallengeOutputMapper.updateStatic(challenge);
+				GameOutputMapper.insertStatic(game);
 				
 				success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
 				

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.user.IUser;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
 @WebServlet("/ListPlayers")
 public class ListPlayers extends PageController {
@@ -31,7 +31,7 @@ public class ListPlayers extends PageController {
 				return;
 			}
 			
-			List<IUser> players = UserMapper.findAll();
+			List<IUser> players = UserInputMapper.findAll();
 			
 			request.setAttribute("players", players);
 			request.getRequestDispatcher(Global.LIST_PLAYERS).forward(request, response);

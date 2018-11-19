@@ -5,7 +5,7 @@ import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
 import dom.model.card.ICard;
-import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.mapper.CardInPlayInputMapper;
 import dom.model.deck.IDeck;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
@@ -69,7 +69,7 @@ public class CardInPlayProxy extends DomainObjectProxy<Long, CardInPlay> impleme
 	@Override
 	protected CardInPlay getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
 		try {
-			return CardInPlayMapper.findById(id);
+			return CardInPlayInputMapper.findById(id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

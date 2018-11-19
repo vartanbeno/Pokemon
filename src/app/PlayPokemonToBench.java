@@ -10,9 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.mapper.CardInPlayInputMapper;
+import dom.model.cardinplay.mapper.CardInPlayOutputMapper;
 import dom.model.card.Card;
-import dom.model.card.mapper.CardMapper;
+import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
@@ -78,7 +79,7 @@ public class PlayPokemonToBench extends PageController {
 				return;
 			}
 			
-			List<ICardInPlay> playerBench = CardInPlayMapper.findByGameAndPlayerAndStatus(
+			List<ICardInPlay> playerBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
 					game.getId(), userId, CardStatus.benched.ordinal()
 			);
 			
@@ -87,7 +88,7 @@ public class PlayPokemonToBench extends PageController {
 				return;
 			}
 			
-			List<ICardInPlay> playerHand = CardInPlayMapper.findByGameAndPlayerAndStatus(
+			List<ICardInPlay> playerHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
 					game.getId(), userId, CardStatus.hand.ordinal()
 			);
 			
@@ -105,12 +106,12 @@ public class PlayPokemonToBench extends PageController {
 				return;
 			}
 			
-			CardInPlay cardInHand = (CardInPlay) CardInPlayMapper.findByCard(playerCardInHand.getCard().getId());
-			Card card = CardMapper.findById(cardInHand.getCard().getId());
+			CardInPlay cardInHand = (CardInPlay) CardInPlayInputMapper.findByCard(playerCardInHand.getCard().getId());
+			Card card = CardInputMapper.findById(cardInHand.getCard().getId());
 			
 			if (card.getType().equals("p")) {
 				cardInHand.setStatus(CardStatus.benched.ordinal());
-				CardInPlayMapper.updateStatic(cardInHand);
+				CardInPlayOutputMapper.updateStatic(cardInHand);
 				success(request, response, String.format(BENCH_SUCCESS, card.getName()));
 			}
 			else {

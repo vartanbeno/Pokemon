@@ -4,7 +4,7 @@ import org.dsrg.soenea.domain.DomainObjectCreationException;
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
-import dom.model.challenge.mapper.ChallengeMapper;
+import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
@@ -57,7 +57,7 @@ public class ChallengeProxy extends DomainObjectProxy<Long, Challenge> implement
 	@Override
 	protected Challenge getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
 		try {
-			return ChallengeMapper.findById(id);
+			return ChallengeInputMapper.findById(id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -6,89 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.dsrg.soenea.domain.MapperException;
-import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
-import org.dsrg.soenea.domain.mapper.LostUpdateException;
-
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.mapper.CardInPlayInputMapper;
 import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.IGame;
 import dom.model.game.tdg.GameFinder;
-import dom.model.game.tdg.GameTDG;
 import dom.model.user.User;
-import dom.model.user.mapper.UserMapper;
+import dom.model.user.mapper.UserInputMapper;
 
-public class GameMapper extends GenericOutputMapper<Long, Game> {
-	
-	@Override
-	public void insert(Game game) throws MapperException {
-		try {
-			insertStatic(game);
-		}
-		catch (SQLException e) {
-			throw new MapperException(e);
-		}
-	}
-
-	@Override
-	public void update(Game game) throws MapperException {
-		try {
-			updateStatic(game);
-		}
-		catch (SQLException e) {
-			throw new MapperException(e);
-		}
-	}
-	
-	public void updateVersion(Game game) throws MapperException {
-		try {
-			updateVersionStatic(game);
-		}
-		catch (SQLException e) {
-			throw new MapperException(e);
-		}
-	}
-
-	@Override
-	public void delete(Game game) throws MapperException {
-		try {
-			deleteStatic(game);
-		}
-		catch (SQLException e) {
-			throw new MapperException(e);
-		}
-	}
-	
-	public static void insertStatic(Game game) throws SQLException {
-		GameTDG.insert(
-				game.getId(),
-				game.getVersion(),
-				game.getChallenger().getId(),
-				game.getChallengee().getId(),
-				game.getChallengerDeck().getId(),
-				game.getChallengeeDeck().getId()
-		);
-	}
-	
-	public static void updateStatic(Game game) throws SQLException, LostUpdateException {
-		int count = GameTDG.update(game.getId(), game.getVersion(), game.getStatus());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot update game with id: %d.", game.getId()));
-	}
-	
-	public static void updateVersionStatic(Game game) throws SQLException, LostUpdateException {
-		int count = GameTDG.updateVersion(game.getId(), game.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot update game with id: %d.", game.getId()));
-	}
-	
-	public static void deleteStatic(Game game) throws SQLException, LostUpdateException {
-		int count = GameTDG.delete(game.getId(), game.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot delete game with id: %d.", game.getId()));
-	}
+public class GameInputMapper {
 	
 	public static List<IGame> findAll() throws SQLException {
 		
@@ -169,10 +99,10 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static Game buildGame(ResultSet rs) throws SQLException {
 		
-		User challenger = UserMapper.findById(rs.getLong("challenger"));
-		User challengee = UserMapper.findById(rs.getLong("challengee"));
-		Deck challengerDeck = DeckMapper.findById(rs.getLong("challenger_deck"));
-		Deck challengeeDeck = DeckMapper.findById(rs.getLong("challengee_deck"));
+		User challenger = UserInputMapper.findById(rs.getLong("challenger"));
+		User challengee = UserInputMapper.findById(rs.getLong("challengee"));
+		Deck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
+		Deck challengeeDeck = DeckInputMapper.findById(rs.getLong("challengee_deck"));
 		
 		return new Game(
 				rs.getLong("id"),
@@ -212,12 +142,12 @@ public class GameMapper extends GenericOutputMapper<Long, Game> {
 		Deck challengerDeck = (Deck) game.getChallengerDeck();
 		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
 		
-		List<ICardInPlay> challengerHand = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengeeHand = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengerBench = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengeeBench = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengerDiscarded = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
-		List<ICardInPlay> challengeeDiscarded = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengerHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengeeHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengerBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengeeBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengerDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengeeDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
 		
 		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
 		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size();

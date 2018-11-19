@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.mapper.CardInPlayInputMapper;
 import dom.model.game.Game;
 import dom.model.user.User;
 
@@ -40,7 +40,7 @@ public class ViewHand extends PageController {
 			long userId = getUserId(request);
 			User player = userId == game.getChallenger().getId() ? (User) game.getChallenger() : (User) game.getChallengee();
 			
-			List<ICardInPlay> hand = CardInPlayMapper.findByGameAndPlayerAndStatus(
+			List<ICardInPlay> hand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
 					game.getId(), player.getId(), CardStatus.hand.ordinal()
 			);
 			
