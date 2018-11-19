@@ -25,7 +25,7 @@ import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameInputMapper;
 import dom.model.game.tdg.GameTDG;
 import dom.model.user.tdg.UserTDG;
 
@@ -275,7 +275,7 @@ public class PageController extends HttpServlet {
 			long gameId = Long.parseLong(request.getParameter("game"));
 			long userId = getUserId(request);
 			
-			Game game = GameMapper.findById(gameId);
+			Game game = GameInputMapper.findById(gameId);
 			
 			if (game == null) {
 				failure(request, response, GAME_DOES_NOT_EXIST);

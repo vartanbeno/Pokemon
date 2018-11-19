@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.GameStatus;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameInputMapper;
 
 @WebServlet("/ViewBoard")
 public class ViewBoard extends PageController {
@@ -35,7 +35,7 @@ public class ViewBoard extends PageController {
 			Game game = getGame(request, response);
 			if (game == null) return;
 			
-			GameBoard gameBoard = GameMapper.buildGameBoard(game);
+			GameBoard gameBoard = GameInputMapper.buildGameBoard(game);
 			
 			String challengerStatus = "";
 			String challengeeStatus = "";

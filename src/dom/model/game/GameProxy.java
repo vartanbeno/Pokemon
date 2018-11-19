@@ -5,7 +5,7 @@ import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
 import dom.model.deck.IDeck;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.IUser;
 
 public class GameProxy extends DomainObjectProxy<Long, Game> implements IGame {
@@ -67,7 +67,7 @@ public class GameProxy extends DomainObjectProxy<Long, Game> implements IGame {
 	@Override
 	protected Game getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
 		try {
-			return GameMapper.findById(id);
+			return GameInputMapper.findById(id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -16,7 +16,7 @@ import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameOutputMapper;
 import dom.model.game.tdg.GameTDG;
 
 @WebServlet("/AcceptChallenge")
@@ -75,7 +75,7 @@ public class AcceptChallenge extends PageController {
 				);
 				
 				ChallengeOutputMapper.updateStatic(challenge);
-				GameMapper.insertStatic(game);
+				GameOutputMapper.insertStatic(game);
 				
 				success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
 				

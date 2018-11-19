@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dom.model.game.IGame;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameInputMapper;
 
 @WebServlet("/ListGames")
 public class ListGames extends PageController {
@@ -31,7 +31,7 @@ public class ListGames extends PageController {
 				return;
 			}
 			
-			List<IGame> games = GameMapper.findAll();
+			List<IGame> games = GameInputMapper.findAll();
 			
 			request.setAttribute("games", games);
 			request.getRequestDispatcher(Global.LIST_GAMES).forward(request, response);

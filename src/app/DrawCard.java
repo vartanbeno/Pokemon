@@ -16,7 +16,7 @@ import dom.model.deck.Deck;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.GameStatus;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.User;
 
 @WebServlet("/DrawCard")
@@ -57,7 +57,7 @@ public class DrawCard extends PageController {
 			
 			long userId = getUserId(request);
 			
-			GameBoard gameBoard = GameMapper.buildGameBoard(game);
+			GameBoard gameBoard = GameInputMapper.buildGameBoard(game);
 			User player = null;
 			Deck deck = null;
 			

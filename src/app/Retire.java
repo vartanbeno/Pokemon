@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
-import dom.model.game.mapper.GameMapper;
+import dom.model.game.mapper.GameOutputMapper;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -59,7 +59,7 @@ public class Retire extends PageController {
 				opponent = UserInputMapper.findById(game.getChallenger().getId());
 			}
 			
-			GameMapper.updateStatic(game);
+			GameOutputMapper.updateStatic(game);
 			success(request, response, String.format(RETIRE_SUCCESS, opponent.getUsername()));
 			
 		}
