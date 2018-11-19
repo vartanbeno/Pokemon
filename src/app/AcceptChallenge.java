@@ -8,15 +8,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.challenge.Challenge;
+import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.mapper.ChallengeOutputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
-import dom.model.game.Game;
+import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
-import dom.model.game.mapper.GameOutputMapper;
 import dom.model.game.tdg.GameTDG;
 
 @WebServlet("/AcceptChallenge")
@@ -63,9 +64,16 @@ public class AcceptChallenge extends PageController {
 			
 			if (challenge.getChallengee().getId() == getUserId(request)) {
 				
-				challenge.setStatus(ChallengeStatus.accepted.ordinal());
+				ChallengeFactory.registerDirty(
+						challenge.getId(),
+						challenge.getVersion(),
+						challenge.getChallenger(),
+						challenge.getChallengee(),
+						ChallengeStatus.accepted.ordinal(),
+						challengerDeck
+				);
 				
-				Game game = new Game(
+				GameFactory.createNew(
 						GameTDG.getMaxId(), 1,
 						challenge.getChallenger(),
 						challenge.getChallengee(),
@@ -74,8 +82,7 @@ public class AcceptChallenge extends PageController {
 						GameStatus.ongoing.ordinal()
 				);
 				
-				ChallengeOutputMapper.updateStatic(challenge);
-				GameOutputMapper.insertStatic(game);
+				UoW.getCurrent().commit();
 				
 				success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));
 				

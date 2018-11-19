@@ -27,5 +27,15 @@ public class ChallengeFactory {
 		return challenge;
 		
 	}
+	
+	public static Challenge registerDirty(long id, long version, IUser challenger, IUser challengee, int status, IDeck challengerDeck)
+			throws MissingMappingException, MapperException {
+		
+		Challenge challenge = new Challenge(id, version, challenger, challengee, status, challengerDeck);
+		UoW.getCurrent().registerDirty(challenge);
+		
+		return challenge;
+		
+	}
 
 }
