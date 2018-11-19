@@ -5,15 +5,15 @@
 
 {
 	"board": {
-		"id": ${game.id},
-		"version": ${game.version},
-		"players": [${game.challenger.id}, ${game.challengee.id}],
-		"decks": [${game.challengerDeck.id}, ${game.challengeeDeck.id}],
+		"id": ${gameBoard.game.id},
+		"version": ${gameBoard.game.version},
+		"players": [${gameBoard.game.challenger.id}, ${gameBoard.game.challengee.id}],
+		"decks": [${gameBoard.game.challengerDeck.id}, ${gameBoard.game.challengeeDeck.id}],
 		"play": {
-			"${game.challenger.id}": {
+			"${gameBoard.game.challenger.id}": {
 				"status": "${challengerStatus}",
 				"handsize": ${fn:length(game.challengerHand)},
-				"decksize": ${fn:length(game.challengerDeck.cards)},
+				"decksize": ${fn:length(gameBoard.game.challengerDeck.cards)},
 				"discardsize": ${fn:length(game.challengerDiscarded)},
 				"bench": [
 					<c:forEach items="${game.challengerBench}" var="card" varStatus="loop">
@@ -21,10 +21,10 @@
 					</c:forEach>
 				]
 			},
-			"${game.challengee.id}": {
+			"${gameBoard.game.challengee.id}": {
 				"status": "${challengeeStatus}",
 				"handsize": ${fn:length(game.challengeeHand)},
-				"decksize": ${fn:length(game.challengeeDeck.cards)},
+				"decksize": ${fn:length(gameBoard.game.challengeeDeck.cards)},
 				"discardsize": ${fn:length(game.challengeeDiscarded)},
 				"bench": [
 					<c:forEach items="${game.challengeeBench}" var="card" varStatus="loop">

@@ -40,29 +40,29 @@ public class ViewBoard extends PageController {
 			String challengerStatus = "";
 			String challengeeStatus = "";
 			
-			if (gameBoard.getStatus() == GameStatus.ongoing.ordinal()) {
+			if (gameBoard.getGame().getStatus() == GameStatus.ongoing.ordinal()) {
 				challengerStatus = challengeeStatus = "playing";
 			}
-			else if (gameBoard.getStatus() == GameStatus.challengerRetired.ordinal()) {
+			else if (gameBoard.getGame().getStatus() == GameStatus.challengerRetired.ordinal()) {
 				challengerStatus = "retired";
 				challengeeStatus = "won";
 			}
-			else if (gameBoard.getStatus() == GameStatus.challengeeRetired.ordinal()) {
+			else if (gameBoard.getGame().getStatus() == GameStatus.challengeeRetired.ordinal()) {
 				challengerStatus = "won";
 				challengeeStatus = "retired";
 			}
-			else if (gameBoard.getStatus() == GameStatus.challengerWon.ordinal()) {
+			else if (gameBoard.getGame().getStatus() == GameStatus.challengerWon.ordinal()) {
 				challengerStatus = "won";
 				challengeeStatus = "lost";
 			}
-			else if (gameBoard.getStatus() == GameStatus.challengeeWon.ordinal()) {
+			else if (gameBoard.getGame().getStatus() == GameStatus.challengeeWon.ordinal()) {
 				challengerStatus = "lost";
 				challengeeStatus = "won";
 			}
 			
 			request.setAttribute("challengerStatus", challengerStatus);
 			request.setAttribute("challengeeStatus", challengeeStatus);
-			request.setAttribute("game", gameBoard);
+			request.setAttribute("gameBoard", gameBoard);
 			
 			request.getRequestDispatcher(Global.VIEW_BOARD).forward(request, response);
 			
