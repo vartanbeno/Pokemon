@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import dom.model.card.Card;
 import dom.model.cardinplay.CardInPlay;
 import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.mapper.CardInPlayOutputMapper;
 import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.game.Game;
@@ -82,7 +82,7 @@ public class DrawCard extends PageController {
 					CardStatus.hand.ordinal()
 			);
 			
-			CardInPlayMapper.insertStatic(cardInPlay);
+			CardInPlayOutputMapper.insertStatic(cardInPlay);
 			
 			success(request, response, String.format(DRAW_SUCCESS, card.getType(), card.getName()));
 			

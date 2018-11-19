@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayMapper;
+import dom.model.cardinplay.mapper.CardInPlayInputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
@@ -142,12 +142,12 @@ public class GameInputMapper {
 		Deck challengerDeck = (Deck) game.getChallengerDeck();
 		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
 		
-		List<ICardInPlay> challengerHand = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengeeHand = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengerBench = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengeeBench = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengerDiscarded = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
-		List<ICardInPlay> challengeeDiscarded = CardInPlayMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengerHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengeeHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengerBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengeeBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengerDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengeeDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
 		
 		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
 		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size();
