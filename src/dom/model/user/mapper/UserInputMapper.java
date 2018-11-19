@@ -7,6 +7,7 @@ import java.util.List;
 
 import dom.model.user.IUser;
 import dom.model.user.User;
+import dom.model.user.UserFactory;
 import dom.model.user.tdg.UserFinder;
 
 public class UserInputMapper {
@@ -57,12 +58,12 @@ public class UserInputMapper {
 	
 	public static User buildUser(ResultSet rs) throws SQLException {
 		
-		return new User(
+		return UserFactory.createClean(
 				rs.getLong("id"),
 				rs.getInt("version"),
 				rs.getString("username"),
 				rs.getString("password")
-			);
+		);
 		
 	}
 	

@@ -13,6 +13,7 @@ import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
+import dom.model.game.GameFactory;
 import dom.model.game.IGame;
 import dom.model.game.tdg.GameFinder;
 import dom.model.user.User;
@@ -104,7 +105,7 @@ public class GameInputMapper {
 		Deck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
 		Deck challengeeDeck = DeckInputMapper.findById(rs.getLong("challengee_deck"));
 		
-		return new Game(
+		return GameFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
 				challenger, challengee,

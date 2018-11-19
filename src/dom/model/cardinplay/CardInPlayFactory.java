@@ -21,8 +21,7 @@ public class CardInPlayFactory {
 		
 	}
 	
-	public static CardInPlay createClean(long id, long version, IGame game, IUser player, IDeck deck, ICard card, int status)
-			throws MissingMappingException, MapperException {
+	public static CardInPlay createClean(long id, long version, IGame game, IUser player, IDeck deck, ICard card, int status) {
 		
 		CardInPlay cardInPlay = new CardInPlay(id, version, game, player, deck, card, status);
 		UoW.getCurrent().registerClean(cardInPlay);

@@ -8,6 +8,7 @@ import java.util.List;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
+import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.tdg.CardInPlayFinder;
 import dom.model.deck.Deck;
@@ -76,7 +77,12 @@ public class CardInPlayInputMapper {
 		Deck deck = DeckInputMapper.findById(rs.getLong("deck"));
 		Card card = CardInputMapper.findById(rs.getLong("card"));
 		
-		return new CardInPlay(rs.getLong("id"), rs.getLong("version"), game, player, deck, card, rs.getInt("status"));
+		return CardInPlayFactory.createClean(
+				rs.getLong("id"),
+				rs.getLong("version"),
+				game, player, deck, card,
+				rs.getInt("status")
+		);
 		
 	}
 	

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dom.model.card.Card;
+import dom.model.card.CardFactory;
 import dom.model.card.ICard;
 import dom.model.card.tdg.CardFinder;
 
@@ -35,7 +36,7 @@ public class CardInputMapper {
 	
 	public static Card buildCard(ResultSet rs) throws SQLException {
 		
-		return new Card(
+		return CardFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
 				rs.getLong("deck"),

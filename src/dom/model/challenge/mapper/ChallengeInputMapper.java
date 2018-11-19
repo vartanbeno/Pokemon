@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dom.model.challenge.Challenge;
+import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.IChallenge;
 import dom.model.challenge.tdg.ChallengeFinder;
 import dom.model.deck.Deck;
@@ -109,7 +110,7 @@ public class ChallengeInputMapper {
 		User challengee = UserInputMapper.findById(rs.getLong("challengee"));
 		Deck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
 		
-		return new Challenge(
+		return ChallengeFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
 				challenger, challengee,
