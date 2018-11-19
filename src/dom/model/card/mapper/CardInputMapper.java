@@ -62,7 +62,7 @@ public class CardInputMapper {
 			long id = rs.getLong("id");
 			Card card = getFromIdentityMap(id);
 			
-			if (card == null) buildCard(rs);
+			if (card == null) card = buildCard(rs);
 			
 			cards.add(card);
 			
