@@ -50,10 +50,10 @@ public class UserInputMapper {
 		if (rs.next()) {
 			
 			long id = rs.getLong("id");
-			user = getFromIdentityMap(id);
-			if (user != null) return user;
 			
-			user = buildUser(rs);
+			user = getFromIdentityMap(id);
+			if (user == null) user = buildUser(rs);
+			
 			rs.close();
 			
 		}
@@ -71,10 +71,10 @@ public class UserInputMapper {
 		if (rs.next()) {
 			
 			long id = rs.getLong("id");
-			user = getFromIdentityMap(id);
-			if (user != null) return user;
 			
-			user = buildUser(rs);
+			user = getFromIdentityMap(id);
+			if (user == null) user = buildUser(rs);
+			
 			rs.close();
 			
 		}

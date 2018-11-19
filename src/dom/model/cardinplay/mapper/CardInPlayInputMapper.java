@@ -58,10 +58,10 @@ public class CardInPlayInputMapper {
 		if (rs.next()) {
 			
 			long id = rs.getLong("id");
-			cardInPlay = getFromIdentityMap(id);
-			if (cardInPlay != null) return cardInPlay;
 			
-			cardInPlay = buildCardInPlay(rs);
+			cardInPlay = getFromIdentityMap(id);
+			if (cardInPlay == null) cardInPlay = buildCardInPlay(rs);
+			
 			rs.close();
 			
 		}

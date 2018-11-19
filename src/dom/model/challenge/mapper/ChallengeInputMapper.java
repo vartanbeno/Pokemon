@@ -76,10 +76,10 @@ public class ChallengeInputMapper {
 		if (rs.next()) {
 			
 			long id2 = rs.getLong("id");
-			challenge = getFromIdentityMap(id2);
-			if (challenge != null) return challenge;
 			
-			challenge = buildChallenge(rs);
+			challenge = getFromIdentityMap(id2);
+			if (challenge == null) challenge = buildChallenge(rs);
+			
 			rs.close();
 			
 		}
@@ -119,10 +119,10 @@ public class ChallengeInputMapper {
 		if (rs.next()) {
 			
 			long id = rs.getLong("id");
-			challenge = getFromIdentityMap(id);
-			if (challenge != null) return challenge;
 			
-			challenge = buildChallenge(rs);
+			challenge = getFromIdentityMap(id);
+			if (challenge == null) challenge = buildChallenge(rs);
+			
 			rs.close();
 			
 		}
