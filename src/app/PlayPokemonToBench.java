@@ -12,7 +12,7 @@ import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayMapper;
 import dom.model.card.Card;
-import dom.model.card.mapper.CardMapper;
+import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
@@ -106,7 +106,7 @@ public class PlayPokemonToBench extends PageController {
 			}
 			
 			CardInPlay cardInHand = (CardInPlay) CardInPlayMapper.findByCard(playerCardInHand.getCard().getId());
-			Card card = CardMapper.findById(cardInHand.getCard().getId());
+			Card card = CardInputMapper.findById(cardInHand.getCard().getId());
 			
 			if (card.getType().equals("p")) {
 				cardInHand.setStatus(CardStatus.benched.ordinal());

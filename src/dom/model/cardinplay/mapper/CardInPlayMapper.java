@@ -10,7 +10,7 @@ import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
 import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.card.Card;
-import dom.model.card.mapper.CardMapper;
+import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.tdg.CardInPlayFinder;
@@ -133,7 +133,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 		Game game = GameMapper.findById(rs.getLong("game"));
 		User player = UserInputMapper.findById(rs.getLong("player"));
 		Deck deck = DeckInputMapper.findById(rs.getLong("deck"));
-		Card card = CardMapper.findById(rs.getLong("card"));
+		Card card = CardInputMapper.findById(rs.getLong("card"));
 		
 		return new CardInPlay(rs.getLong("id"), rs.getLong("version"), game, player, deck, card, rs.getInt("status"));
 		

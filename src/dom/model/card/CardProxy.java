@@ -4,7 +4,7 @@ import org.dsrg.soenea.domain.DomainObjectCreationException;
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
-import dom.model.card.mapper.CardMapper;
+import dom.model.card.mapper.CardInputMapper;
 
 public class CardProxy extends DomainObjectProxy<Long, Card> implements ICard {
 
@@ -45,7 +45,7 @@ public class CardProxy extends DomainObjectProxy<Long, Card> implements ICard {
 	@Override
 	protected Card getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
 		try {
-			return CardMapper.findById(id);
+			return CardInputMapper.findById(id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

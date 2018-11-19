@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dom.model.card.ICard;
-import dom.model.card.mapper.CardMapper;
+import dom.model.card.mapper.CardInputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.tdg.DeckFinder;
@@ -51,7 +51,7 @@ public class DeckInputMapper {
 	public static Deck buildDeck(ResultSet rs) throws SQLException {
 		
 		User player = UserInputMapper.findById(rs.getLong("player"));
-		List<ICard> cards = CardMapper.findByDeck(rs.getLong("id"));
+		List<ICard> cards = CardInputMapper.findByDeck(rs.getLong("id"));
 		
 		return new Deck(rs.getLong("id"), rs.getLong("version"), player, cards);
 		
