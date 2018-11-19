@@ -64,12 +64,13 @@ public class AcceptChallenge extends PageController {
 			
 			if (challenge.getChallengee().getId() == getUserId(request)) {
 				
+				challenge.setStatus(ChallengeStatus.accepted.ordinal());
 				ChallengeFactory.registerDirty(
 						challenge.getId(),
 						challenge.getVersion(),
 						challenge.getChallenger(),
 						challenge.getChallengee(),
-						ChallengeStatus.accepted.ordinal(),
+						challenge.getStatus(),
 						challengerDeck
 				);
 				

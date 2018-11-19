@@ -1,7 +1,6 @@
 package app;
 
 import java.io.IOException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,14 +8,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.challenge.Challenge;
+import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.mapper.ChallengeInputMapper;
-import dom.model.challenge.mapper.ChallengeOutputMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
+import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
 @WebServlet("/ChallengePlayer")
@@ -112,20 +114,26 @@ public class ChallengePlayer extends PageController {
 			if (challengerDeck == null) return;
 			
 			if (challenge == null) {
-				challenge = new Challenge(
+				
+				User challenger = UserInputMapper.findById(challengerId);
+				User challengee = UserInputMapper.findById(challengeeId);
+				
+				if (challengee == null) {
+					failure(request, response, CHALLENGEE_DOES_NOT_EXIST);
+					return;
+				}
+				
+				challenge = ChallengeFactory.createNew(
 						ChallengeTDG.getMaxId(), 1,
-						UserInputMapper.findById(challengerId),
-						UserInputMapper.findById(challengeeId),
+						challenger,
+						challengee,
 						ChallengeStatus.open.ordinal(),
 						challengerDeck
 				);
-				try {
-					ChallengeOutputMapper.insertStatic(challenge);
-					success(request, response, String.format(CHALLENGE_SUCCESS, challenge.getChallengee().getUsername()));
-				}
-				catch (NullPointerException | SQLIntegrityConstraintViolationException e) {
-					failure(request, response, CHALLENGEE_DOES_NOT_EXIST);
-				}
+				
+				UoW.getCurrent().commit();
+				
+				success(request, response, String.format(CHALLENGE_SUCCESS, challenge.getChallengee().getUsername()));
 			}
 			else {
 				failure(request, response, String.format(ALREADY_CHALLENGED, challenge.getChallengee().getUsername()));

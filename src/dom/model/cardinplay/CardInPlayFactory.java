@@ -29,5 +29,15 @@ public class CardInPlayFactory {
 		return cardInPlay;
 		
 	}
+	
+	public static CardInPlay registerDirty(long id, long version, IGame game, IUser player, IDeck deck, ICard card, int status)
+			throws MissingMappingException, MapperException {
+		
+		CardInPlay cardInPlay = new CardInPlay(id, version, game, player, deck, card, status);
+		UoW.getCurrent().registerDirty(cardInPlay);
+		
+		return cardInPlay;
+		
+	}
 
 }
