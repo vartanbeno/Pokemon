@@ -14,7 +14,7 @@ import dom.model.challenge.IChallenge;
 import dom.model.challenge.tdg.ChallengeFinder;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -162,7 +162,7 @@ public class ChallengeMapper extends GenericOutputMapper<Long, Challenge> {
 		
 		User challenger = UserInputMapper.findById(rs.getLong("challenger"));
 		User challengee = UserInputMapper.findById(rs.getLong("challengee"));
-		Deck challengerDeck = DeckMapper.findById(rs.getLong("challenger_deck"));
+		Deck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
 		
 		return new Challenge(
 				rs.getLong("id"),

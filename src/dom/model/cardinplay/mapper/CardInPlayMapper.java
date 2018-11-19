@@ -16,7 +16,7 @@ import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.tdg.CardInPlayFinder;
 import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameMapper;
 import dom.model.user.User;
@@ -132,7 +132,7 @@ public class CardInPlayMapper extends GenericOutputMapper<Long, CardInPlay> {
 		
 		Game game = GameMapper.findById(rs.getLong("game"));
 		User player = UserInputMapper.findById(rs.getLong("player"));
-		Deck deck = DeckMapper.findById(rs.getLong("deck"));
+		Deck deck = DeckInputMapper.findById(rs.getLong("deck"));
 		Card card = CardMapper.findById(rs.getLong("card"));
 		
 		return new CardInPlay(rs.getLong("id"), rs.getLong("version"), game, player, deck, card, rs.getInt("status"));

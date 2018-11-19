@@ -13,7 +13,8 @@ import dom.model.card.Card;
 import dom.model.card.ICard;
 import dom.model.card.tdg.CardTDG;
 import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
+import dom.model.deck.mapper.DeckOutputMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
@@ -43,7 +44,7 @@ public class UploadDeck extends PageController {
 				return;
 			}
 				
-			int numberOfDecks = DeckMapper.findByPlayer(getUserId(request)).size();
+			int numberOfDecks = DeckInputMapper.findByPlayer(getUserId(request)).size();
 			int numberOfCards = CardTDG.getNumberOfCardsPerDeck();
 			
 			request.setAttribute("numberOfDecks", numberOfDecks);
@@ -110,7 +111,7 @@ public class UploadDeck extends PageController {
 				}
 				
 				deck.setCards(cards);
-				DeckMapper.insertStatic(deck);
+				DeckOutputMapper.insertStatic(deck);
 				
 				success(request, response, DECK_SUCCESS_MESSAGE);
 				

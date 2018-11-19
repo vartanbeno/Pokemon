@@ -7,7 +7,7 @@ import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
 import dom.model.card.ICard;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.user.IUser;
 
 public class DeckProxy extends DomainObjectProxy<Long, Deck> implements IDeck {
@@ -39,7 +39,7 @@ public class DeckProxy extends DomainObjectProxy<Long, Deck> implements IDeck {
 	@Override
 	protected Deck getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
 		try {
-			return DeckMapper.findById(id);
+			return DeckInputMapper.findById(id);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -13,7 +13,7 @@ import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
 import dom.model.game.mapper.GameMapper;
@@ -59,7 +59,7 @@ public class AcceptChallenge extends PageController {
 			Deck challengeeDeck = getDeck(request, response);
 			if (challengeeDeck == null) return;
 			
-			Deck challengerDeck = DeckMapper.findById(challenge.getChallengerDeck().getId());
+			Deck challengerDeck = DeckInputMapper.findById(challenge.getChallengerDeck().getId());
 			
 			if (challenge.getChallengee().getId() == getUserId(request)) {
 				

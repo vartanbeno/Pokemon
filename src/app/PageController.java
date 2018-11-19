@@ -22,7 +22,7 @@ import dom.model.challenge.mapper.ChallengeMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
-import dom.model.deck.mapper.DeckMapper;
+import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameMapper;
@@ -234,7 +234,7 @@ public class PageController extends HttpServlet {
 			
 			long deckId = Long.parseLong(request.getParameter("deck"));
 			
-			Deck deck = DeckMapper.findById(deckId);
+			Deck deck = DeckInputMapper.findById(deckId);
 			
 			if (deck == null) {
 				failure(request, response, DECK_DOES_NOT_EXIST);
@@ -258,7 +258,7 @@ public class PageController extends HttpServlet {
 		
 		List<IDeck> decks = new ArrayList<IDeck>();
 		try {
-			decks = DeckMapper.findByPlayer(getUserId(request));
+			decks = DeckInputMapper.findByPlayer(getUserId(request));
 			return decks;
 		}
 		catch (SQLException e) {
