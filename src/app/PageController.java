@@ -89,6 +89,7 @@ public class PageController extends HttpServlet {
 			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(null, null, null, null);
 			connectionFactory.defaultInitialization();
 			DbRegistry.setConFactory(key, connectionFactory);
+			DbRegistry.setTablePrefix(key, "");
 		}
     	catch (Exception e) {
 			e.printStackTrace();
