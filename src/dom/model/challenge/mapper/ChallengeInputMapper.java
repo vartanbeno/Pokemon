@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dsrg.soenea.domain.ObjectRemovedException;
+import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
+import org.dsrg.soenea.domain.mapper.IdentityMap;
+
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.IChallenge;
@@ -29,9 +33,12 @@ public class ChallengeInputMapper {
 	
 	public static Challenge findById(long id) throws SQLException {
 		
+		Challenge challenge = getFromIdentityMap(id);
+		if (challenge != null) return challenge;
+		
 		ResultSet rs = ChallengeFinder.findById(id);
 		
-		Challenge challenge = rs.next() ? buildChallenge(rs) : null;
+		challenge = rs.next() ? buildChallenge(rs) : null;
 		rs.close();
 		
 		return challenge;
@@ -62,10 +69,20 @@ public class ChallengeInputMapper {
 	
 	public static Challenge findOpenById(long id) throws SQLException {
 		
+		Challenge challenge = null;
+		
 		ResultSet rs = ChallengeFinder.findOpenById(id);
 		
-		Challenge challenge = rs.next() ? buildChallenge(rs) : null;
-		rs.close();
+		if (rs.next()) {
+			
+			long id2 = rs.getLong("id");
+			challenge = getFromIdentityMap(id2);
+			if (challenge != null) return challenge;
+			
+			challenge = buildChallenge(rs);
+			rs.close();
+			
+		}
 		
 		return challenge;
 		
@@ -95,10 +112,20 @@ public class ChallengeInputMapper {
 	
 	public static Challenge findOpenByChallengerAndChallengee(long challenger, long challengee) throws SQLException {
 		
+		Challenge challenge = null;
+		
 		ResultSet rs = ChallengeFinder.findOpenByChallengerAndChallengee(challenger, challengee);
 		
-		Challenge challenge = rs.next() ? buildChallenge(rs) : null;
-		rs.close();
+		if (rs.next()) {
+			
+			long id = rs.getLong("id");
+			challenge = getFromIdentityMap(id);
+			if (challenge != null) return challenge;
+			
+			challenge = buildChallenge(rs);
+			rs.close();
+			
+		}
 		
 		return challenge;
 		
@@ -126,7 +153,11 @@ public class ChallengeInputMapper {
 		
 		while (rs.next()) {
 			
-			Challenge challenge = buildChallenge(rs);
+			long id = rs.getLong("id");
+			Challenge challenge = getFromIdentityMap(id);
+			
+			if (challenge == null) challenge = buildChallenge(rs);
+			
 			challenges.add(challenge);
 			
 		}
@@ -134,6 +165,19 @@ public class ChallengeInputMapper {
 		rs.close();
 		
 		return challenges;
+		
+	}
+	
+	public static Challenge getFromIdentityMap(long id) {
+		
+		Challenge challenge = null;
+		
+		try {
+			challenge = IdentityMap.get(id, Challenge.class);
+		}
+		catch (DomainObjectNotFoundException | ObjectRemovedException e) { }
+		
+		return challenge;
 		
 	}
 
