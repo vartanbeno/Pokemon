@@ -14,19 +14,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
+import org.dsrg.soenea.uow.MapperFactory;
+import org.dsrg.soenea.uow.UoW;
 
+import dom.model.card.Card;
+import dom.model.card.mapper.CardOutputMapper;
 import dom.model.card.tdg.CardTDG;
+import dom.model.cardinplay.CardInPlay;
+import dom.model.cardinplay.mapper.CardInPlayOutputMapper;
 import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.challenge.Challenge;
 import dom.model.challenge.mapper.ChallengeInputMapper;
+import dom.model.challenge.mapper.ChallengeOutputMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
+import dom.model.deck.mapper.DeckOutputMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameInputMapper;
+import dom.model.game.mapper.GameOutputMapper;
 import dom.model.game.tdg.GameTDG;
+import dom.model.user.User;
+import dom.model.user.mapper.UserOutputMapper;
 import dom.model.user.tdg.UserTDG;
 
 /**
@@ -80,6 +91,7 @@ public class PageController extends HttpServlet {
     @Override
     public void init() throws ServletException {
     	initDb("");
+    	initUoW();
     }
     
     public static synchronized void initDb(String key) {
@@ -89,6 +101,7 @@ public class PageController extends HttpServlet {
 			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(null, null, null, null);
 			connectionFactory.defaultInitialization();
 			DbRegistry.setConFactory(key, connectionFactory);
+			DbRegistry.setTablePrefix(key, "");
 		}
     	catch (Exception e) {
 			e.printStackTrace();
@@ -133,6 +146,21 @@ public class PageController extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+    
+    public static void initUoW() {
+    	
+    	MapperFactory mapperFactory = new MapperFactory();
+    	
+    	mapperFactory.addMapping(User.class, UserOutputMapper.class);
+    	mapperFactory.addMapping(Deck.class, DeckOutputMapper.class);
+    	mapperFactory.addMapping(Challenge.class, ChallengeOutputMapper.class);
+    	mapperFactory.addMapping(Card.class, CardOutputMapper.class);
+    	mapperFactory.addMapping(Game.class, GameOutputMapper.class);
+    	mapperFactory.addMapping(CardInPlay.class, CardInPlayOutputMapper.class);
+    	
+    	UoW.initMapperFactory(mapperFactory);
+    	
+    }
 
 	protected void success(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
 		request.setAttribute("message", message);

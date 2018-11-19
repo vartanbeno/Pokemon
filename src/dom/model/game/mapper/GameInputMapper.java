@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.dsrg.soenea.domain.ObjectRemovedException;
+import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
+import org.dsrg.soenea.domain.mapper.IdentityMap;
+
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayInputMapper;
@@ -13,6 +17,7 @@ import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
+import dom.model.game.GameFactory;
 import dom.model.game.IGame;
 import dom.model.game.tdg.GameFinder;
 import dom.model.user.User;
@@ -33,9 +38,12 @@ public class GameInputMapper {
 	
 	public static Game findById(long id) throws SQLException {
 		
+		Game game = getFromIdentityMap(id);
+		if (game != null) return game;
+		
 		ResultSet rs = GameFinder.findById(id);
 		
-		Game game = rs.next() ? buildGame(rs) : null;
+		game = rs.next() ? buildGame(rs) : null;
 		rs.close();
 		
 		return game;
@@ -104,7 +112,7 @@ public class GameInputMapper {
 		Deck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
 		Deck challengeeDeck = DeckInputMapper.findById(rs.getLong("challengee_deck"));
 		
-		return new Game(
+		return GameFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
 				challenger, challengee,
@@ -120,7 +128,11 @@ public class GameInputMapper {
 		
 		while (rs.next()) {
 			
-			Game game = buildGame(rs);
+			long id = rs.getLong("id");
+			Game game = getFromIdentityMap(id);
+			
+			if (game == null) game = buildGame(rs);
+			
 			games.add(game);
 			
 		}
@@ -134,19 +146,17 @@ public class GameInputMapper {
 	public static GameBoard buildGameBoard(Game game) throws SQLException {
 		
 		long gameId = game.getId();
-		long gameVersion = game.getVersion();
-		int gameStatus = game.getStatus();
 		
-		User challenger = (User) game.getChallenger();
+		User challengerId = (User) game.getChallenger();
 		User challengee = (User) game.getChallengee();
 		Deck challengerDeck = (Deck) game.getChallengerDeck();
 		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
 		
-		List<ICardInPlay> challengerHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.hand.ordinal());
+		List<ICardInPlay> challengerHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengerId.getId(), CardStatus.hand.ordinal());
 		List<ICardInPlay> challengeeHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengerBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.benched.ordinal());
+		List<ICardInPlay> challengerBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengerId.getId(), CardStatus.benched.ordinal());
 		List<ICardInPlay> challengeeBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengerDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challenger.getId(), CardStatus.discarded.ordinal());
+		List<ICardInPlay> challengerDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengerId.getId(), CardStatus.discarded.ordinal());
 		List<ICardInPlay> challengeeDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
 		
 		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
@@ -162,14 +172,24 @@ public class GameInputMapper {
 		IntStream.range(0, challengeeCardsNotInDeck).forEach($ -> challengeeDeck.getCards().remove(0));
 		
 		return new GameBoard(
-				gameId, gameVersion,
-				challenger, challengee,
-				challengerDeck, challengeeDeck,
+				game,
 				challengerHand, challengeeHand,
 				challengerBench, challengeeBench,
-				challengerDiscarded, challengeeDiscarded,
-				gameStatus
+				challengerDiscarded, challengeeDiscarded
 		);
+		
+	}
+	
+	public static Game getFromIdentityMap(long id) {
+		
+		Game game = null;
+		
+		try {
+			game = IdentityMap.get(id, Game.class);
+		}
+		catch (DomainObjectNotFoundException | ObjectRemovedException e) { }
+		
+		return game;
 		
 	}
 

@@ -1,0 +1,39 @@
+package dom.model.user;
+
+import java.sql.SQLException;
+
+import org.dsrg.soenea.domain.MapperException;
+import org.dsrg.soenea.uow.MissingMappingException;
+import org.dsrg.soenea.uow.UoW;
+
+public class UserFactory {
+	
+	public static User createNew(Long id, long version, String username, String password)
+			throws SQLException, MissingMappingException, MapperException {
+		
+		User user = new User(id, version, username, password);
+		UoW.getCurrent().registerNew(user);
+		
+		return user;
+		
+	}
+	
+	public static User createNew(IUser user)
+			throws MissingMappingException, SQLException, MapperException {
+		return createNew(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
+	}
+	
+	public static User createClean(long id, long version, String username, String password) {
+		
+		User user = new User(id, version, username, password);
+		UoW.getCurrent().registerClean(user);
+		
+		return user;
+		
+	}
+	
+	public static User createClean(IUser user) {
+		return createClean(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
+	}
+
+}

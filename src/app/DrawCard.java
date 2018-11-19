@@ -7,14 +7,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.card.Card;
 import dom.model.cardinplay.CardInPlay;
+import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.mapper.CardInPlayOutputMapper;
 import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.Deck;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
+import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.User;
@@ -61,13 +64,13 @@ public class DrawCard extends PageController {
 			User player = null;
 			Deck deck = null;
 			
-			if (userId == gameBoard.getChallenger().getId()) {
-				player = (User) gameBoard.getChallenger();
-				deck = (Deck) gameBoard.getChallengerDeck(); 
+			if (userId == gameBoard.getGame().getChallenger().getId()) {
+				player = (User) gameBoard.getGame().getChallenger();
+				deck = (Deck) gameBoard.getGame().getChallengerDeck(); 
 			}
-			else if (userId == gameBoard.getChallengee().getId()) {
-				player = (User) gameBoard.getChallengee(); 
-				deck = (Deck) gameBoard.getChallengeeDeck();
+			else if (userId == gameBoard.getGame().getChallengee().getId()) {
+				player = (User) gameBoard.getGame().getChallengee(); 
+				deck = (Deck) gameBoard.getGame().getChallengeeDeck();
 			}
 			
 			if (deck.getCards().size() == 0) {
@@ -76,13 +79,20 @@ public class DrawCard extends PageController {
 			}
 			
 			Card card = (Card) deck.getCards().remove(0);
+			
 			CardInPlay cardInPlay = new CardInPlay(
 					CardInPlayTDG.getMaxId(), 1,
 					game, player, deck, card,
 					CardStatus.hand.ordinal()
 			);
 			
-			CardInPlayOutputMapper.insertStatic(cardInPlay);
+			/**
+			 * Register the game as well, since we want to increment its version.
+			 * Drawing a card counts as a turn, meaning the game is in a different state.
+			 */
+			GameFactory.registerDirty(game);
+			CardInPlayFactory.createNew(cardInPlay);
+			UoW.getCurrent().commit();
 			
 			success(request, response, String.format(DRAW_SUCCESS, card.getType(), card.getName()));
 			

@@ -7,9 +7,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.challenge.Challenge;
+import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.challenge.mapper.ChallengeOutputMapper;
 
 @WebServlet("/RefuseChallenge")
 public class RefuseChallenge extends PageController {
@@ -49,14 +51,15 @@ public class RefuseChallenge extends PageController {
 			 */
 			if (challenge.getChallengee().getId() == userId) {
 				challenge.setStatus(ChallengeStatus.refused.ordinal());
-				ChallengeOutputMapper.updateStatic(challenge);
 				success(request, response, String.format(REFUSE_SUCCESS, challenge.getChallenger().getUsername()));
 			}
 			else if (challenge.getChallenger().getId() == userId) {
 				challenge.setStatus(ChallengeStatus.withdrawn.ordinal());
-				ChallengeOutputMapper.updateStatic(challenge);
 				success(request, response, String.format(WITHDRAW_SUCCESS, challenge.getChallengee().getUsername()));
 			}
+			
+			ChallengeFactory.registerDirty(challenge);
+			UoW.getCurrent().commit();
 			
 		}
 		catch (Exception e) {

@@ -2,10 +2,10 @@ package dom.model.card.tdg;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.dsrg.soenea.service.UniqueIdFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.deck.tdg.DeckTDG;
@@ -50,9 +50,6 @@ public class CardTDG {
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
 	
 	private static final String DELETE_DECK = String.format("DELETE FROM %1$s WHERE deck = ? AND version = ?;", TABLE_NAME);
-	
-	private static final String GET_MAX_ID = String.format("SELECT MAX(id) AS max_id FROM %1$s;", TABLE_NAME);
-	private static long maxId = 0;
 	
 	public static String getTableName() {
 		return TABLE_NAME;
@@ -142,19 +139,7 @@ public class CardTDG {
 	}
 	
 	public static synchronized long getMaxId() throws SQLException {
-		if (maxId == 0) {
-			Connection con = DbRegistry.getDbConnection();
-			
-			PreparedStatement ps = con.prepareStatement(GET_MAX_ID);
-			ResultSet rs = ps.executeQuery();
-			
-			maxId = rs.next() ? rs.getLong("max_id") : 1;
-			
-			rs.close();
-			ps.close();
-		}
-		
-		return ++maxId;
+		return UniqueIdFactory.getMaxId(TABLE_NAME, "id");
 	}
 
 }

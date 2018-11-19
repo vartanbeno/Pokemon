@@ -8,14 +8,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayInputMapper;
-import dom.model.cardinplay.mapper.CardInPlayOutputMapper;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
+import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.game.Game;
+import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 
 @WebServlet("/PlayPokemonToBench")
@@ -23,7 +26,7 @@ public class PlayPokemonToBench extends PageController {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String CARD_ID_FORMAT = "You must provide a valid format for the card ID (positive integer).";
+	private static final String CARD_INDEX_FORMAT = "You must provide a valid format for the card index (positive integer).";
 	private static final String BENCH_IS_FULL = "Your bench is full. It already has 5 Pokemon.";
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
 	private static final String NOT_A_POKEMON = "You can only bench cards of type 'p', i.e. Pokemon.";
@@ -75,7 +78,7 @@ public class PlayPokemonToBench extends PageController {
 				cardIndex = Integer.parseInt(request.getParameter("card"));
 			}
 			catch (NumberFormatException e) {
-				failure(request, response, CARD_ID_FORMAT);
+				failure(request, response, CARD_INDEX_FORMAT);
 				return;
 			}
 			
@@ -110,9 +113,15 @@ public class PlayPokemonToBench extends PageController {
 			Card card = CardInputMapper.findById(cardInHand.getCard().getId());
 			
 			if (card.getType().equals("p")) {
+				
 				cardInHand.setStatus(CardStatus.benched.ordinal());
-				CardInPlayOutputMapper.updateStatic(cardInHand);
+				
+				GameFactory.registerDirty(game);
+				CardInPlayFactory.registerDirty(cardInHand);
+				UoW.getCurrent().commit();
+				
 				success(request, response, String.format(BENCH_SUCCESS, card.getName()));
+				
 			}
 			else {
 				failure(request, response, NOT_A_POKEMON);

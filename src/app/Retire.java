@@ -6,9 +6,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.game.Game;
+import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
-import dom.model.game.mapper.GameOutputMapper;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -59,7 +61,9 @@ public class Retire extends PageController {
 				opponent = UserInputMapper.findById(game.getChallenger().getId());
 			}
 			
-			GameOutputMapper.updateStatic(game);
+			GameFactory.registerDirty(game);
+			UoW.getCurrent().commit();
+			
 			success(request, response, String.format(RETIRE_SUCCESS, opponent.getUsername()));
 			
 		}

@@ -2,25 +2,12 @@ package dom.model.game;
 
 import java.util.List;
 
-import org.dsrg.soenea.domain.interf.IDomainObject;
-
 import dom.model.cardinplay.ICardInPlay;
-import dom.model.deck.IDeck;
-import dom.model.user.IUser;
 
-public interface IGameBoard extends IDomainObject<Long> {
+public interface IGameBoard {
 	
-	public IUser getChallenger();
-	public void setChallenger(IUser challenger);
-	
-	public IUser getChallengee();
-	public void setChallengee(IUser challengee);
-	
-	public IDeck getChallengerDeck();
-	public void setChallengerDeck(IDeck challengerDeck);
-	
-	public IDeck getChallengeeDeck();
-	public void setChallengeeDeck(IDeck challengeeDeck);
+	public IGame getGame();
+	public void setGame(IGame game);
 	
 	public List<ICardInPlay> getChallengerHand();
 	public void setChallengerHand(List<ICardInPlay> challengerHand);
@@ -39,8 +26,5 @@ public interface IGameBoard extends IDomainObject<Long> {
 	
 	public List<ICardInPlay> getChallengeeDiscarded();
 	public void setChallengeeDiscarded(List<ICardInPlay> challengeeDiscarded);
-	
-	public int getStatus();
-	public void setStatus(int status);
 
 }

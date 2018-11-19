@@ -7,9 +7,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.user.User;
+import dom.model.user.UserFactory;
 import dom.model.user.mapper.UserInputMapper;
-import dom.model.user.mapper.UserOutputMapper;
 import dom.model.user.tdg.UserTDG;
 
 @WebServlet("/Register")
@@ -46,10 +48,15 @@ public class Register extends PageController {
 				failure(request, response, String.format(USERNAME_TAKEN, username));
 			}
 			else {
+				
 				user = new User(UserTDG.getMaxId(), 1, username, password);
-				UserOutputMapper.insertStatic(user);
+				
+				UserFactory.createNew(user);
+				UoW.getCurrent().commit();
+				
 				request.getSession(true).setAttribute("userid", user.getId());
 				success(request, response, String.format(REGISTRATION_SUCCESS, user.getUsername()));
+				
 			}
 			
 		}

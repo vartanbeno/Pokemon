@@ -9,12 +9,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.card.Card;
 import dom.model.card.ICard;
 import dom.model.card.tdg.CardTDG;
 import dom.model.deck.Deck;
+import dom.model.deck.DeckFactory;
 import dom.model.deck.mapper.DeckInputMapper;
-import dom.model.deck.mapper.DeckOutputMapper;
 import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
@@ -111,7 +113,9 @@ public class UploadDeck extends PageController {
 				}
 				
 				deck.setCards(cards);
-				DeckOutputMapper.insertStatic(deck);
+				
+				DeckFactory.createNew(deck);
+				UoW.getCurrent().commit();
 				
 				success(request, response, DECK_SUCCESS_MESSAGE);
 				

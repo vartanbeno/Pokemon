@@ -2,19 +2,11 @@ package dom.model.game;
 
 import java.util.List;
 
-import org.dsrg.soenea.domain.DomainObject;
-
 import dom.model.cardinplay.ICardInPlay;
-import dom.model.deck.IDeck;
-import dom.model.user.IUser;
 
-public class GameBoard extends DomainObject<Long> implements IGameBoard {
+public class GameBoard implements IGameBoard {
 	
-	private IUser challenger;
-	private IUser challengee;
-	
-	private IDeck challengerDeck;
-	private IDeck challengeeDeck;
+	private IGame game;
 	
 	private List<ICardInPlay> challengerHand;
 	private List<ICardInPlay> challengeeHand;
@@ -25,69 +17,29 @@ public class GameBoard extends DomainObject<Long> implements IGameBoard {
 	private List<ICardInPlay> challengerDiscarded;
 	private List<ICardInPlay> challengeeDiscarded;
 	
-	private int status;
-	
 	public GameBoard(
-			long id, Long version,
-			IUser challenger, IUser challengee,
-			IDeck challengerDeck, IDeck challengeeDeck,
+			IGame game,
 			List<ICardInPlay> challengerHand, List<ICardInPlay> challengeeHand,
 			List<ICardInPlay> challengerBench, List<ICardInPlay> challengeeBench,
-			List<ICardInPlay> challengerDiscarded, List<ICardInPlay> challengeeDiscarded,
-			int status
+			List<ICardInPlay> challengerDiscarded, List<ICardInPlay> challengeeDiscarded
 	) {
-		super(id, version);
-		this.challenger = challenger;
-		this.challengee = challengee;
-		this.challengerDeck = challengerDeck;
-		this.challengeeDeck = challengeeDeck;
+		this.game = game;
 		this.challengerHand = challengerHand;
 		this.challengeeHand = challengeeHand;
 		this.challengerBench = challengerBench;
 		this.challengeeBench = challengeeBench;
 		this.challengerDiscarded = challengerDiscarded;
 		this.challengeeDiscarded = challengeeDiscarded;
-		this.status = status;
 	}
 
 	@Override
-	public IUser getChallenger() {
-		return challenger;
+	public IGame getGame() {
+		return game;
 	}
-
+	
 	@Override
-	public void setChallenger(IUser challenger) {
-		this.challenger = challenger;
-	}
-
-	@Override
-	public IUser getChallengee() {
-		return challengee;
-	}
-
-	@Override
-	public void setChallengee(IUser challengee) {
-		this.challengee = challengee;
-	}
-
-	@Override
-	public IDeck getChallengerDeck() {
-		return challengerDeck;
-	}
-
-	@Override
-	public void setChallengerDeck(IDeck challengerDeck) {
-		this.challengerDeck = challengerDeck;
-	}
-
-	@Override
-	public IDeck getChallengeeDeck() {
-		return challengeeDeck;
-	}
-
-	@Override
-	public void setChallengeeDeck(IDeck challengeeDeck) {
-		this.challengeeDeck = challengeeDeck;
+	public void setGame(IGame game) {
+		this.game = game;
 	}
 
 	@Override
@@ -148,16 +100,6 @@ public class GameBoard extends DomainObject<Long> implements IGameBoard {
 	@Override
 	public void setChallengeeDiscarded(List<ICardInPlay> challengeeDiscarded) {
 		this.challengeeDiscarded = challengeeDiscarded;
-	}
-
-	@Override
-	public int getStatus() {
-		return status;
-	}
-
-	@Override
-	public void setStatus(int status) {
-		this.status = status;
 	}
 
 }
