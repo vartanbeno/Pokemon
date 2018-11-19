@@ -115,7 +115,7 @@ public class CardInPlayInputMapper {
 			long id = rs.getLong("id");
 			CardInPlay cardInPlay = getFromIdentityMap(id);
 			
-			if (cardInPlay == null) buildCardInPlay(rs);
+			if (cardInPlay == null) cardInPlay = buildCardInPlay(rs);
 			
 			cardsInPlay.add(cardInPlay);
 			

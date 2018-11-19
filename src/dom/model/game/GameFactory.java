@@ -52,5 +52,28 @@ public class GameFactory {
 				game.getStatus()
 		);
 	}
+	
+	public static Game registerDirty(long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status)
+			throws MissingMappingException, MapperException {
+		
+		Game game = new Game(id, version, challenger, challengee, challengerDeck, challengeeDeck, status);
+		UoW.getCurrent().registerDirty(game);
+		
+		return game;
+		
+	}
+	
+	public static Game registerDirty(IGame game)
+			throws MissingMappingException, MapperException {
+		return registerDirty(
+				game.getId(),
+				game.getVersion(),
+				game.getChallenger(),
+				game.getChallengee(),
+				game.getChallengerDeck(),
+				game.getChallengeeDeck(),
+				game.getStatus()
+		);
+	}
 
 }
