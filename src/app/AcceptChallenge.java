@@ -16,6 +16,7 @@ import dom.model.challenge.ChallengeStatus;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
+import dom.model.game.Game;
 import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 import dom.model.game.tdg.GameTDG;
@@ -65,16 +66,9 @@ public class AcceptChallenge extends PageController {
 			if (challenge.getChallengee().getId() == getUserId(request)) {
 				
 				challenge.setStatus(ChallengeStatus.accepted.ordinal());
-				ChallengeFactory.registerDirty(
-						challenge.getId(),
-						challenge.getVersion(),
-						challenge.getChallenger(),
-						challenge.getChallengee(),
-						challenge.getStatus(),
-						challengerDeck
-				);
+				ChallengeFactory.registerDirty(challenge);
 				
-				GameFactory.createNew(
+				Game game = new Game(
 						GameTDG.getMaxId(), 1,
 						challenge.getChallenger(),
 						challenge.getChallengee(),
@@ -83,6 +77,7 @@ public class AcceptChallenge extends PageController {
 						GameStatus.ongoing.ordinal()
 				);
 				
+				GameFactory.createNew(game);
 				UoW.getCurrent().commit();
 				
 				success(request, response, String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername()));

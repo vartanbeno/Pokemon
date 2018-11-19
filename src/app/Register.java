@@ -49,7 +49,9 @@ public class Register extends PageController {
 			}
 			else {
 				
-				user = UserFactory.createNew(UserTDG.getMaxId(), 1, username, password);
+				user = new User(UserTDG.getMaxId(), 1, username, password);
+				
+				UserFactory.createNew(user);
 				UoW.getCurrent().commit();
 				
 				request.getSession(true).setAttribute("userid", user.getId());

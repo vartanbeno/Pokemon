@@ -123,7 +123,7 @@ public class ChallengePlayer extends PageController {
 					return;
 				}
 				
-				challenge = ChallengeFactory.createNew(
+				challenge = new Challenge(
 						ChallengeTDG.getMaxId(), 1,
 						challenger,
 						challengee,
@@ -131,6 +131,7 @@ public class ChallengePlayer extends PageController {
 						challengerDeck
 				);
 				
+				ChallengeFactory.createNew(challenge);
 				UoW.getCurrent().commit();
 				
 				success(request, response, String.format(CHALLENGE_SUCCESS, challenge.getChallengee().getUsername()));

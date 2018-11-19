@@ -8,13 +8,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayInputMapper;
-import dom.model.cardinplay.mapper.CardInPlayOutputMapper;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
+import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
 
@@ -110,9 +112,14 @@ public class PlayPokemonToBench extends PageController {
 			Card card = CardInputMapper.findById(cardInHand.getCard().getId());
 			
 			if (card.getType().equals("p")) {
+				
 				cardInHand.setStatus(CardStatus.benched.ordinal());
-				CardInPlayOutputMapper.updateStatic(cardInHand);
+				
+				CardInPlayFactory.registerDirty(cardInHand);
+				UoW.getCurrent().commit();
+				
 				success(request, response, String.format(BENCH_SUCCESS, card.getName()));
+				
 			}
 			else {
 				failure(request, response, NOT_A_POKEMON);
