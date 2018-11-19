@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dsrg.soenea.domain.ObjectRemovedException;
+import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
+import org.dsrg.soenea.domain.mapper.IdentityMap;
+
 import dom.model.card.Card;
 import dom.model.card.CardFactory;
 import dom.model.card.ICard;
@@ -14,9 +18,12 @@ public class CardInputMapper {
 	
 	public static Card findById(long id) throws SQLException {
 		
+		Card card = getFromIdentityMap(id);
+		if (card != null) return card;
+		
 		ResultSet rs = CardFinder.findById(id);
 		
-		Card card = rs.next() ? buildCard(rs) : null;
+		card = rs.next() ? buildCard(rs) : null;
 		rs.close();
 		
 		return card;
@@ -52,7 +59,11 @@ public class CardInputMapper {
 		
 		while (rs.next()) {
 			
-			Card card = buildCard(rs);
+			long id = rs.getLong("id");
+			Card card = getFromIdentityMap(id);
+			
+			if (card == null) buildCard(rs);
+			
 			cards.add(card);
 			
 		}
@@ -60,6 +71,19 @@ public class CardInputMapper {
 		rs.close();
 		
 		return cards;
+		
+	}
+	
+	public static Card getFromIdentityMap(long id) {
+		
+		Card card = null;
+		
+		try {
+			card = IdentityMap.get(id, Card.class);
+		}
+		catch (DomainObjectNotFoundException | ObjectRemovedException e) { }
+		
+		return card;
 		
 	}
 

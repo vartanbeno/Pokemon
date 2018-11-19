@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dsrg.soenea.domain.ObjectRemovedException;
+import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
+import org.dsrg.soenea.domain.mapper.IdentityMap;
+
 import dom.model.card.Card;
 import dom.model.card.mapper.CardInputMapper;
 import dom.model.cardinplay.CardInPlay;
@@ -23,6 +27,7 @@ public class CardInPlayInputMapper {
 	public static List<ICardInPlay> findAll() throws SQLException {
 		
 		ResultSet rs = CardInPlayFinder.findAll();
+		
 		List<ICardInPlay> cardsInPlay = buildCardsInPlay(rs);
 		rs.close();
 		
@@ -32,8 +37,12 @@ public class CardInPlayInputMapper {
 	
 	public static CardInPlay findById(long id) throws SQLException {
 		
+		CardInPlay cardInPlay = getFromIdentityMap(id);
+		if (cardInPlay != null) return cardInPlay;
+		
 		ResultSet rs = CardInPlayFinder.findById(id);
-		CardInPlay cardInPlay = rs.next() ? buildCardInPlay(rs) : null;
+		
+		cardInPlay = rs.next() ? buildCardInPlay(rs) : null;
 		rs.close();
 		
 		return cardInPlay;
@@ -42,9 +51,20 @@ public class CardInPlayInputMapper {
 	
 	public static CardInPlay findByCard(long card) throws SQLException {
 		
+		CardInPlay cardInPlay = null;
+		
 		ResultSet rs = CardInPlayFinder.findByCard(card);
-		CardInPlay cardInPlay = rs.next() ? buildCardInPlay(rs) : null;
-		rs.close();
+		
+		if (rs.next()) {
+			
+			long id = rs.getLong("id");
+			cardInPlay = getFromIdentityMap(id);
+			if (cardInPlay != null) return cardInPlay;
+			
+			cardInPlay = buildCardInPlay(rs);
+			rs.close();
+			
+		}
 		
 		return cardInPlay;
 		
@@ -92,7 +112,11 @@ public class CardInPlayInputMapper {
 		
 		while (rs.next()) {
 			
-			CardInPlay cardInPlay = buildCardInPlay(rs);
+			long id = rs.getLong("id");
+			CardInPlay cardInPlay = getFromIdentityMap(id);
+			
+			if (cardInPlay == null) buildCardInPlay(rs);
+			
 			cardsInPlay.add(cardInPlay);
 			
 		}
@@ -100,6 +124,19 @@ public class CardInPlayInputMapper {
 		rs.close();
 		
 		return cardsInPlay;
+		
+	}
+	
+	public static CardInPlay getFromIdentityMap(long id) {
+		
+		CardInPlay cardInPlay = null;
+		
+		try {
+			cardInPlay = IdentityMap.get(id, CardInPlay.class);
+		}
+		catch (DomainObjectNotFoundException | ObjectRemovedException e) { }
+		
+		return cardInPlay;
 		
 	}
 

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.dsrg.soenea.domain.ObjectRemovedException;
+import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
+import org.dsrg.soenea.domain.mapper.IdentityMap;
+
 import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayInputMapper;
@@ -34,9 +38,12 @@ public class GameInputMapper {
 	
 	public static Game findById(long id) throws SQLException {
 		
+		Game game = getFromIdentityMap(id);
+		if (game != null) return game;
+		
 		ResultSet rs = GameFinder.findById(id);
 		
-		Game game = rs.next() ? buildGame(rs) : null;
+		game = rs.next() ? buildGame(rs) : null;
 		rs.close();
 		
 		return game;
@@ -121,7 +128,11 @@ public class GameInputMapper {
 		
 		while (rs.next()) {
 			
-			Game game = buildGame(rs);
+			long id = rs.getLong("id");
+			Game game = getFromIdentityMap(id);
+			
+			if (game == null) game = buildGame(rs);
+			
 			games.add(game);
 			
 		}
@@ -171,6 +182,19 @@ public class GameInputMapper {
 				challengerDiscarded, challengeeDiscarded,
 				gameStatus
 		);
+		
+	}
+	
+	public static Game getFromIdentityMap(long id) {
+		
+		Game game = null;
+		
+		try {
+			game = IdentityMap.get(id, Game.class);
+		}
+		catch (DomainObjectNotFoundException | ObjectRemovedException e) { }
+		
+		return game;
 		
 	}
 
