@@ -15,6 +15,8 @@ import org.dsrg.soenea.uow.MapperFactory;
 import org.dsrg.soenea.uow.UoW;
 
 import app.dispatcher.AbstractDispatcher;
+import app.dispatcher.LoginDispatcher;
+import app.dispatcher.LogoutDispatcher;
 import app.dispatcher.RegisterDispatcher;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
@@ -51,7 +53,29 @@ public class FrontController extends SmartDispatcherServlet {
 	
 	private static final String GET = "GET";
 	private static final String POST = "POST";
-
+	
+	private static final String REGISTER = "/Register";
+	private static final String LOGIN = "/Login";
+	private static final String LOGOUT = "/Logout";
+	
+	private static final String UPLOAD_DECK = "/UploadDeck";
+	private static final String VIEW_DECK = "/ViewDeck";
+	
+	private static final String CHALLENGE_PLAYER = "/ChallengePlayer";
+	private static final String OPEN_CHALLENGES = "/OpenChallenges";
+	private static final String ACCEPT_CHALLENGE = "/AcceptChallenge";
+	private static final String REFUSE_CHALLENGE = "/RefuseChallenge";
+	
+	private static final String LIST_PLAYERS = "/ListPlayers";
+	private static final String LIST_CHALLENGES = "/ListChallenges";
+	private static final String LIST_GAMES = "/ListGames";
+	
+	private static final String VIEW_BOARD = "/ViewBoard";
+	private static final String VIEW_HAND = "/ViewHand";
+	private static final String DRAW_CARD = "/DrawCard";
+	private static final String PLAY_POKEMON_TO_BENCH = "/PlayPokemonToBench";
+	private static final String RETIRE = "/Retire";
+	
     public FrontController() {
         super();
     }
@@ -159,8 +183,14 @@ public class FrontController extends SmartDispatcherServlet {
 		
 		AbstractDispatcher dispatcher = null;
 		
-		if (path.equals("/Register")) {
+		if (path.equals(REGISTER)) {
 			dispatcher = new RegisterDispatcher(request, response);
+		}
+		else if (path.equals(LOGIN)) {
+			dispatcher = new LoginDispatcher(request, response);
+		}
+		else if (path.equals(LOGOUT)) {
+			dispatcher = new LogoutDispatcher(request, response);
 		}
 		
 		return dispatcher;

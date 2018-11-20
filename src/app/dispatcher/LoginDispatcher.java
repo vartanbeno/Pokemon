@@ -7,18 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import app.Global;
-import dom.command.RegisterCommand;
+import dom.command.LoginCommand;
 
-public class RegisterDispatcher extends AbstractDispatcher {
+public class LoginDispatcher extends AbstractDispatcher {
 	
-	private static final String REGISTRATION_SUCCESS = "Successfully registered as %s.";
+	private static final String LOGIN_SUCCESS = "Successfully logged in.";
 	
-	public RegisterDispatcher(HttpServletRequest request, HttpServletResponse response) {
+	public LoginDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
-	
+
+	@Override
 	public void doGet() throws IOException, ServletException {
-		forward(Global.REGISTER_FORM);
+		forward(Global.LOGIN_FORM);
 	}
 
 	@Override
@@ -26,8 +27,8 @@ public class RegisterDispatcher extends AbstractDispatcher {
 		
 		try {
 			myRequest.getSession().invalidate();
-			new RegisterCommand(myHelper).execute();
-			success(myHelper, String.format(REGISTRATION_SUCCESS, myHelper.getString("user")));
+			new LoginCommand(myHelper).execute();
+			success(myHelper, LOGIN_SUCCESS);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
