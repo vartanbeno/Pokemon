@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dom.command.LogoutCommand;
+
 public class LogoutDispatcher extends AbstractDispatcher {
 	
 	private static final String LOGOUT_SUCCESS = "Successfully logged out.";
@@ -21,8 +23,17 @@ public class LogoutDispatcher extends AbstractDispatcher {
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		myRequest.getSession().invalidate();
-		success(myHelper, LOGOUT_SUCCESS);
+		
+		try {
+			new LogoutCommand(myHelper).execute();
+			myRequest.getSession().invalidate();
+			success(myHelper, LOGOUT_SUCCESS);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			fail(myHelper, e.getMessage());
+		}
+		
 	}
 
 }

@@ -17,6 +17,7 @@ public class RegisterDispatcher extends AbstractDispatcher {
 		super.init(request, response);
 	}
 	
+	@Override
 	public void doGet() throws IOException, ServletException {
 		forward(Global.REGISTER_FORM);
 	}

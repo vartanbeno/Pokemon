@@ -1,7 +1,6 @@
 package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.ValidatorCommand;
 import org.dsrg.soenea.domain.helper.Helper;
 import org.dsrg.soenea.uow.UoW;
 
@@ -9,7 +8,7 @@ import dom.model.user.User;
 import dom.model.user.UserFactory;
 import dom.model.user.mapper.UserInputMapper;
 
-public class RegisterCommand extends ValidatorCommand {
+public class RegisterCommand extends AbstractCommand {
 	
 	private static final String ENTER_USER_AND_PASS = "Please enter both a username and a password.";
 	private static final String USERNAME_TAKEN = "The username %s is taken.";

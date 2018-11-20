@@ -1,13 +1,12 @@
 package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.ValidatorCommand;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
-public class LoginCommand extends ValidatorCommand {
+public class LoginCommand extends AbstractCommand {
 	
 	private static final String ENTER_USER_AND_PASS = "Please enter both a username and a password.";
 	private static final String INVALID_CREDENTIALS = "Incorrect username and/or password.";
