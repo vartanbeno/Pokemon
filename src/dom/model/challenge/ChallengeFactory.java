@@ -1,9 +1,12 @@
 package dom.model.challenge;
 
+import java.sql.SQLException;
+
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.uow.MissingMappingException;
 import org.dsrg.soenea.uow.UoW;
 
+import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
@@ -17,6 +20,18 @@ public class ChallengeFactory {
 		
 		return challenge;
 		
+	}
+	
+	public static Challenge createNew(IUser challenger, IUser challengee, IDeck challengerDeck)
+			throws MissingMappingException, MapperException, SQLException {
+		return createNew(
+				ChallengeTDG.getMaxId(),
+				1,
+				challenger,
+				challengee,
+				ChallengeStatus.open.ordinal(),
+				challengerDeck
+		);
 	}
 	
 	public static Challenge createNew(IChallenge challenge)

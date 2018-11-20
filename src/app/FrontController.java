@@ -15,11 +15,13 @@ import org.dsrg.soenea.uow.MapperFactory;
 import org.dsrg.soenea.uow.UoW;
 
 import app.dispatcher.AbstractDispatcher;
+import app.dispatcher.ChallengePlayerDispatcher;
 import app.dispatcher.ListChallengesDispatcher;
 import app.dispatcher.ListGamesDispatcher;
 import app.dispatcher.ListPlayersDispatcher;
 import app.dispatcher.LoginDispatcher;
 import app.dispatcher.LogoutDispatcher;
+import app.dispatcher.OpenChallengesDispatcher;
 import app.dispatcher.RegisterDispatcher;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
@@ -203,6 +205,12 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (path.equals(LIST_GAMES)) {
 			dispatcher = new ListGamesDispatcher(request, response);
+		}
+		else if (path.equals(OPEN_CHALLENGES)) {
+			dispatcher = new OpenChallengesDispatcher(request, response);
+		}
+		else if (path.equals(CHALLENGE_PLAYER)) {
+			dispatcher = new ChallengePlayerDispatcher(request, response);
 		}
 		
 		return dispatcher;
