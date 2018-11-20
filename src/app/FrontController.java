@@ -24,6 +24,7 @@ import app.dispatcher.LoginDispatcher;
 import app.dispatcher.LogoutDispatcher;
 import app.dispatcher.OpenChallengesDispatcher;
 import app.dispatcher.RegisterDispatcher;
+import app.dispatcher.RetireDispatcher;
 import app.dispatcher.UploadDeckDispatcher;
 import app.dispatcher.ViewBoardDispatcher;
 import app.dispatcher.ViewHandDispatcher;
@@ -227,6 +228,9 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (path.equals(DRAW_CARD)) {
 			dispatcher = new DrawCardDispatcher(request, response);
+		}
+		else if (path.equals(RETIRE)) {
+			dispatcher = new RetireDispatcher(request, response);
 		}
 		
 		return dispatcher;
