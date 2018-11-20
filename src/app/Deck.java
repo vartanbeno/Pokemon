@@ -49,8 +49,8 @@ public class Deck extends PageController {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UploadDeck uploadDeck = new UploadDeck();
-		uploadDeck.doPost(request, response);
+//		UploadDeck uploadDeck = new UploadDeck();
+//		uploadDeck.doPost(request, response);
 	}
 
 }

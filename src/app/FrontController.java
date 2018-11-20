@@ -23,6 +23,9 @@ import app.dispatcher.LoginDispatcher;
 import app.dispatcher.LogoutDispatcher;
 import app.dispatcher.OpenChallengesDispatcher;
 import app.dispatcher.RegisterDispatcher;
+import app.dispatcher.UploadDeckDispatcher;
+import app.dispatcher.ViewBoardDispatcher;
+import app.dispatcher.ViewHandDispatcher;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
 import dom.model.card.tdg.CardTDG;
@@ -211,6 +214,15 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (path.equals(CHALLENGE_PLAYER)) {
 			dispatcher = new ChallengePlayerDispatcher(request, response);
+		}
+		else if (path.equals(VIEW_BOARD)) {
+			dispatcher = new ViewBoardDispatcher(request, response);
+		}
+		else if (path.equals(VIEW_HAND)) {
+			dispatcher = new ViewHandDispatcher(request, response);
+		}
+		else if (path.equals(UPLOAD_DECK)) {
+			dispatcher = new UploadDeckDispatcher(request, response);
 		}
 		
 		return dispatcher;
