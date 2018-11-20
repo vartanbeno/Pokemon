@@ -195,50 +195,56 @@ public class FrontController extends SmartDispatcherServlet {
 		
 		AbstractDispatcher dispatcher = null;
 		
-		if (path.equals(REGISTER)) {
-			dispatcher = new RegisterDispatcher(request, response);
-		}
-		else if (path.equals(LOGIN)) {
-			dispatcher = new LoginDispatcher(request, response);
-		}
-		else if (path.equals(LOGOUT)) {
-			dispatcher = new LogoutDispatcher(request, response);
-		}
-		else if (path.equals(LIST_PLAYERS)) {
-			dispatcher = new ListPlayersDispatcher(request, response);
-		}
-		else if (path.equals(LIST_CHALLENGES)) {
-			dispatcher = new ListChallengesDispatcher(request, response);
-		}
-		else if (path.equals(LIST_GAMES)) {
-			dispatcher = new ListGamesDispatcher(request, response);
-		}
-		else if (path.equals(OPEN_CHALLENGES)) {
-			dispatcher = new OpenChallengesDispatcher(request, response);
-		}
-		else if (path.equals(CHALLENGE_PLAYER)) {
-			dispatcher = new ChallengePlayerDispatcher(request, response);
-		}
-		else if (path.equals(VIEW_BOARD)) {
-			dispatcher = new ViewBoardDispatcher(request, response);
-		}
-		else if (path.equals(VIEW_HAND)) {
-			dispatcher = new ViewHandDispatcher(request, response);
-		}
-		else if (path.equals(UPLOAD_DECK)) {
-			dispatcher = new UploadDeckDispatcher(request, response);
-		}
-		else if (path.equals(DRAW_CARD)) {
-			dispatcher = new DrawCardDispatcher(request, response);
-		}
-		else if (path.equals(RETIRE)) {
-			dispatcher = new RetireDispatcher(request, response);
-		}
-		else if (path.equals(ACCEPT_CHALLENGE)) {
-			dispatcher = new AcceptChallengeDispatcher(request, response);
-		}
-		else if (path.equals(REFUSE_CHALLENGE)) {
-			dispatcher = new RefuseChallengeDispatcher(request, response);
+		switch (path) {
+		
+		case REGISTER: dispatcher = new RegisterDispatcher(request, response);
+			break;
+		
+		case LOGIN: dispatcher = new LoginDispatcher(request, response);
+			break;
+		
+		case LOGOUT: dispatcher = new LogoutDispatcher(request, response);
+			break;
+		
+		case UPLOAD_DECK: dispatcher = new UploadDeckDispatcher(request, response);
+			break;
+		
+		case CHALLENGE_PLAYER: dispatcher = new ChallengePlayerDispatcher(request, response);
+			break;
+		
+		case OPEN_CHALLENGES: dispatcher = new OpenChallengesDispatcher(request, response);
+			break;
+		
+		case ACCEPT_CHALLENGE: dispatcher = new AcceptChallengeDispatcher(request, response);
+			break;
+		
+		case REFUSE_CHALLENGE: dispatcher = new RefuseChallengeDispatcher(request, response);
+			break;
+		
+		case LIST_PLAYERS: dispatcher = new ListPlayersDispatcher(request, response);
+			break;
+		
+		case LIST_CHALLENGES: dispatcher = new ListChallengesDispatcher(request, response);
+			break;
+		
+		case LIST_GAMES: dispatcher = new ListGamesDispatcher(request, response);
+			break;
+		
+		case VIEW_BOARD: dispatcher = new ViewBoardDispatcher(request, response);
+			break;
+		
+		case VIEW_HAND: dispatcher = new ViewHandDispatcher(request, response);
+			break;
+		
+		case DRAW_CARD: dispatcher = new DrawCardDispatcher(request, response);
+			break;
+		
+		case RETIRE: dispatcher = new RetireDispatcher(request, response);
+			break;
+		
+		default:
+			break;
+		
 		}
 		
 		return dispatcher;
