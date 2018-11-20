@@ -15,6 +15,7 @@ import org.dsrg.soenea.uow.MapperFactory;
 import org.dsrg.soenea.uow.UoW;
 
 import app.dispatcher.AbstractDispatcher;
+import app.dispatcher.AcceptChallengeDispatcher;
 import app.dispatcher.ChallengePlayerDispatcher;
 import app.dispatcher.DrawCardDispatcher;
 import app.dispatcher.ListChallengesDispatcher;
@@ -64,27 +65,27 @@ public class FrontController extends SmartDispatcherServlet {
 	private static final String GET = "GET";
 	private static final String POST = "POST";
 	
-	private static final String REGISTER = "/Register";
-	private static final String LOGIN = "/Login";
-	private static final String LOGOUT = "/Logout";
+	public static final String REGISTER = "/Register";
+	public static final String LOGIN = "/Login";
+	public static final String LOGOUT = "/Logout";
 	
-	private static final String UPLOAD_DECK = "/UploadDeck";
-	private static final String VIEW_DECK = "/ViewDeck";
+	public static final String UPLOAD_DECK = "/UploadDeck";
+	public static final String VIEW_DECK = "/ViewDeck";
 	
-	private static final String CHALLENGE_PLAYER = "/ChallengePlayer";
-	private static final String OPEN_CHALLENGES = "/OpenChallenges";
-	private static final String ACCEPT_CHALLENGE = "/AcceptChallenge";
-	private static final String REFUSE_CHALLENGE = "/RefuseChallenge";
+	public static final String CHALLENGE_PLAYER = "/ChallengePlayer";
+	public static final String OPEN_CHALLENGES = "/OpenChallenges";
+	public static final String ACCEPT_CHALLENGE = "/AcceptChallenge";
+	public static final String REFUSE_CHALLENGE = "/RefuseChallenge";
 	
-	private static final String LIST_PLAYERS = "/ListPlayers";
-	private static final String LIST_CHALLENGES = "/ListChallenges";
-	private static final String LIST_GAMES = "/ListGames";
+	public static final String LIST_PLAYERS = "/ListPlayers";
+	public static final String LIST_CHALLENGES = "/ListChallenges";
+	public static final String LIST_GAMES = "/ListGames";
 	
-	private static final String VIEW_BOARD = "/ViewBoard";
-	private static final String VIEW_HAND = "/ViewHand";
-	private static final String DRAW_CARD = "/DrawCard";
-	private static final String PLAY_POKEMON_TO_BENCH = "/PlayPokemonToBench";
-	private static final String RETIRE = "/Retire";
+	public static final String VIEW_BOARD = "/ViewBoard";
+	public static final String VIEW_HAND = "/ViewHand";
+	public static final String DRAW_CARD = "/DrawCard";
+	public static final String PLAY_POKEMON_TO_BENCH = "/PlayPokemonToBench";
+	public static final String RETIRE = "/Retire";
 	
     public FrontController() {
         super();
@@ -231,6 +232,9 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (path.equals(RETIRE)) {
 			dispatcher = new RetireDispatcher(request, response);
+		}
+		else if (path.equals(ACCEPT_CHALLENGE)) {
+			dispatcher = new AcceptChallengeDispatcher(request, response);
 		}
 		
 		return dispatcher;

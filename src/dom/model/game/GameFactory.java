@@ -1,10 +1,13 @@
 package dom.model.game;
 
+import java.sql.SQLException;
+
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.uow.MissingMappingException;
 import org.dsrg.soenea.uow.UoW;
 
 import dom.model.deck.IDeck;
+import dom.model.game.tdg.GameTDG;
 import dom.model.user.IUser;
 
 public class GameFactory {
@@ -13,6 +16,16 @@ public class GameFactory {
 			throws MissingMappingException, MapperException {
 		
 		Game game = new Game(id, version, challenger, challengee, challengerDeck, challengeeDeck, status);
+		UoW.getCurrent().registerNew(game);
+		
+		return game;
+		
+	}
+	
+	public static Game createNew(IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status)
+			throws MissingMappingException, MapperException, SQLException {
+		
+		Game game = new Game(GameTDG.getMaxId(), 1, challenger, challengee, challengerDeck, challengeeDeck, status);
 		UoW.getCurrent().registerNew(game);
 		
 		return game;

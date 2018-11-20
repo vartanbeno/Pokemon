@@ -16,9 +16,17 @@ public abstract class AbstractDispatcher extends Dispatcher {
 	@Override
 	public abstract void execute() throws ServletException, IOException;
 	
+	protected void success() throws IOException, ServletException {
+		forward(Global.SUCCESS);
+	}
+	
 	protected void success(Helper helper, String message) throws IOException, ServletException {
 		myHelper.setRequestAttribute("message", message);
 		forward(Global.SUCCESS);
+	}
+	
+	protected void fail() throws IOException, ServletException {
+		forward(Global.FAILURE);
 	}
 	
 	protected void fail(Helper helper, String message) throws IOException, ServletException {
