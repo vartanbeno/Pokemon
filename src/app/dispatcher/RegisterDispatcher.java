@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import app.Global;
 import dom.command.RegisterCommand;
 
 public class RegisterDispatcher extends AbstractDispatcher {
@@ -14,6 +15,10 @@ public class RegisterDispatcher extends AbstractDispatcher {
 	
 	public RegisterDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
+	}
+	
+	public void doGet() throws IOException, ServletException {
+		forward(Global.REGISTER_FORM);
 	}
 
 	@Override
@@ -24,6 +29,7 @@ public class RegisterDispatcher extends AbstractDispatcher {
 			success(myHelper, String.format(REGISTRATION_SUCCESS, myHelper.getString("user")));
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(myHelper, e.getMessage());
 		}
 		

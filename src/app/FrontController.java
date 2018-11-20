@@ -7,7 +7,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.dsrg.soenea.application.servlet.dispatcher.Dispatcher;
 import org.dsrg.soenea.application.servlet.impl.SmartDispatcherServlet;
 import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
@@ -15,6 +14,7 @@ import org.dsrg.soenea.service.threadLocal.ThreadLocalTracker;
 import org.dsrg.soenea.uow.MapperFactory;
 import org.dsrg.soenea.uow.UoW;
 
+import app.dispatcher.AbstractDispatcher;
 import app.dispatcher.RegisterDispatcher;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
@@ -48,6 +48,9 @@ import dom.model.user.tdg.UserTDG;
 public class FrontController extends SmartDispatcherServlet {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private static final String GET = "GET";
+	private static final String POST = "POST";
 
     public FrontController() {
         super();
@@ -132,16 +135,16 @@ public class FrontController extends SmartDispatcherServlet {
 		
 		super.preProcessRequest(request, response);
 		
-		String path = request.getServletPath();
-		
-		System.out.println("=============================================");
-		System.out.println(path);
-		System.out.println("=============================================");
-		
 		try {
-			Dispatcher dispatcher = getDispatcher(request, response, path);
+			
+			String path = request.getServletPath();
+			
+			AbstractDispatcher dispatcher = (AbstractDispatcher) getDispatcher(request, response, path);
 			dispatcher.init(request, response);
-			dispatcher.execute();
+			
+			if (request.getMethod().equals(GET)) dispatcher.doGet();
+			if (request.getMethod().equals(POST)) dispatcher.execute();
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -152,9 +155,9 @@ public class FrontController extends SmartDispatcherServlet {
 		
 	}
 	
-	private Dispatcher getDispatcher(HttpServletRequest request, HttpServletResponse response, String path) {
+	private AbstractDispatcher getDispatcher(HttpServletRequest request, HttpServletResponse response, String path) {
 		
-		Dispatcher dispatcher = null;
+		AbstractDispatcher dispatcher = null;
 		
 		if (path.equals("/Register")) {
 			dispatcher = new RegisterDispatcher(request, response);

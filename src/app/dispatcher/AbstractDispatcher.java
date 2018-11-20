@@ -10,7 +10,9 @@ import org.dsrg.soenea.domain.helper.Helper;
 import app.Global;
 
 public abstract class AbstractDispatcher extends Dispatcher {
-
+	
+	public abstract void doGet() throws IOException, ServletException;
+	
 	@Override
 	public abstract void execute() throws ServletException, IOException;
 	
