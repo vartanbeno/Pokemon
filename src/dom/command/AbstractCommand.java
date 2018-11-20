@@ -116,6 +116,27 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
 			throw new CommandException(NOT_PART_OF_CHALLENGE);
 		
+		return challenge;
+		
+	}
+	
+	protected Challenge getChallengeToRefuseOrWithdraw() throws SQLException, CommandException {
+		
+		Long challengeId = null;
+		long userId = getUserId();
+		
+		try {
+			challengeId = helper.getLong("challenge");
+		}
+		catch (NumberFormatException e) {
+			throw new CommandException(CHALLENGE_ID_FORMAT);
+		}
+		
+		Challenge challenge = ChallengeInputMapper.findById(challengeId);
+		
+		if (challenge == null) throw new CommandException(REFUSE_CHALLENGE_DOES_NOT_EXIST);
+		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
+			throw new CommandException(NOT_PART_OF_CHALLENGE);
 		
 		return challenge;
 		

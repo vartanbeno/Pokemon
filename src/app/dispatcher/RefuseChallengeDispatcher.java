@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import app.FrontController;
-import dom.command.AcceptChallengeCommand;
+import dom.command.RefuseChallengeCommand;
 
-public class AcceptChallengeDispatcher extends AbstractDispatcher {
+public class RefuseChallengeDispatcher extends AbstractDispatcher {
 	
-	public AcceptChallengeDispatcher(HttpServletRequest request, HttpServletResponse response) {
+	public RefuseChallengeDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
 	
@@ -31,7 +31,7 @@ public class AcceptChallengeDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		
 		try {
-			new AcceptChallengeCommand(myHelper).execute();
+			new RefuseChallengeCommand(myHelper).execute();
 			success();
 		}
 		catch (Exception e) {

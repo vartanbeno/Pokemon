@@ -24,6 +24,7 @@ import app.dispatcher.ListPlayersDispatcher;
 import app.dispatcher.LoginDispatcher;
 import app.dispatcher.LogoutDispatcher;
 import app.dispatcher.OpenChallengesDispatcher;
+import app.dispatcher.RefuseChallengeDispatcher;
 import app.dispatcher.RegisterDispatcher;
 import app.dispatcher.RetireDispatcher;
 import app.dispatcher.UploadDeckDispatcher;
@@ -235,6 +236,9 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (path.equals(ACCEPT_CHALLENGE)) {
 			dispatcher = new AcceptChallengeDispatcher(request, response);
+		}
+		else if (path.equals(REFUSE_CHALLENGE)) {
+			dispatcher = new RefuseChallengeDispatcher(request, response);
 		}
 		
 		return dispatcher;
