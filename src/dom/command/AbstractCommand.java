@@ -17,17 +17,14 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		return (long) helper.getSessionAttribute("userid");
 	}
 	
-	protected boolean loggedIn() {
+	protected void checkIfLoggedIn(String message) throws CommandException {
 		
-		Long userId;
 		try {
-			userId = getUserId();
+			getUserId();
 		}
 		catch (NullPointerException e) {
-			userId = null;
+			throw new CommandException(message);
 		}
-		
-		return userId != null;
 		
 	}
 

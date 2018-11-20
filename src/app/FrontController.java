@@ -15,6 +15,7 @@ import org.dsrg.soenea.uow.MapperFactory;
 import org.dsrg.soenea.uow.UoW;
 
 import app.dispatcher.AbstractDispatcher;
+import app.dispatcher.ListPlayersDispatcher;
 import app.dispatcher.LoginDispatcher;
 import app.dispatcher.LogoutDispatcher;
 import app.dispatcher.RegisterDispatcher;
@@ -191,6 +192,9 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (path.equals(LOGOUT)) {
 			dispatcher = new LogoutDispatcher(request, response);
+		}
+		else if (path.equals(LIST_PLAYERS)) {
+			dispatcher = new ListPlayersDispatcher(request, response);
 		}
 		
 		return dispatcher;
