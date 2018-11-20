@@ -126,16 +126,6 @@ public class FrontController extends SmartDispatcherServlet {
     	UoW.initMapperFactory(mapperFactory);
     	
     }
-
-	protected void success(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
-		request.setAttribute("message", message);
-		request.getRequestDispatcher(Global.SUCCESS).forward(request, response);
-	}
-	
-	protected void failure(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
-		request.setAttribute("message", message);
-		request.getRequestDispatcher(Global.FAILURE).forward(request, response);
-	}
 	
 	@Override
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -176,27 +166,27 @@ public class FrontController extends SmartDispatcherServlet {
 
 	@Override
 	protected String getXMLErrorTemplate() {
-		return null;
+		return Global.FAILURE;
 	}
 
 	@Override
 	protected String getJSONErrorTemplate() {
-		return null;
+		return Global.FAILURE;
 	}
 
 	@Override
 	protected String getErrorTemplate() {
-		return null;
+		return Global.FAILURE;
 	}
 
 	@Override
 	protected String getMessageTemplate() {
-		return null;
+		return Global.FAILURE;
 	}
 
 	@Override
 	protected String getMainTemplate() {
-		return null;
+		return Global.FAILURE;
 	}
 	
 }

@@ -32,7 +32,7 @@ public class RegisterCommand extends ValidatorCommand {
 			
 			User user = UserInputMapper.findByUsername(username);
 			if (user != null) {
-				throw new CommandException(USERNAME_TAKEN);
+				throw new CommandException(String.format(USERNAME_TAKEN, username));
 			}
 			
 			UserFactory.createNew(username, password);
@@ -40,7 +40,6 @@ public class RegisterCommand extends ValidatorCommand {
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
 			throw new CommandException(e);
 		}
 		
