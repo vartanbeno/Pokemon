@@ -1,10 +1,13 @@
 package dom.model.cardinplay;
 
+import java.sql.SQLException;
+
 import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.uow.MissingMappingException;
 import org.dsrg.soenea.uow.UoW;
 
 import dom.model.card.ICard;
+import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.deck.IDeck;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
@@ -15,6 +18,16 @@ public class CardInPlayFactory {
 			throws MissingMappingException, MapperException {
 		
 		CardInPlay cardInPlay = new CardInPlay(id, version, game, player, deck, card, status);
+		UoW.getCurrent().registerNew(cardInPlay);
+		
+		return cardInPlay;
+		
+	}
+	
+	public static CardInPlay createNew(IGame game, IUser player, IDeck deck, ICard card)
+			throws MissingMappingException, MapperException, SQLException {
+		
+		CardInPlay cardInPlay = new CardInPlay(CardInPlayTDG.getMaxId(), 1, game, player, deck, card, CardStatus.hand.ordinal());
 		UoW.getCurrent().registerNew(cardInPlay);
 		
 		return cardInPlay;

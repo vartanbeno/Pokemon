@@ -16,6 +16,7 @@ import org.dsrg.soenea.uow.UoW;
 
 import app.dispatcher.AbstractDispatcher;
 import app.dispatcher.ChallengePlayerDispatcher;
+import app.dispatcher.DrawCardDispatcher;
 import app.dispatcher.ListChallengesDispatcher;
 import app.dispatcher.ListGamesDispatcher;
 import app.dispatcher.ListPlayersDispatcher;
@@ -223,6 +224,9 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (path.equals(UPLOAD_DECK)) {
 			dispatcher = new UploadDeckDispatcher(request, response);
+		}
+		else if (path.equals(DRAW_CARD)) {
+			dispatcher = new DrawCardDispatcher(request, response);
 		}
 		
 		return dispatcher;
