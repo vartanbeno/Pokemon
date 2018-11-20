@@ -6,12 +6,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import app.Global;
-import dom.command.DrawCardCommand;
+import dom.command.PlayPokemonToBenchCommand;
 
-public class DrawCardDispatcher extends AbstractDispatcher {
+public class PlayPokemonToBenchDispatcher extends AbstractDispatcher {
 	
-	public DrawCardDispatcher(HttpServletRequest request, HttpServletResponse response) {
+	public PlayPokemonToBenchDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
 	
@@ -24,8 +23,8 @@ public class DrawCardDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		
 		try {
-			new DrawCardCommand(myHelper).execute();
-			forward(Global.SUCCESS);
+			new PlayPokemonToBenchCommand(myHelper).execute();;
+			success();
 		}
 		catch (Exception e) {
 			fail(myHelper, e.getMessage());

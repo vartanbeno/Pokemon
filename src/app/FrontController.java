@@ -24,6 +24,7 @@ import app.dispatcher.ListPlayersDispatcher;
 import app.dispatcher.LoginDispatcher;
 import app.dispatcher.LogoutDispatcher;
 import app.dispatcher.OpenChallengesDispatcher;
+import app.dispatcher.PlayPokemonToBenchDispatcher;
 import app.dispatcher.RefuseChallengeDispatcher;
 import app.dispatcher.RegisterDispatcher;
 import app.dispatcher.RetireDispatcher;
@@ -183,7 +184,8 @@ public class FrontController extends SmartDispatcherServlet {
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			request.setAttribute("message", "You probably want to go to an undefined endpoint.");
+			request.getRequestDispatcher(Global.FAILURE).forward(request, response);
 		}
 		finally {
 			super.postProcessRequest(request, response);
@@ -191,7 +193,7 @@ public class FrontController extends SmartDispatcherServlet {
 		
 	}
 	
-	private AbstractDispatcher getDispatcher(HttpServletRequest request, HttpServletResponse response, String path) {
+	private AbstractDispatcher getDispatcher(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
 		
 		AbstractDispatcher dispatcher = null;
 		
@@ -237,6 +239,9 @@ public class FrontController extends SmartDispatcherServlet {
 			break;
 		
 		case DRAW_CARD: dispatcher = new DrawCardDispatcher(request, response);
+			break;
+		
+		case PLAY_POKEMON_TO_BENCH: dispatcher = new PlayPokemonToBenchDispatcher(request, response);
 			break;
 		
 		case RETIRE: dispatcher = new RetireDispatcher(request, response);
