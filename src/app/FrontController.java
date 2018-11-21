@@ -30,6 +30,7 @@ import app.dispatcher.RegisterDispatcher;
 import app.dispatcher.RetireDispatcher;
 import app.dispatcher.UploadDeckDispatcher;
 import app.dispatcher.ViewBoardDispatcher;
+import app.dispatcher.ViewDeckDispatcher;
 import app.dispatcher.ViewHandDispatcher;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
@@ -209,6 +210,9 @@ public class FrontController extends SmartDispatcherServlet {
 			break;
 		
 		case UPLOAD_DECK: dispatcher = new UploadDeckDispatcher(request, response);
+			break;
+		
+		case VIEW_DECK: dispatcher = new ViewDeckDispatcher(request, response);
 			break;
 		
 		case CHALLENGE_PLAYER: dispatcher = new ChallengePlayerDispatcher(request, response);
