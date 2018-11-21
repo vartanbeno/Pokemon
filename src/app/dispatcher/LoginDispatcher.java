@@ -24,12 +24,12 @@ public class LoginDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		
 		try {
-			myRequest.getSession().invalidate();
+			myRequest.getSession(true).invalidate();
 			new LoginCommand(myHelper).execute();
 			success();
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}

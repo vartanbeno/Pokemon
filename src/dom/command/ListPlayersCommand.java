@@ -28,7 +28,6 @@ public class ListPlayersCommand extends AbstractCommand {
 			players = UserInputMapper.findAll();
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

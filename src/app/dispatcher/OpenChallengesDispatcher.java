@@ -23,7 +23,7 @@ public class OpenChallengesDispatcher extends AbstractDispatcher {
 			forward(Global.OPEN_CHALLENGES_FORM);
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}

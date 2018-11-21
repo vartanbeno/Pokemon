@@ -24,11 +24,11 @@ public class LogoutDispatcher extends AbstractDispatcher {
 		
 		try {
 			new LogoutCommand(myHelper).execute();
-			myRequest.getSession().invalidate();
+			myRequest.getSession(true).invalidate();
 			success();
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}

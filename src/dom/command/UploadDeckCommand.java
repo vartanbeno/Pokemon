@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.card.Card;
 import dom.model.card.ICard;
@@ -76,13 +75,10 @@ public class UploadDeckCommand extends AbstractCommand {
 			deck.setCards(cards);
 			DeckFactory.createNew(deck);
 			
-			UoW.getCurrent().commit();
-			
 			this.message = UPLOAD_SUCCESS;
 			
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

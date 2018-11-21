@@ -2,7 +2,6 @@ package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.card.Card;
 import dom.model.cardinplay.CardInPlay;
@@ -66,13 +65,10 @@ public class DrawCardCommand extends AbstractCommand {
 			GameFactory.registerDirty(game);
 			CardInPlayFactory.createNew(cardInPlay);
 			
-			UoW.getCurrent().commit();
-			
 			this.message = String.format(DRAW_SUCCESS, card.getType(), card.getName());
 			
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

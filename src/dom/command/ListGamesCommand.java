@@ -28,7 +28,6 @@ public class ListGamesCommand extends AbstractCommand {
 			games = GameInputMapper.findAll();
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

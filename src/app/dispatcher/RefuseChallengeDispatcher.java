@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import app.FrontController;
 import dom.command.RefuseChallengeCommand;
 
@@ -22,7 +24,7 @@ public class RefuseChallengeDispatcher extends AbstractDispatcher {
 			myResponse.sendRedirect(myRequest.getContextPath() + FrontController.OPEN_CHALLENGES);
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}
@@ -32,10 +34,11 @@ public class RefuseChallengeDispatcher extends AbstractDispatcher {
 		
 		try {
 			new RefuseChallengeCommand(myHelper).execute();
+			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}

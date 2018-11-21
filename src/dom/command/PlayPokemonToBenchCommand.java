@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.cardinplay.CardInPlay;
 import dom.model.cardinplay.CardInPlayFactory;
@@ -85,13 +84,10 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 			GameFactory.registerDirty(game);
 			CardInPlayFactory.registerDirty(cardToBench);
 			
-			UoW.getCurrent().commit();
-			
 			this.message = String.format(BENCH_SUCCESS, cardToBench.getCard().getName());
 			
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

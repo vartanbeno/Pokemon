@@ -22,7 +22,7 @@ public class ViewHandDispatcher extends AbstractDispatcher {
 			forward(Global.VIEW_HAND);
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 	}
 

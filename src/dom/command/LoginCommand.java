@@ -38,7 +38,6 @@ public class LoginCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		
