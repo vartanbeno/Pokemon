@@ -9,9 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import dom.command.LogoutCommand;
 
 public class LogoutDispatcher extends AbstractDispatcher {
-	
-	private static final String LOGOUT_SUCCESS = "Successfully logged out.";
-	
+		
 	public LogoutDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
@@ -27,11 +25,10 @@ public class LogoutDispatcher extends AbstractDispatcher {
 		try {
 			new LogoutCommand(myHelper).execute();
 			myRequest.getSession().invalidate();
-			success(myHelper, LOGOUT_SUCCESS);
+			success();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

@@ -10,9 +10,7 @@ import app.Global;
 import dom.command.RegisterCommand;
 
 public class RegisterDispatcher extends AbstractDispatcher {
-	
-	private static final String REGISTRATION_SUCCESS = "Successfully registered as %s.";
-	
+		
 	public RegisterDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
@@ -28,11 +26,10 @@ public class RegisterDispatcher extends AbstractDispatcher {
 		try {
 			myRequest.getSession().invalidate();
 			new RegisterCommand(myHelper).execute();
-			success(myHelper, String.format(REGISTRATION_SUCCESS, myHelper.getString("user")));
+			success();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

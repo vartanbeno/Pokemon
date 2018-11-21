@@ -11,9 +11,7 @@ import dom.command.UploadDeckCommand;
 import dom.command.UploadDeckFormCommand;
 
 public class UploadDeckDispatcher extends AbstractDispatcher {
-	
-	private static final String DECK_SUCCESS_MESSAGE = "You have successfully uploaded your deck.";
-	
+		
 	public UploadDeckDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
@@ -26,7 +24,7 @@ public class UploadDeckDispatcher extends AbstractDispatcher {
 			forward(Global.UPLOAD_DECK_FORM);
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}
@@ -36,10 +34,10 @@ public class UploadDeckDispatcher extends AbstractDispatcher {
 		
 		try {
 			new UploadDeckCommand(myHelper).execute();
-			success(myHelper, DECK_SUCCESS_MESSAGE);
+			success();
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

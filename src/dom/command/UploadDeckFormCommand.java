@@ -29,6 +29,7 @@ public class UploadDeckFormCommand extends AbstractCommand {
 			numberOfDecks = DeckInputMapper.findByPlayer(getUserId()).size();
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

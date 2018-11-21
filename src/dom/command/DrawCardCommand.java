@@ -1,7 +1,6 @@
 package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 import org.dsrg.soenea.uow.UoW;
 
@@ -24,9 +23,6 @@ public class DrawCardCommand extends AbstractCommand {
 	private static final String NO_MORE_CARDS = "You have no more cards left in your deck to draw.";
 	
 	private static final String DRAW_SUCCESS = "You have successfully drawn a card! %s: %s.";
-	
-	@SetInRequestAttribute
-	public String message;
 	
 	public DrawCardCommand(Helper helper) {
 		super(helper);
@@ -72,10 +68,11 @@ public class DrawCardCommand extends AbstractCommand {
 			
 			UoW.getCurrent().commit();
 			
-			message = String.format(DRAW_SUCCESS, card.getType(), card.getName());
+			this.message = String.format(DRAW_SUCCESS, card.getType(), card.getName());
 			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

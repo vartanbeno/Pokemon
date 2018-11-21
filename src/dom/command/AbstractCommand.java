@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.ValidatorCommand;
+import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.challenge.Challenge;
@@ -16,6 +17,9 @@ import dom.model.game.Game;
 import dom.model.game.mapper.GameInputMapper;
 
 public abstract class AbstractCommand extends ValidatorCommand {
+	
+	@SetInRequestAttribute
+	public String message;
 	
 	/**
 	 * Accept challenge fail messages.

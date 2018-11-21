@@ -27,7 +27,7 @@ public class PlayPokemonToBenchDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

@@ -10,9 +10,7 @@ import app.Global;
 import dom.command.LoginCommand;
 
 public class LoginDispatcher extends AbstractDispatcher {
-	
-	private static final String LOGIN_SUCCESS = "Successfully logged in.";
-	
+		
 	public LoginDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
@@ -28,11 +26,10 @@ public class LoginDispatcher extends AbstractDispatcher {
 		try {
 			myRequest.getSession().invalidate();
 			new LoginCommand(myHelper).execute();
-			success(myHelper, LOGIN_SUCCESS);
+			success();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

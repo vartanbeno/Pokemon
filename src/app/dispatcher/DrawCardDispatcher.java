@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import app.Global;
 import dom.command.DrawCardCommand;
 
 public class DrawCardDispatcher extends AbstractDispatcher {
@@ -25,10 +24,10 @@ public class DrawCardDispatcher extends AbstractDispatcher {
 		
 		try {
 			new DrawCardCommand(myHelper).execute();
-			forward(Global.SUCCESS);
+			success();
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

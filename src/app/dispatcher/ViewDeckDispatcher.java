@@ -30,8 +30,7 @@ public class ViewDeckDispatcher extends AbstractDispatcher {
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 	}
 

@@ -39,7 +39,7 @@ public class ViewDeckCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

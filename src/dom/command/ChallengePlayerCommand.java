@@ -3,7 +3,6 @@ package dom.command;
 import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 import org.dsrg.soenea.uow.UoW;
 
@@ -11,7 +10,6 @@ import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.IDeck;
-import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -25,12 +23,9 @@ public class ChallengePlayerCommand extends AbstractCommand {
 	private static final String SAME_ID = "You cannot challenge yourself.";
 	
 	private static final String NO_DECK = "You must have at least one deck to issue a challenge to a player.";
-	private static final String DECK_ID_FORMAT = "You must provide a valid format for your deck ID (positive integer).";
-	private static final String DECK_DOES_NOT_EXIST = "The deck you specified does not exist.";
 	private static final String NOT_YOUR_DECK = "The deck you specified is not yours.";
 	
-	@SetInRequestAttribute(attributeName = "username")
-	public String challengee;
+	private static final String CHALLENGE_SUCCESS = "You have successfully challenged %s to a game.";
 	
 	public ChallengePlayerCommand(Helper helper) {
 		super(helper);
@@ -43,11 +38,12 @@ public class ChallengePlayerCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
+			long challengerId = getUserId();
+			
 			/**
 			 * Do I have at least one deck?
 			 */
-			long challengerId = getUserId();
-			List<IDeck> myDecks = DeckInputMapper.findByPlayer(challengerId);
+			List<IDeck> myDecks = getMyDecks();
 			if (myDecks.isEmpty()) throw new CommandException(NO_DECK);
 			
 			/**
@@ -67,22 +63,10 @@ public class ChallengePlayerCommand extends AbstractCommand {
 			if (challengerId == challengeeId) throw new CommandException(SAME_ID);
 			
 			/**
-			 * Did I provide a valid format for the ID of the deck I want to use?
-			 */
-			Long myDeckId = null;
-			try {
-				myDeckId = helper.getLong("deck");
-			}
-			catch (NumberFormatException e) {
-				throw new CommandException(DECK_ID_FORMAT);
-			}
-			
-			/**
 			 * First of all, does the deck with the specified deck ID exist?
 			 * Second of all, if it does, is it mine?
 			 */
-			IDeck myDeck = DeckInputMapper.findById(myDeckId);
-			if (myDeck == null) throw new CommandException(DECK_DOES_NOT_EXIST);
+			IDeck myDeck = getDeck();
 			if (myDeck.getPlayer().getId() != challengerId) throw new CommandException(NOT_YOUR_DECK);
 			
 			/**
@@ -99,13 +83,14 @@ public class ChallengePlayerCommand extends AbstractCommand {
 			 */
 			if (challengee == null) throw new CommandException(CHALLENGEE_DOES_NOT_EXIST);
 			
-			this.challengee = challengee.getUsername();
-			
 			ChallengeFactory.createNew(challenger, challengee, myDeck);
 			UoW.getCurrent().commit();
 			
+			this.message = String.format(CHALLENGE_SUCCESS, challengee.getUsername());
+			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

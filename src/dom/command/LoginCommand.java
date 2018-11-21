@@ -11,6 +11,8 @@ public class LoginCommand extends AbstractCommand {
 	private static final String ENTER_USER_AND_PASS = "Please enter both a username and a password.";
 	private static final String INVALID_CREDENTIALS = "Incorrect username and/or password.";
 	
+	private static final String LOGIN_SUCCESS = "Successfully logged in as %s.";
+	
 	public LoginCommand(Helper helper) {
 		super(helper);
 	}
@@ -32,8 +34,11 @@ public class LoginCommand extends AbstractCommand {
 			
 			helper.setSessionAttribute("userid", user.getId());
 			
+			this.message = String.format(LOGIN_SUCCESS, user.getUsername());
+			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

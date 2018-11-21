@@ -22,7 +22,7 @@ public class RefuseChallengeDispatcher extends AbstractDispatcher {
 			myResponse.sendRedirect(myRequest.getContextPath() + FrontController.OPEN_CHALLENGES);
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}
@@ -35,7 +35,7 @@ public class RefuseChallengeDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

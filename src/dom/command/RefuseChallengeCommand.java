@@ -1,7 +1,6 @@
 package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 import org.dsrg.soenea.uow.UoW;
 
@@ -14,10 +13,7 @@ public class RefuseChallengeCommand extends AbstractCommand {
 	private static final String NOT_LOGGED_IN = "You must be logged in to refuse/withdraw from a challenge.";
 	
 	private static final String REFUSE_SUCCESS = "You have successfully refused %s's challenge.";
-	private static final String WITHDRAW_SUCCESS = "You have successfully withdrawn from your challenge against %s.";	
-	
-	@SetInRequestAttribute
-	public String message;
+	private static final String WITHDRAW_SUCCESS = "You have successfully withdrawn from your challenge against %s.";
 
 	public RefuseChallengeCommand(Helper helper) {
 		super(helper);
@@ -51,6 +47,7 @@ public class RefuseChallengeCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import app.Global;
 import dom.command.RetireCommand;
 
 public class RetireDispatcher extends AbstractDispatcher {
@@ -24,10 +23,10 @@ public class RetireDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		try {
 			new RetireCommand(myHelper).execute();
-			forward(Global.SUCCESS);
+			success();
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 	}
 

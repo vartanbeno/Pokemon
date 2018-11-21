@@ -24,6 +24,8 @@ public class UploadDeckCommand extends AbstractCommand {
 	private static final String FORMATTING_ERROR = "Make sure to adhere to the required formatting for each card.";
 	private static final String CARD_TYPE_ERROR = "One or more of your cards had an invalid type. Please make sure it's one of e/p/t.";
 	
+	private static final String UPLOAD_SUCCESS = "You have successfully uploaded your deck.";
+	
 	public UploadDeckCommand(Helper helper) {
 		super(helper);
 	}
@@ -76,8 +78,11 @@ public class UploadDeckCommand extends AbstractCommand {
 			
 			UoW.getCurrent().commit();
 			
+			this.message = UPLOAD_SUCCESS;
+			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

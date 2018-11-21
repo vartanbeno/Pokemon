@@ -23,7 +23,7 @@ public class ListGamesDispatcher extends AbstractDispatcher {
 			forward(Global.LIST_GAMES);
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

@@ -3,7 +3,6 @@ package dom.command;
 import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 import org.dsrg.soenea.uow.UoW;
 
@@ -22,9 +21,6 @@ public class AcceptChallengeCommand extends AbstractCommand {
 	private static final String NO_DECK = "You must have a deck to accept a challenge.";
 	
 	private static final String ACCEPT_SUCCESS = "You have successfully accepted %s's challenge. The game has begun!";
-	
-	@SetInRequestAttribute
-	public String message;
 
 	public AcceptChallengeCommand(Helper helper) {
 		super(helper);
@@ -60,6 +56,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

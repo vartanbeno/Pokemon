@@ -12,6 +12,8 @@ public class RegisterCommand extends AbstractCommand {
 	
 	private static final String ENTER_USER_AND_PASS = "Please enter both a username and a password.";
 	private static final String USERNAME_TAKEN = "The username %s is taken.";
+	
+	private static final String REGISTER_SUCCESS = "Successfully registered as %s.";
 		
 	public RegisterCommand(Helper helper) {
 		super(helper);
@@ -39,8 +41,11 @@ public class RegisterCommand extends AbstractCommand {
 			
 			helper.setSessionAttribute("userid", user.getId());
 			
+			this.message = String.format(REGISTER_SUCCESS, user.getUsername());
+			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

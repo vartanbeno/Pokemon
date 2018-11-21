@@ -3,7 +3,6 @@ package dom.command;
 import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 import org.dsrg.soenea.uow.UoW;
 
@@ -28,9 +27,6 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
 	
 	private static final String BENCH_SUCCESS = "You have sent %s to the bench!";
-	
-	@SetInRequestAttribute
-	public String message;
 	
 	public PlayPokemonToBenchCommand(Helper helper) {
 		super(helper);
@@ -95,6 +91,7 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

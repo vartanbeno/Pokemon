@@ -11,9 +11,7 @@ import dom.command.ChallengePlayerCommand;
 import dom.command.ChallengePlayerFormCommand;
 
 public class ChallengePlayerDispatcher extends AbstractDispatcher {
-	
-	private static final String CHALLENGE_SUCCESS = "You have successfully challenged %s to a game.";
-	
+		
 	public ChallengePlayerDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
@@ -26,7 +24,7 @@ public class ChallengePlayerDispatcher extends AbstractDispatcher {
 			forward(Global.CHALLENGE_FORM);
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}
@@ -36,10 +34,10 @@ public class ChallengePlayerDispatcher extends AbstractDispatcher {
 		
 		try {
 			new ChallengePlayerCommand(myHelper).execute();
-			success(myHelper, String.format(CHALLENGE_SUCCESS, myHelper.getRequestAttribute("username")));
+			success();
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

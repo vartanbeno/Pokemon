@@ -45,6 +45,7 @@ public class ChallengePlayerFormCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

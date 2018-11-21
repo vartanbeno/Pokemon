@@ -23,7 +23,7 @@ public class ListPlayersDispatcher extends AbstractDispatcher {
 			forward(Global.LIST_PLAYERS);
 		}
 		catch (Exception e) {
-			fail(myHelper, e.getMessage());
+			fail();
 		}
 		
 	}

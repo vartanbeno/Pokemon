@@ -1,7 +1,6 @@
 package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
-import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 import org.dsrg.soenea.uow.UoW;
 
@@ -17,9 +16,6 @@ public class RetireCommand extends AbstractCommand {
 	private static final String GAME_ALREADY_ENDED = "This game has already ended.";
     
 	private static final String RETIRE_SUCCESS = "You have successfully retired from your game against %s.";
-	
-	@SetInRequestAttribute
-	public String message;
 	
 	public RetireCommand(Helper helper) {
 		super(helper);
@@ -50,10 +46,11 @@ public class RetireCommand extends AbstractCommand {
 			GameFactory.registerDirty(game);
 			UoW.getCurrent().commit();
 			
-			message = String.format(RETIRE_SUCCESS, opponent.getUsername());
+			this.message = String.format(RETIRE_SUCCESS, opponent.getUsername());
 			
 		}
 		catch (Exception e) {
+			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		
