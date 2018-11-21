@@ -26,7 +26,7 @@ public class UploadDeckDispatcher extends AbstractDispatcher {
 			forward(Global.UPLOAD_DECK_FORM);
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}
@@ -40,7 +40,7 @@ public class UploadDeckDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}

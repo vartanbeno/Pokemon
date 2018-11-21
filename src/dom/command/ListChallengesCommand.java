@@ -28,7 +28,6 @@ public class ListChallengesCommand extends AbstractCommand {
 			challenges = ChallengeInputMapper.findAll();
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

@@ -21,7 +21,6 @@ public class LogoutCommand extends AbstractCommand {
 			this.message = LOGOUT_SUCCESS;
 		}
 		catch (Exception e) {
-			this.message = e.getMessage();
 			throw new CommandException(e.getMessage());
 		}
 		

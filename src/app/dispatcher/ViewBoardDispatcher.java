@@ -22,7 +22,7 @@ public class ViewBoardDispatcher extends AbstractDispatcher {
 			forward(Global.VIEW_BOARD);
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 	}
 

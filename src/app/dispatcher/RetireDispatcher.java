@@ -29,7 +29,7 @@ public class RetireDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 	}
 

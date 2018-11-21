@@ -23,7 +23,7 @@ public class ListChallengesDispatcher extends AbstractDispatcher {
 			forward(Global.LIST_CHALLENGES);
 		}
 		catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 		
 	}
