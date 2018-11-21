@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.command.DrawCardCommand;
 
 public class DrawCardDispatcher extends AbstractDispatcher {
@@ -24,6 +26,7 @@ public class DrawCardDispatcher extends AbstractDispatcher {
 		
 		try {
 			new DrawCardCommand(myHelper).execute();
+			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {

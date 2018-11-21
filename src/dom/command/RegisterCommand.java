@@ -2,7 +2,6 @@ package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.user.User;
 import dom.model.user.UserFactory;
@@ -37,7 +36,6 @@ public class RegisterCommand extends AbstractCommand {
 			}
 			
 			user = UserFactory.createNew(username, password);
-			UoW.getCurrent().commit();
 			
 			helper.setSessionAttribute("userid", user.getId());
 			

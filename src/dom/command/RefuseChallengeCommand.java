@@ -2,7 +2,6 @@ package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
@@ -42,8 +41,6 @@ public class RefuseChallengeCommand extends AbstractCommand {
 			}
 			
 			ChallengeFactory.registerDirty(challenge);
-			
-			UoW.getCurrent().commit();
 			
 		}
 		catch (Exception e) {

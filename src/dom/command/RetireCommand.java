@@ -2,7 +2,6 @@ package dom.command;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.game.Game;
 import dom.model.game.GameFactory;
@@ -44,7 +43,6 @@ public class RetireCommand extends AbstractCommand {
 			}
 			
 			GameFactory.registerDirty(game);
-			UoW.getCurrent().commit();
 			
 			this.message = String.format(RETIRE_SUCCESS, opponent.getUsername());
 			

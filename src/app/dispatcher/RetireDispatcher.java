@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.command.RetireCommand;
 
 public class RetireDispatcher extends AbstractDispatcher {
@@ -23,6 +25,7 @@ public class RetireDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		try {
 			new RetireCommand(myHelper).execute();
+			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {

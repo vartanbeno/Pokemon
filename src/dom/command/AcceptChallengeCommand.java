@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
@@ -49,8 +48,6 @@ public class AcceptChallengeCommand extends AbstractCommand {
 					myDeck,
 					GameStatus.ongoing.ordinal()
 			);
-			
-			UoW.getCurrent().commit();
 			
 			this.message = String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername());
 			

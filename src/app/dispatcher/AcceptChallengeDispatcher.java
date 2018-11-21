@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import app.FrontController;
 import dom.command.AcceptChallengeCommand;
 
@@ -32,6 +34,7 @@ public class AcceptChallengeDispatcher extends AbstractDispatcher {
 		
 		try {
 			new AcceptChallengeCommand(myHelper).execute();
+			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {

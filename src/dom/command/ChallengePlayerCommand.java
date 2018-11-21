@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
-import org.dsrg.soenea.uow.UoW;
 
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
@@ -84,7 +83,6 @@ public class ChallengePlayerCommand extends AbstractCommand {
 			if (challengee == null) throw new CommandException(CHALLENGEE_DOES_NOT_EXIST);
 			
 			ChallengeFactory.createNew(challenger, challengee, myDeck);
-			UoW.getCurrent().commit();
 			
 			this.message = String.format(CHALLENGE_SUCCESS, challengee.getUsername());
 			
