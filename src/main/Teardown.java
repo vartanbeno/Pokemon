@@ -1,5 +1,5 @@
 package main;
-import app.PageController;
+import app.FrontController;
 
 public class Teardown {
 	
@@ -7,15 +7,15 @@ public class Teardown {
 		
 		try {
 			
-			PageController.initDb("");
-			PageController.dropTables();
+			FrontController.initDb("");
+			FrontController.dropTables();
 			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 		finally {
-			PageController.closeDb();
+			FrontController.closeDb();
 		}
 		
 	}

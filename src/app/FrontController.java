@@ -190,6 +190,7 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		finally {
 			super.postProcessRequest(request, response);
+			closeDb();
 		}
 		
 	}
