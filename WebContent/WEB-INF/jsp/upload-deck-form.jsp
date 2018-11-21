@@ -21,7 +21,7 @@
  	<b>Example:</b> p "Charizard"
  </p>
  
- <form method="POST" action="${pageContext.request.contextPath}/Deck">
+ <form method="POST">
 	<textarea name="deck" rows="${numberOfCards}" cols="100"></textarea>
 	
 	<br><br>

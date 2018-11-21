@@ -1,5 +1,5 @@
 package main;
-import app.PageController;
+import app.FrontController;
 
 public class Setup {
 
@@ -7,15 +7,15 @@ public class Setup {
 				
 		try {
 			
-			PageController.initDb("");
-			PageController.createTables();
+			FrontController.initDb("");
+			FrontController.createTables();
 			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 		finally {
-			PageController.closeDb();
+			FrontController.closeDb();
 		}
 		
 	}
