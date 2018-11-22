@@ -31,7 +31,8 @@ import app.dispatcher.RegisterDispatcher;
 import app.dispatcher.RetireDispatcher;
 import app.dispatcher.UploadDeckDispatcher;
 import app.dispatcher.ViewBoardDispatcher;
-import app.dispatcher.ViewDeckDispatcher;
+import app.dispatcher.DeckDispatcher;
+import app.dispatcher.DecksDispatcher;
 import app.dispatcher.ViewHandDispatcher;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
@@ -75,9 +76,9 @@ public class FrontController extends SmartDispatcherServlet {
 	public static final String LOGIN = BASE_URL + "/Player/Login";
 	public static final String LOGOUT = BASE_URL + "/Player/Logout";
 	
-	public static final String UPLOAD_DECK = BASE_URL + "/UploadDeck";
-	public static final String VIEW_DECKS = BASE_URL + "/Deck";
-	public static final String VIEW_DECK = VIEW_DECKS + "/\\d+";
+	public static final String UPLOAD_DECK_FORM = BASE_URL + "/UploadDeck";
+	public static final String VIEW_ALL_DECKS_OR_UPLOAD = BASE_URL + "/Deck";
+	public static final String VIEW_DECK = VIEW_ALL_DECKS_OR_UPLOAD + "/\\d+";
 	
 	public static final String CHALLENGE_PLAYER = BASE_URL + "/Player/\\d+/Challenge";
 	public static final String ACCEPT_CHALLENGE = CHALLENGE_PLAYER + "/Accept";
@@ -228,14 +229,14 @@ public class FrontController extends SmartDispatcherServlet {
 		else if (path.equals(LOGOUT)) {
 			dispatcher = new LogoutDispatcher(request, response);
 		}
-		else if (path.equals(UPLOAD_DECK)) {
+		else if (path.equals(UPLOAD_DECK_FORM)) {
 			dispatcher = new UploadDeckDispatcher(request, response);
 		}
-		else if (path.equals(VIEW_DECKS)) {
-			// TODO ViewDecksDispatcher
+		else if (path.equals(VIEW_ALL_DECKS_OR_UPLOAD)) {
+			dispatcher = new DecksDispatcher(request, response);
 		}
 		else if (isValid(path, VIEW_DECK)) {
-			dispatcher = new ViewDeckDispatcher(request, response);
+			dispatcher = new DeckDispatcher(request, response);
 		}
 		else if (isValid(path, CHALLENGE_PLAYER)) {
 			dispatcher = new ChallengePlayerDispatcher(request, response);

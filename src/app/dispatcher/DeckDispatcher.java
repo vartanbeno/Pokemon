@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import app.Global;
 import dom.command.ViewDeckCommand;
 
-public class ViewDeckDispatcher extends AbstractDispatcher {
+public class DeckDispatcher extends AbstractDispatcher {
 	
-	public ViewDeckDispatcher(HttpServletRequest request, HttpServletResponse response) {
+	public DeckDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
 
