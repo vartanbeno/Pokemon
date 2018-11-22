@@ -27,7 +27,7 @@ import app.dispatcher.ListPlayersDispatcher;
 import app.dispatcher.LoginDispatcher;
 import app.dispatcher.LogoutDispatcher;
 import app.dispatcher.OpenChallengesDispatcher;
-import app.dispatcher.PlayPokemonToBenchDispatcher;
+import app.dispatcher.PlayCardDispatcher;
 import app.dispatcher.RefuseChallengeDispatcher;
 import app.dispatcher.RegisterDispatcher;
 import app.dispatcher.RetireDispatcher;
@@ -99,7 +99,7 @@ public class FrontController extends SmartDispatcherServlet {
 	public static final String VIEW_HAND = VIEW_BOARD + "/Hand";
 	public static final String VIEW_DISCARD_PILE = VIEW_BOARD + "/Player/\\d+/Discard";
 	public static final String DRAW_CARD = VIEW_BOARD + "/DrawCard";
-	public static final String PLAY_POKEMON_TO_BENCH = VIEW_BOARD + "/Hand/\\d+/Play";
+	public static final String PLAY_CARD = VIEW_BOARD + "/Hand/\\d+/Play";
 	
 	public static final String END_TURN = VIEW_BOARD + "/EndTurn";
 	public static final String RETIRE = VIEW_BOARD + "/Retire";
@@ -222,23 +222,23 @@ public class FrontController extends SmartDispatcherServlet {
 		if (path.equals(REGISTER)) {
 			dispatcher = new RegisterDispatcher(request, response);
 		}
-		else if (path.equals(LOGIN)) {
+		else if (isValid(path, LOGIN)) {
 			dispatcher = new LoginDispatcher(request, response);
 		}
-		else if (path.equals(LOGOUT)) {
+		else if (isValid(path, LOGOUT)) {
 			dispatcher = new LogoutDispatcher(request, response);
 		}
-		else if (path.equals(UPLOAD_DECK_FORM)) {
+		else if (isValid(path, UPLOAD_DECK_FORM)) {
 			dispatcher = new UploadDeckDispatcher(request, response);
 		}
-		else if (path.equals(VIEW_ALL_DECKS_OR_UPLOAD)) {
+		else if (isValid(path, VIEW_ALL_DECKS_OR_UPLOAD)) {
 			dispatcher = new DecksDispatcher(request, response);
 		}
 		else if (isValid(path, VIEW_DECK)) {
 			request.setAttribute("deck", getSplitPath(path)[2]);
 			dispatcher = new DeckDispatcher(request, response);
 		}
-		else if (path.equals(CHALLENGE_PLAYER_FORM)) {
+		else if (isValid(path, CHALLENGE_PLAYER_FORM)) {
 			dispatcher = new ChallengePlayerFormDispatcher(request, response);
 		}
 		else if (isValid(path, CHALLENGE_PLAYER)) {
@@ -257,16 +257,16 @@ public class FrontController extends SmartDispatcherServlet {
 			request.setAttribute("challenge", getSplitPath(path)[2]);
 			dispatcher = new WithdrawFromChallengeDispatcher(request, response);
 		}
-		else if (path.equals(OPEN_CHALLENGES)) {
+		else if (isValid(path, OPEN_CHALLENGES)) {
 			dispatcher = new OpenChallengesDispatcher(request, response);
 		}
-		else if (path.equals(LIST_PLAYERS)) {
+		else if (isValid(path, LIST_PLAYERS)) {
 			dispatcher = new ListPlayersDispatcher(request, response);
 		}
-		else if (path.equals(LIST_CHALLENGES)) {
+		else if (isValid(path, LIST_CHALLENGES)) {
 			dispatcher = new ListChallengesDispatcher(request, response);
 		}
-		else if (path.equals(LIST_GAMES)) {
+		else if (isValid(path, LIST_GAMES)) {
 			dispatcher = new ListGamesDispatcher(request, response);
 		}
 		else if (isValid(path, VIEW_BOARD)) {
@@ -286,10 +286,10 @@ public class FrontController extends SmartDispatcherServlet {
 			request.setAttribute("game", getSplitPath(path)[2]);
 			dispatcher = new DrawCardDispatcher(request, response);
 		}
-		else if (isValid(path, PLAY_POKEMON_TO_BENCH)) {
+		else if (isValid(path, PLAY_CARD)) {
 			request.setAttribute("game", getSplitPath(path)[2]);
 			request.setAttribute("card", getSplitPath(path)[4]);
-			dispatcher = new PlayPokemonToBenchDispatcher(request, response);
+			dispatcher = new PlayCardDispatcher(request, response);
 		}
 		else if (isValid(path, END_TURN)) {
 			request.setAttribute("game", getSplitPath(path)[2]);

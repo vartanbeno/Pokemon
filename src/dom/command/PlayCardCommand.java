@@ -5,6 +5,7 @@ import java.util.List;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
+import dom.model.card.CardType;
 import dom.model.cardinplay.CardInPlay;
 import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.cardinplay.CardStatus;
@@ -14,7 +15,7 @@ import dom.model.game.Game;
 import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 
-public class PlayPokemonToBenchCommand extends AbstractCommand {
+public class PlayCardCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
@@ -26,7 +27,7 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 	
 	private static final String BENCH_SUCCESS = "You have sent %s to the bench!";
 	
-	public PlayPokemonToBenchCommand(Helper helper) {
+	public PlayCardCommand(Helper helper) {
 		super(helper);
 	}
 
@@ -52,15 +53,17 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 			 */
 			int cardIndex = Integer.parseInt((String) helper.getRequestAttribute("card"));
 			
-			List<ICardInPlay> myBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
-					game.getId(), getUserId(), CardStatus.benched.ordinal()
-			);
-			if (myBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
-			
 			List<ICardInPlay> myHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
 					game.getId(), getUserId(), CardStatus.hand.ordinal()
 			);
 			if (myHand.size() == 0) throw new CommandException(EMPTY_HAND);
+			
+			/*
+			List<ICardInPlay> myBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
+					game.getId(), getUserId(), CardStatus.benched.ordinal()
+			);
+			if (myBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
+			*/
 			
 			CardInPlay cardToBench;
 			try {
@@ -70,7 +73,7 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 				throw new CommandException(NOT_IN_HAND);
 			}
 			
-			if (!cardToBench.getCard().getType().equals("p"))
+			if (!cardToBench.getCard().getType().equals(CardType.p.name()))
 				throw new CommandException(NOT_A_POKEMON);
 			
 			cardToBench.setStatus(CardStatus.benched.ordinal());

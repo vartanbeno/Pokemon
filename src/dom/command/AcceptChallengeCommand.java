@@ -10,6 +10,7 @@ import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
+import dom.model.game.Game;
 import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 
@@ -19,7 +20,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 	
 	private static final String NO_DECK = "You must have a deck to accept a challenge.";
 	
-	private static final String ACCEPT_SUCCESS = "You have successfully accepted %s's challenge. The game has begun!";
+	private static final String ACCEPT_SUCCESS = "You have successfully accepted %s's challenge. Game %d has begun!";
 
 	public AcceptChallengeCommand(Helper helper) {
 		super(helper);
@@ -41,7 +42,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			challenge.setStatus(ChallengeStatus.accepted.ordinal());
 			
 			ChallengeFactory.registerDirty(challenge);
-			GameFactory.createNew(
+			Game game = GameFactory.createNew(
 					challenge.getChallenger(),
 					challenge.getChallengee(),
 					challenge.getChallengerDeck(),
@@ -49,7 +50,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 					GameStatus.ongoing.ordinal()
 			);
 			
-			this.message = String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername());
+			this.message = String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername(), game.getId());
 			
 		}
 		catch (Exception e) {
