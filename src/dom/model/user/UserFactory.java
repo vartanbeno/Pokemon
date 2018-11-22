@@ -10,16 +10,6 @@ import dom.model.user.tdg.UserTDG;
 
 public class UserFactory {
 	
-	public static User createNew(Long id, long version, String username, String password)
-			throws SQLException, MissingMappingException, MapperException {
-		
-		User user = new User(id, version, username, password);
-		UoW.getCurrent().registerNew(user);
-		
-		return user;
-		
-	}
-	
 	public static User createNew(String username, String password)
 			throws SQLException, MissingMappingException, MapperException {
 		
@@ -28,11 +18,6 @@ public class UserFactory {
 		
 		return user;
 		
-	}
-	
-	public static User createNew(IUser user)
-			throws MissingMappingException, SQLException, MapperException {
-		return createNew(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
 	}
 	
 	public static User createClean(long id, long version, String username, String password) {

@@ -12,38 +12,16 @@ import dom.model.user.IUser;
 
 public class ChallengeFactory {
 	
-	public static Challenge createNew(long id, long version, IUser challenger, IUser challengee, int status, IDeck challengerDeck)
-			throws MissingMappingException, MapperException {
+	public static Challenge createNew(IUser challenger, IUser challengee, IDeck challengerDeck)
+			throws MissingMappingException, MapperException, SQLException {
 		
-		Challenge challenge = new Challenge(id, version, challenger, challengee, status, challengerDeck);
+		Challenge challenge = new Challenge(
+				ChallengeTDG.getMaxId(), 1, challenger, challengee, ChallengeStatus.open.ordinal(), challengerDeck
+		);
 		UoW.getCurrent().registerNew(challenge);
 		
 		return challenge;
 		
-	}
-	
-	public static Challenge createNew(IUser challenger, IUser challengee, IDeck challengerDeck)
-			throws MissingMappingException, MapperException, SQLException {
-		return createNew(
-				ChallengeTDG.getMaxId(),
-				1,
-				challenger,
-				challengee,
-				ChallengeStatus.open.ordinal(),
-				challengerDeck
-		);
-	}
-	
-	public static Challenge createNew(IChallenge challenge)
-			throws MissingMappingException, MapperException {
-		return createNew(
-				challenge.getId(),
-				challenge.getVersion(),
-				challenge.getChallenger(),
-				challenge.getChallengee(),
-				challenge.getStatus(),
-				challenge.getChallengerDeck()
-		);
 	}
 	
 	public static Challenge createClean(long id, long version, IUser challenger, IUser challengee, int status, IDeck challengerDeck) {

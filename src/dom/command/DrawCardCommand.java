@@ -4,7 +4,6 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.card.Card;
-import dom.model.cardinplay.CardInPlay;
 import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.deck.Deck;
 import dom.model.game.Game;
@@ -57,14 +56,12 @@ public class DrawCardCommand extends AbstractCommand {
 			
 			Card card = (Card) deck.getCards().remove(0);
 			
-			CardInPlay cardInPlay = CardInPlayFactory.createNew(game, player, deck, card);
-			
 			/**
 			 * Register the game as well, since we want to increment its version.
 			 * Drawing a card counts as a turn, meaning the game is in a different state.
 			 */
+			CardInPlayFactory.createNew(game, player, deck, card);
 			GameFactory.registerDirty(game);
-			CardInPlayFactory.createNew(cardInPlay);
 			
 			this.message = String.format(DRAW_SUCCESS, card.getType(), card.getName());
 			
