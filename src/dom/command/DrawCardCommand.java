@@ -34,7 +34,8 @@ public class DrawCardCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
-			Game game = getGame();
+			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
+			Game game = getGame(gameId);
 			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_STOPPED);
 			
 			long userId = getUserId();

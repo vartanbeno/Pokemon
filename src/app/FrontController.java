@@ -102,6 +102,8 @@ public class FrontController extends SmartDispatcherServlet {
 	public static final String END_TURN = VIEW_BOARD + "/EndTurn";
 	public static final String RETIRE = VIEW_BOARD + "/Retire";
 	
+	public static final String TRAILING_FORWARD_SLASHES = "\\/*";
+	
     public FrontController() {
         super();
     }
@@ -113,7 +115,7 @@ public class FrontController extends SmartDispatcherServlet {
     }
     
     public static synchronized void initDb(String key) {
-    	    	
+    	
     	try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(null, null, null, null);
@@ -279,6 +281,7 @@ public class FrontController extends SmartDispatcherServlet {
 			// TODO ViewDiscardPileDispatcher
 		}
 		else if (isValid(path, DRAW_CARD)) {
+			request.setAttribute("game", getSplitPath(path)[2]);
 			dispatcher = new DrawCardDispatcher(request, response);
 		}
 		else if (isValid(path, PLAY_POKEMON_TO_BENCH)) {
@@ -300,7 +303,7 @@ public class FrontController extends SmartDispatcherServlet {
 	}
 	
 	private boolean isValid(String path, String pathRegex) {
-		Pattern pattern = Pattern.compile(pathRegex);
+		Pattern pattern = Pattern.compile(pathRegex + TRAILING_FORWARD_SLASHES);
 		return pattern.matcher(path).matches();
 	}
 	

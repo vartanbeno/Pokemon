@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.dsrg.soenea.uow.UoW;
+
 import dom.command.PlayPokemonToBenchCommand;
 
 public class PlayPokemonToBenchDispatcher extends AbstractDispatcher {
@@ -23,7 +25,8 @@ public class PlayPokemonToBenchDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		
 		try {
-			new PlayPokemonToBenchCommand(myHelper).execute();;
+			new PlayPokemonToBenchCommand(myHelper).execute();
+			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {

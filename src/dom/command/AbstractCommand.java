@@ -193,5 +193,14 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		return game;
 		
 	}
+	
+	protected Game getGame(long gameId) throws CommandException, SQLException {
+		
+		Game game = GameInputMapper.findById(gameId);
+		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
+		
+		return game;
+		
+	}
 
 }

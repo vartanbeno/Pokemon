@@ -18,7 +18,6 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
-	private static final String CARD_INDEX_FORMAT = "You must provide a valid format for the card index (positive integer).";
 	private static final String BENCH_IS_FULL = "Your bench is full. It already has 5 Pokemon.";
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
 	private static final String NOT_A_POKEMON = "You can only bench cards of type 'p', i.e. Pokemon.";
@@ -38,7 +37,8 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
-			Game game = getGame();
+			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
+			Game game = getGame(gameId);
 			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_STOPPED);
 			
 			/**
@@ -50,13 +50,7 @@ public class PlayPokemonToBenchCommand extends AbstractCommand {
 			 * If you choose card 10, you should get an error.
 			 * etc.
 			 */
-			final int cardIndex;
-			try {
-				cardIndex = helper.getInt("card");
-			}
-			catch (NumberFormatException e) {
-				throw new CommandException(CARD_INDEX_FORMAT);
-			}
+			int cardIndex = Integer.parseInt((String) helper.getRequestAttribute("card"));
 			
 			List<ICardInPlay> myBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
 					game.getId(), getUserId(), CardStatus.benched.ordinal()
