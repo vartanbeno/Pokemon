@@ -1,6 +1,7 @@
 package app;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -68,27 +69,33 @@ public class FrontController extends SmartDispatcherServlet {
 	private static final String GET = "GET";
 	private static final String POST = "POST";
 	
-	public static final String REGISTER = "/Register";
-	public static final String LOGIN = "/Login";
-	public static final String LOGOUT = "/Logout";
+	private static final String BASE_URL = "/Poke";
 	
-	public static final String UPLOAD_DECK = "/UploadDeck";
-	public static final String VIEW_DECK = "/ViewDeck";
+	public static final String REGISTER = BASE_URL + "/Player/Register";
+	public static final String LOGIN = BASE_URL + "/Player/Login";
+	public static final String LOGOUT = BASE_URL + "/Player/Logout";
 	
-	public static final String CHALLENGE_PLAYER = "/ChallengePlayer";
-	public static final String OPEN_CHALLENGES = "/OpenChallenges";
-	public static final String ACCEPT_CHALLENGE = "/AcceptChallenge";
-	public static final String REFUSE_CHALLENGE = "/RefuseChallenge";
+	public static final String UPLOAD_DECK = BASE_URL + "/UploadDeck";
+	public static final String VIEW_DECKS = BASE_URL + "/Deck";
+	public static final String VIEW_DECK = VIEW_DECKS + "/\\d+";
 	
-	public static final String LIST_PLAYERS = "/ListPlayers";
-	public static final String LIST_CHALLENGES = "/ListChallenges";
-	public static final String LIST_GAMES = "/ListGames";
+	public static final String CHALLENGE_PLAYER = BASE_URL + "/Player/\\d+/Challenge";
+	public static final String ACCEPT_CHALLENGE = CHALLENGE_PLAYER + "/Accept";
+	public static final String REFUSE_CHALLENGE = CHALLENGE_PLAYER + "/Refuse";
+	public static final String WITHDRAW_CHALLENGE = CHALLENGE_PLAYER + "/Withdraw";
+	public static final String OPEN_CHALLENGES = BASE_URL + "/Player/Challenge";
 	
-	public static final String VIEW_BOARD = "/ViewBoard";
-	public static final String VIEW_HAND = "/ViewHand";
-	public static final String DRAW_CARD = "/DrawCard";
-	public static final String PLAY_POKEMON_TO_BENCH = "/PlayPokemonToBench";
-	public static final String RETIRE = "/Retire";
+	public static final String LIST_PLAYERS = BASE_URL + "/Player";
+	public static final String LIST_CHALLENGES = BASE_URL + "/Challenge";
+	public static final String LIST_GAMES = BASE_URL + "/Game";
+	
+	public static final String VIEW_BOARD = BASE_URL + "/Game/\\d+";
+	public static final String VIEW_HAND = VIEW_BOARD + "/Hand";
+	public static final String VIEW_DISCARD_PILE = VIEW_BOARD + "/Player/\\d+/Discard";
+	public static final String DRAW_CARD = VIEW_BOARD + "/DrawCard";
+	public static final String PLAY_POKEMON_TO_BENCH = VIEW_BOARD + "/Hand/\\d+/Play";
+	public static final String END_TURN = VIEW_BOARD + "/EndTurn";
+	public static final String RETIRE = VIEW_BOARD + "/Retire";
 	
     public FrontController() {
         super();
@@ -177,6 +184,16 @@ public class FrontController extends SmartDispatcherServlet {
 			
 			String path = request.getServletPath();
 			
+			/**
+			 * We want to set the path as an attribute, so we can access the parameters that are in the URL itself.
+			 * E.g. /Poke/Deck/4
+			 * Split it by "/", gives the array: [Poke, Deck, 4]
+			 * 
+			 * We use the StringUtils.split(path, "/") method from org.apache.commons.lang, which removes empty results from the split.
+			 * Link: https://stackoverflow.com/questions/9389503/how-to-prevent-java-lang-string-split-from-creating-a-leading-empty-string
+			 */
+			request.setAttribute("path", path);
+			
 			AbstractDispatcher dispatcher = (AbstractDispatcher) getDispatcher(request, response, path);
 			dispatcher.init(request, response);
 			
@@ -195,70 +212,84 @@ public class FrontController extends SmartDispatcherServlet {
 		
 	}
 	
+	/**
+	 * Could not get the Permalink.xml file to work!
+	 */
 	private AbstractDispatcher getDispatcher(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
 		
 		AbstractDispatcher dispatcher = null;
 		
-		switch (path) {
-		
-		case REGISTER: dispatcher = new RegisterDispatcher(request, response);
-			break;
-		
-		case LOGIN: dispatcher = new LoginDispatcher(request, response);
-			break;
-		
-		case LOGOUT: dispatcher = new LogoutDispatcher(request, response);
-			break;
-		
-		case UPLOAD_DECK: dispatcher = new UploadDeckDispatcher(request, response);
-			break;
-		
-		case VIEW_DECK: dispatcher = new ViewDeckDispatcher(request, response);
-			break;
-		
-		case CHALLENGE_PLAYER: dispatcher = new ChallengePlayerDispatcher(request, response);
-			break;
-		
-		case OPEN_CHALLENGES: dispatcher = new OpenChallengesDispatcher(request, response);
-			break;
-		
-		case ACCEPT_CHALLENGE: dispatcher = new AcceptChallengeDispatcher(request, response);
-			break;
-		
-		case REFUSE_CHALLENGE: dispatcher = new RefuseChallengeDispatcher(request, response);
-			break;
-		
-		case LIST_PLAYERS: dispatcher = new ListPlayersDispatcher(request, response);
-			break;
-		
-		case LIST_CHALLENGES: dispatcher = new ListChallengesDispatcher(request, response);
-			break;
-		
-		case LIST_GAMES: dispatcher = new ListGamesDispatcher(request, response);
-			break;
-		
-		case VIEW_BOARD: dispatcher = new ViewBoardDispatcher(request, response);
-			break;
-		
-		case VIEW_HAND: dispatcher = new ViewHandDispatcher(request, response);
-			break;
-		
-		case DRAW_CARD: dispatcher = new DrawCardDispatcher(request, response);
-			break;
-		
-		case PLAY_POKEMON_TO_BENCH: dispatcher = new PlayPokemonToBenchDispatcher(request, response);
-			break;
-		
-		case RETIRE: dispatcher = new RetireDispatcher(request, response);
-			break;
-		
-		default:
-			break;
-		
+		if (path.equals(REGISTER)) {
+			dispatcher = new RegisterDispatcher(request, response);
+		}
+		else if (path.equals(LOGIN)) {
+			dispatcher = new LoginDispatcher(request, response);
+		}
+		else if (path.equals(LOGOUT)) {
+			dispatcher = new LogoutDispatcher(request, response);
+		}
+		else if (path.equals(UPLOAD_DECK)) {
+			dispatcher = new UploadDeckDispatcher(request, response);
+		}
+		else if (path.equals(VIEW_DECKS)) {
+			// TODO ViewDecksDispatcher
+		}
+		else if (isValid(path, VIEW_DECK)) {
+			dispatcher = new ViewDeckDispatcher(request, response);
+		}
+		else if (isValid(path, CHALLENGE_PLAYER)) {
+			dispatcher = new ChallengePlayerDispatcher(request, response);
+		}
+		else if (isValid(path, ACCEPT_CHALLENGE)) {
+			dispatcher = new AcceptChallengeDispatcher(request, response);
+		}
+		else if (isValid(path, REFUSE_CHALLENGE)) {
+			dispatcher = new RefuseChallengeDispatcher(request, response);
+		}
+		else if (isValid(path, WITHDRAW_CHALLENGE)) {
+			// TODO WithdrawFromChallengeDispatcher
+		}
+		else if (path.equals(OPEN_CHALLENGES)) {
+			dispatcher = new OpenChallengesDispatcher(request, response);
+		}
+		else if (path.equals(LIST_PLAYERS)) {
+			dispatcher = new ListPlayersDispatcher(request, response);
+		}
+		else if (path.equals(LIST_CHALLENGES)) {
+			dispatcher = new ListChallengesDispatcher(request, response);
+		}
+		else if (path.equals(LIST_GAMES)) {
+			dispatcher = new ListGamesDispatcher(request, response);
+		}
+		else if (isValid(path, VIEW_BOARD)) {
+			dispatcher = new ViewBoardDispatcher(request, response);
+		}
+		else if (isValid(path, VIEW_HAND)) {
+			dispatcher = new ViewHandDispatcher(request, response);
+		}
+		else if (isValid(path, VIEW_DISCARD_PILE)) {
+			// TODO ViewDiscardPileDispatcher
+		}
+		else if (isValid(path, DRAW_CARD)) {
+			dispatcher = new DrawCardDispatcher(request, response);
+		}
+		else if (isValid(path, PLAY_POKEMON_TO_BENCH)) {
+			dispatcher = new PlayPokemonToBenchDispatcher(request, response);
+		}
+		else if (isValid(path, END_TURN)) {
+			// TODO EndTurnDispatcher
+		}
+		else if (isValid(path, RETIRE)) {
+			dispatcher = new RetireDispatcher(request, response);
 		}
 		
 		return dispatcher;
 		
+	}
+	
+	private boolean isValid(String path, String pathToMatch) {
+		Pattern pattern = Pattern.compile(pathToMatch);
+		return pattern.matcher(path).matches();
 	}
 
 	@Override

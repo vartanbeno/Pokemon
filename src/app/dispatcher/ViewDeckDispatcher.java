@@ -18,16 +18,8 @@ public class ViewDeckDispatcher extends AbstractDispatcher {
 	@Override
 	public void doGet() throws IOException, ServletException {
 		try {
-			
 			new ViewDeckCommand(myHelper).execute();
-			
-			if (myRequest.getParameter("deck") != null) {
-				forward(Global.VIEW_DECK);
-			}
-			else {
-				forward(Global.VIEW_DECKS);
-			}
-			
+			forward(Global.VIEW_DECK);
 		}
 		catch (Exception e) {
 			fail(e.getMessage());

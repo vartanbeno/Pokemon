@@ -41,7 +41,6 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	/**
 	 * Deck fail messages.
 	 */
-	private static final String DECK_ID_FORMAT = "You must specify a deck ID in the correct format (a positive integer).";
 	private static final String DECK_DOES_NOT_EXIST = "The deck you specified does not exist.";
 	
 	/**
@@ -71,15 +70,7 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		}
 	}
 	
-	protected Deck getDeck() throws SQLException, CommandException {
-		
-		Long deckId = null;
-		try {
-			deckId = helper.getLong("deck");
-		}
-		catch (NumberFormatException e) {
-			throw new CommandException(DECK_ID_FORMAT);
-		}
+	protected Deck getDeck(long deckId) throws SQLException, CommandException {
 		
 		Deck deck = DeckInputMapper.findById(deckId);
 		if (deck == null) throw new CommandException(DECK_DOES_NOT_EXIST);
