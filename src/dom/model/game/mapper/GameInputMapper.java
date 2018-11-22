@@ -117,6 +117,7 @@ public class GameInputMapper {
 				rs.getLong("version"),
 				challenger, challengee,
 				challengerDeck, challengeeDeck,
+				rs.getLong("current_turn"),
 				rs.getInt("status")
 		);
 		

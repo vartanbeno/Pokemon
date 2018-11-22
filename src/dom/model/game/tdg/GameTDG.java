@@ -16,9 +16,9 @@ import dom.model.user.tdg.UserTDG;
  * 
  * GameTDG: Game Table Data Gateway.
  * Points to the games table.
- * Provides methods to find, insert, update, and delete games.
  * 
- * Also includes create/truncate/drop queries.
+ * Includes create/truncate/drop queries.
+ * Find methods are in the GameFinder class.
  * 
  * The status column has the following possible values:
  *  - 0: the game is still ongoing.
@@ -28,6 +28,10 @@ import dom.model.user.tdg.UserTDG;
  *  - 4: the challengee retired.
  * These are all values from the GameStatus enum.
  * 
+ * The current_turn columns represents whose turn it is currently. It's player's ID.
+ * The first turn is always the challenger's. When a game first starts, the challenger draws a card, ending their turn.
+ * So technically, is it the challengee's turn first? :o
+ * 
  * @author vartanbeno
  *
  */
@@ -35,7 +39,7 @@ public class GameTDG {
 	
 	private static final String TABLE_NAME = "Game";
 	
-	private static final String COLUMNS = "id, version, challenger, challengee, challenger_deck, challengee_deck, status";
+	private static final String COLUMNS = "id, version, challenger, challengee, challenger_deck, challengee_deck, current_turn, status";
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
@@ -44,6 +48,7 @@ public class GameTDG {
 			+ "challengee BIGINT NOT NULL,"
 			+ "challenger_deck BIGINT NOT NULL,"
 			+ "challengee_deck BIGINT NOT NULL,"
+			+ "current_turn BIGINT NOT NULL,"
 			+ "status INT NOT NULL,"
 			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName(), DeckTDG.getTableName());
@@ -52,9 +57,9 @@ public class GameTDG {
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
-	private static final String UPDATE = String.format("UPDATE %1$s SET status = ?, version = (version + 1) "
+	private static final String UPDATE = String.format("UPDATE %1$s SET current_turn = ?, status = ?, version = (version + 1) "
 			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
 	
 	private static final String UPDATE_VERSION = String.format("UPDATE %1$s SET version = (version + 1) "
@@ -89,7 +94,8 @@ public class GameTDG {
 		s.close();
 	}
 	
-	public static int insert(long id, long version, long challenger, long challengee, long challengerDeck, long challengeeDeck) throws SQLException {
+	public static int insert(long id, long version, long challenger, long challengee, long challengerDeck, long challengeeDeck, long currentTurn)
+			throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
@@ -99,7 +105,8 @@ public class GameTDG {
 		ps.setLong(4, challengee);
 		ps.setLong(5, challengerDeck);
 		ps.setLong(6, challengeeDeck);
-		ps.setInt(7, GameStatus.ongoing.ordinal());
+		ps.setLong(7, currentTurn);
+		ps.setInt(8, GameStatus.ongoing.ordinal());
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -107,13 +114,14 @@ public class GameTDG {
 		return result;
 	}
 	
-	public static int update(long id, long version, int status) throws SQLException {
+	public static int update(long id, long version, long currentTurn, int status) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);
-		ps.setInt(1, status);
-		ps.setLong(2, id);
-		ps.setLong(3, version);
+		ps.setLong(1, currentTurn);
+		ps.setInt(2, status);
+		ps.setLong(3, id);
+		ps.setLong(4, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();

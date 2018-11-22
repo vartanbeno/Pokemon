@@ -57,12 +57,13 @@ public class GameOutputMapper extends GenericOutputMapper<Long, Game> {
 				game.getChallenger().getId(),
 				game.getChallengee().getId(),
 				game.getChallengerDeck().getId(),
-				game.getChallengeeDeck().getId()
+				game.getChallengeeDeck().getId(),
+				game.getCurrentTurn()
 		);
 	}
 	
 	public static void updateStatic(Game game) throws SQLException, LostUpdateException {
-		int count = GameTDG.update(game.getId(), game.getVersion(), game.getStatus());
+		int count = GameTDG.update(game.getId(), game.getVersion(), game.getCurrentTurn(), game.getStatus());
 		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update game with id: %d.", game.getId()));
 	}
 	

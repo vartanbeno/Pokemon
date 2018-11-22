@@ -53,6 +53,16 @@ public class GameProxy extends DomainObjectProxy<Long, Game> implements IGame {
 	public void setChallengeeDeck(IDeck challengeeDeck) {
 		getInnerObject().setChallengeeDeck(challengeeDeck);
 	}
+	
+	@Override
+	public long getCurrentTurn() {
+		return getInnerObject().getCurrentTurn();
+	}
+
+	@Override
+	public void setCurrentTurn(long currentTurn) {
+		getInnerObject().setCurrentTurn(currentTurn);
+	}
 
 	@Override
 	public int getStatus() {
@@ -74,7 +84,5 @@ public class GameProxy extends DomainObjectProxy<Long, Game> implements IGame {
 			return null;
 		}
 	}
-	
-	
 
 }

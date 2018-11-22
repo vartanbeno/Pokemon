@@ -11,14 +11,16 @@ public class Game extends DomainObject<Long> implements IGame {
 	private IUser challengee;
 	private IDeck challengerDeck;
 	private IDeck challengeeDeck;
+	private long currentTurn;
 	private int status;
 	
-	public Game(long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status) {
+	public Game(long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, long currentTurn, int status) {
 		super(id, version);
 		this.challenger = challenger;
 		this.challengee = challengee;
 		this.challengerDeck = challengerDeck;
 		this.challengeeDeck = challengeeDeck;
+		this.currentTurn = currentTurn;
 		this.status = status;
 	}
 
@@ -60,6 +62,16 @@ public class Game extends DomainObject<Long> implements IGame {
 	@Override
 	public void setChallengeeDeck(IDeck challengeeDeck) {
 		this.challengeeDeck = challengeeDeck;
+	}
+	
+	@Override
+	public long getCurrentTurn() {
+		return currentTurn;
+	}
+	
+	@Override
+	public void setCurrentTurn(long currentTurn) {
+		this.currentTurn = currentTurn;
 	}
 
 	@Override

@@ -47,6 +47,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 					challenge.getChallengee(),
 					challenge.getChallengerDeck(),
 					myDeck,
+					challenge.getChallenger().getId(),
 					GameStatus.ongoing.ordinal()
 			);
 			
