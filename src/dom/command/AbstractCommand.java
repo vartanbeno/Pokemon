@@ -3,7 +3,6 @@ package dom.command;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.ValidatorCommand;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
@@ -58,14 +57,6 @@ public abstract class AbstractCommand extends ValidatorCommand {
 
 	@Override
 	public abstract void process() throws CommandException;
-	
-	protected String getPath() {
-		return (String) helper.getRequestAttribute("path");
-	}
-	
-	protected String[] getSplitPath() {
-		return StringUtils.split(getPath(), "/");
-	}
 	
 	protected long getUserId() {
 		return (long) helper.getSessionAttribute("userid");

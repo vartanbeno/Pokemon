@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dsrg.soenea.application.servlet.impl.SmartDispatcherServlet;
 import org.dsrg.soenea.service.MySQLConnectionFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
@@ -187,16 +188,6 @@ public class FrontController extends SmartDispatcherServlet {
 			
 			String path = request.getServletPath();
 			
-			/**
-			 * We want to set the path as an attribute, so we can access the parameters that are in the URL itself.
-			 * E.g. /Poke/Deck/4
-			 * Split it by "/", gives the array: [Poke, Deck, 4]
-			 * 
-			 * We use the StringUtils.split(path, "/") method from org.apache.commons.lang, which removes empty results from the split.
-			 * Link: https://stackoverflow.com/questions/9389503/how-to-prevent-java-lang-string-split-from-creating-a-leading-empty-string
-			 */
-			request.setAttribute("path", path);
-			
 			AbstractDispatcher dispatcher = (AbstractDispatcher) getDispatcher(request, response, path);
 			dispatcher.init(request, response);
 			
@@ -238,21 +229,26 @@ public class FrontController extends SmartDispatcherServlet {
 			dispatcher = new DecksDispatcher(request, response);
 		}
 		else if (isValid(path, VIEW_DECK)) {
+			request.setAttribute("deck", getSplitPath(path)[2]);
 			dispatcher = new DeckDispatcher(request, response);
 		}
 		else if (path.equals(CHALLENGE_PLAYER_FORM)) {
 			dispatcher = new ChallengePlayerFormDispatcher(request, response);
 		}
 		else if (isValid(path, CHALLENGE_PLAYER)) {
+			request.setAttribute("challengee", getSplitPath(path)[2]);
 			dispatcher = new ChallengePlayerDispatcher(request, response);
 		}
 		else if (isValid(path, ACCEPT_CHALLENGE)) {
+			request.setAttribute("challenge", getSplitPath(path)[2]);
 			dispatcher = new AcceptChallengeDispatcher(request, response);
 		}
 		else if (isValid(path, REFUSE_CHALLENGE)) {
+			request.setAttribute("challenge", getSplitPath(path)[2]);
 			dispatcher = new RefuseChallengeDispatcher(request, response);
 		}
 		else if (isValid(path, WITHDRAW_CHALLENGE)) {
+			request.setAttribute("challenge", getSplitPath(path)[2]);
 			// TODO WithdrawFromChallengeDispatcher
 		}
 		else if (path.equals(OPEN_CHALLENGES)) {
@@ -268,24 +264,32 @@ public class FrontController extends SmartDispatcherServlet {
 			dispatcher = new ListGamesDispatcher(request, response);
 		}
 		else if (isValid(path, VIEW_BOARD)) {
+			request.setAttribute("game", getSplitPath(path)[2]);
 			dispatcher = new ViewBoardDispatcher(request, response);
 		}
 		else if (isValid(path, VIEW_HAND)) {
+			request.setAttribute("game", getSplitPath(path)[2]);
 			dispatcher = new ViewHandDispatcher(request, response);
 		}
 		else if (isValid(path, VIEW_DISCARD_PILE)) {
+			request.setAttribute("game", getSplitPath(path)[2]);
+			request.setAttribute("player", getSplitPath(path)[4]);
 			// TODO ViewDiscardPileDispatcher
 		}
 		else if (isValid(path, DRAW_CARD)) {
 			dispatcher = new DrawCardDispatcher(request, response);
 		}
 		else if (isValid(path, PLAY_POKEMON_TO_BENCH)) {
+			request.setAttribute("game", getSplitPath(path)[2]);
+			request.setAttribute("card", getSplitPath(path)[4]);
 			dispatcher = new PlayPokemonToBenchDispatcher(request, response);
 		}
 		else if (isValid(path, END_TURN)) {
+			request.setAttribute("game", getSplitPath(path)[2]);
 			// TODO EndTurnDispatcher
 		}
 		else if (isValid(path, RETIRE)) {
+			request.setAttribute("game", getSplitPath(path)[2]);
 			dispatcher = new RetireDispatcher(request, response);
 		}
 		
@@ -296,6 +300,20 @@ public class FrontController extends SmartDispatcherServlet {
 	private boolean isValid(String path, String pathToMatch) {
 		Pattern pattern = Pattern.compile(pathToMatch);
 		return pattern.matcher(path).matches();
+	}
+	
+	/**
+	 * E.g. /Poke/Deck/4
+	 * Split it by "/", gives the array: [Poke, Deck, 4]
+	 * We then use the resulting array to get the desired value.
+	 * In this case, we would be interested in 4, the deck ID.
+	 * 
+	 * We use the StringUtils.split() method from org.apache.commons.lang, which removes empty results from the split.
+	 * We set "/" as the delimiter.
+	 * Link: https://stackoverflow.com/questions/9389503/how-to-prevent-java-lang-string-split-from-creating-a-leading-empty-string
+	 */
+	private String[] getSplitPath(String path) {
+		return StringUtils.split(path, "/");
 	}
 
 	@Override

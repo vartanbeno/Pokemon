@@ -40,8 +40,8 @@ public class ChallengePlayerCommand extends AbstractCommand {
 			
 			List<IDeck> myDecks = getMyDecks();
 			if (myDecks.isEmpty()) throw new CommandException(NO_DECK);
-						
-			long challengeeId = Long.parseLong(getSplitPath()[2]);
+			
+			long challengeeId = Long.parseLong((String) helper.getRequestAttribute("challengee"));
 			if (challengerId == challengeeId) throw new CommandException(SAME_ID);
 			
 			IDeck myDeck = getDeck();

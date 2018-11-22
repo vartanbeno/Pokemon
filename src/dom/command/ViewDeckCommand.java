@@ -1,6 +1,5 @@
 package dom.command;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
@@ -20,21 +19,14 @@ public class ViewDeckCommand extends AbstractCommand {
 
 	@Override
 	public void process() throws CommandException {
-		
 		try {
-			
 			checkIfLoggedIn(NOT_LOGGED_IN);
-			
-			String path = (String) helper.getRequestAttribute("path");
-			String[] parts = StringUtils.split(path, "/");
-			
-			this.deck = getDeck(Long.parseLong(parts[2]));
-			
+			long deckId = Long.parseLong((String) helper.getRequestAttribute("deck"));
+			this.deck = getDeck(deckId);
 		}
 		catch (Exception e) {
 			throw new CommandException(e.getMessage());
 		}
-		
 	}
 
 }
