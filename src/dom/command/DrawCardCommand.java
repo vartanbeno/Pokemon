@@ -17,6 +17,7 @@ public class DrawCardCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
+	private static final String NOT_YOUR_GAME = "You are not part of this game.";
 	private static final String GAME_STOPPED = "This game is over. You cannot continue playing.";
 	private static final String NO_MORE_CARDS = "You have no more cards left in your deck to draw.";
 	
@@ -32,14 +33,17 @@ public class DrawCardCommand extends AbstractCommand {
 		try {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
+			long userId = getUserId();
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
+			
+			if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId())
+				throw new CommandException(NOT_YOUR_GAME);
 			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_STOPPED);
-			
-			long userId = getUserId();
-			
+						
 			GameBoard gameBoard = GameInputMapper.buildGameBoard(game);
+			
 			User player = null;
 			Deck deck = null;
 			

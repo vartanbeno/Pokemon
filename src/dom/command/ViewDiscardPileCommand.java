@@ -10,7 +10,6 @@ import dom.model.cardinplay.CardStatus;
 import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayInputMapper;
 import dom.model.game.Game;
-import dom.model.user.User;
 
 public class ViewDiscardPileCommand extends AbstractCommand {
 	
@@ -19,7 +18,7 @@ public class ViewDiscardPileCommand extends AbstractCommand {
 	private static final String NOT_PART_OF_GAME = "The player specified is not part of this game.";
 	
 	@SetInRequestAttribute
-	public List<ICardInPlay> hand;
+	public List<ICardInPlay> discard;
 	
 	public ViewDiscardPileCommand(Helper helper) {
 		super(helper);
@@ -36,19 +35,12 @@ public class ViewDiscardPileCommand extends AbstractCommand {
 			Game game = getGame(gameId);
 			
 			long playerId = Long.parseLong((String) helper.getRequestAttribute("player"));
-			User player = null;
 			
-			if (playerId == game.getChallenger().getId()) {
-				player = (User) game.getChallenger();
-			}
-			else if (playerId == game.getChallengee().getId()) {
-				player = (User) game.getChallengee();
-			}
+			if (playerId != game.getChallenger().getId() && playerId != game.getChallengee().getId())
+				throw new CommandException(NOT_PART_OF_GAME);
 			
-			if (player == null) throw new CommandException(NOT_PART_OF_GAME);
-			
-			hand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
-					game.getId(), player.getId(), CardStatus.discarded.ordinal()
+			discard = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
+					game.getId(), playerId, CardStatus.discarded.ordinal()
 			);
 			
 		}

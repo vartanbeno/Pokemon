@@ -19,13 +19,14 @@ public class PlayCardCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
+	private static final String NOT_YOUR_GAME = "You are not part of this game.";
 	private static final String BENCH_IS_FULL = "Your bench is full. It already has 5 Pokemon.";
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
-	private static final String NOT_A_POKEMON = "You can only bench cards of type 'p', i.e. Pokemon.";
 	private static final String GAME_STOPPED = "This game is over. You cannot continue playing.";
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
 	
-	private static final String BENCH_SUCCESS = "You have sent %s to the bench!";
+	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench!";
+	private static final String TRAINER_DISCARD_SUCCESS = "You have sent %s to the discard pile!";
 	
 	public PlayCardCommand(Helper helper) {
 		super(helper);
@@ -37,9 +38,13 @@ public class PlayCardCommand extends AbstractCommand {
 		try {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
+			long userId = getUserId();
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
+			
+			if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId())
+				throw new CommandException(NOT_YOUR_GAME);
 			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_STOPPED);
 			
 			/**
@@ -58,30 +63,36 @@ public class PlayCardCommand extends AbstractCommand {
 			);
 			if (myHand.size() == 0) throw new CommandException(EMPTY_HAND);
 			
-			/*
-			List<ICardInPlay> myBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
-					game.getId(), getUserId(), CardStatus.benched.ordinal()
-			);
-			if (myBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
-			*/
-			
-			CardInPlay cardToBench;
+			CardInPlay card;
 			try {
-				cardToBench = (CardInPlay) myHand.get(cardIndex);
+				card = (CardInPlay) myHand.get(cardIndex);
 			}
 			catch (IndexOutOfBoundsException e) {
 				throw new CommandException(NOT_IN_HAND);
 			}
 			
-			if (!cardToBench.getCard().getType().equals(CardType.p.name()))
-				throw new CommandException(NOT_A_POKEMON);
-			
-			cardToBench.setStatus(CardStatus.benched.ordinal());
+			if (card.getCard().getType().equals(CardType.p.name())) {
+				
+				List<ICardInPlay> myBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
+						game.getId(), getUserId(), CardStatus.benched.ordinal()
+				);
+				if (myBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
+				
+				card.setStatus(CardStatus.benched.ordinal());
+				this.message = String.format(POKEMON_BENCH_SUCCESS, card.getCard().getName());
+				
+			}
+			else if (card.getCard().getType().equals(CardType.t.name())) {
+				card.setStatus(CardStatus.discarded.ordinal());
+				this.message = String.format(TRAINER_DISCARD_SUCCESS, card.getCard().getName());
+			}
+			else if (card.getCard().getType().equals(CardType.e.name())) {
+				// TODO
+				throw new CommandException("energy card");
+			}
 			
 			GameFactory.registerDirty(game);
-			CardInPlayFactory.registerDirty(cardToBench);
-			
-			this.message = String.format(BENCH_SUCCESS, cardToBench.getCard().getName());
+			CardInPlayFactory.registerDirty(card);
 			
 		}
 		catch (Exception e) {
