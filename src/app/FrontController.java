@@ -21,6 +21,7 @@ import app.dispatcher.AcceptChallengeDispatcher;
 import app.dispatcher.ChallengePlayerDispatcher;
 import app.dispatcher.ChallengePlayerFormDispatcher;
 import app.dispatcher.DrawCardDispatcher;
+import app.dispatcher.EndTurnDispatcher;
 import app.dispatcher.ListChallengesDispatcher;
 import app.dispatcher.ListGamesDispatcher;
 import app.dispatcher.ListPlayersDispatcher;
@@ -293,7 +294,7 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (isValid(path, END_TURN)) {
 			request.setAttribute("game", getSplitPath(path)[2]);
-			// TODO EndTurnDispatcher
+			dispatcher = new EndTurnDispatcher(request, response);
 		}
 		else if (isValid(path, RETIRE)) {
 			request.setAttribute("game", getSplitPath(path)[2]);
