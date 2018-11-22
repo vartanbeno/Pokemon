@@ -23,5 +23,6 @@ public class Global {
 	
 	public static final String VIEW_BOARD = PATH_TO_JSP + "view-board.jsp";
 	public static final String VIEW_HAND = PATH_TO_JSP + "view-hand.jsp";
+	public static final String VIEW_DISCARD = PATH_TO_JSP + "view-discard.jsp";
 	
 }

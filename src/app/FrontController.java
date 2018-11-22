@@ -33,6 +33,7 @@ import app.dispatcher.RegisterDispatcher;
 import app.dispatcher.RetireDispatcher;
 import app.dispatcher.UploadDeckDispatcher;
 import app.dispatcher.ViewBoardDispatcher;
+import app.dispatcher.ViewDiscardPileDispatcher;
 import app.dispatcher.DeckDispatcher;
 import app.dispatcher.DecksDispatcher;
 import app.dispatcher.ViewHandDispatcher;
@@ -99,6 +100,7 @@ public class FrontController extends SmartDispatcherServlet {
 	public static final String VIEW_DISCARD_PILE = VIEW_BOARD + "/Player/\\d+/Discard";
 	public static final String DRAW_CARD = VIEW_BOARD + "/DrawCard";
 	public static final String PLAY_POKEMON_TO_BENCH = VIEW_BOARD + "/Hand/\\d+/Play";
+	
 	public static final String END_TURN = VIEW_BOARD + "/EndTurn";
 	public static final String RETIRE = VIEW_BOARD + "/Retire";
 	
@@ -278,7 +280,7 @@ public class FrontController extends SmartDispatcherServlet {
 		else if (isValid(path, VIEW_DISCARD_PILE)) {
 			request.setAttribute("game", getSplitPath(path)[2]);
 			request.setAttribute("player", getSplitPath(path)[4]);
-			// TODO ViewDiscardPileDispatcher
+			dispatcher = new ViewDiscardPileDispatcher(request, response);
 		}
 		else if (isValid(path, DRAW_CARD)) {
 			request.setAttribute("game", getSplitPath(path)[2]);
