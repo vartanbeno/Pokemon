@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.dsrg.soenea.uow.UoW;
 
 import app.FrontController;
-import dom.command.RefuseChallengeCommand;
+import dom.command.WithdrawFromChallengeCommand;
 
-public class RefuseChallengeDispatcher extends AbstractDispatcher {
+public class WithdrawFromChallengeDispatcher extends AbstractDispatcher {
 	
-	public RefuseChallengeDispatcher(HttpServletRequest request, HttpServletResponse response) {
+	public WithdrawFromChallengeDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
 	
@@ -31,7 +31,7 @@ public class RefuseChallengeDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		
 		try {
-			new RefuseChallengeCommand(myHelper).execute();
+			new WithdrawFromChallengeCommand(myHelper).execute();;
 			UoW.getCurrent().commit();
 			success();
 		}

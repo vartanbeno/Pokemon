@@ -36,6 +36,7 @@ import app.dispatcher.ViewBoardDispatcher;
 import app.dispatcher.DeckDispatcher;
 import app.dispatcher.DecksDispatcher;
 import app.dispatcher.ViewHandDispatcher;
+import app.dispatcher.WithdrawFromChallengeDispatcher;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
 import dom.model.card.tdg.CardTDG;
@@ -84,10 +85,10 @@ public class FrontController extends SmartDispatcherServlet {
 	
 	public static final String CHALLENGE_PLAYER_FORM = BASE_URL + "/Player/Challenge";
 	public static final String CHALLENGE_PLAYER = BASE_URL + "/Player/\\d+/Challenge";
-	public static final String ACCEPT_CHALLENGE = CHALLENGE_PLAYER + "/Accept";
-	public static final String REFUSE_CHALLENGE = CHALLENGE_PLAYER + "/Refuse";
-	public static final String WITHDRAW_CHALLENGE = CHALLENGE_PLAYER + "/Withdraw";
-	public static final String OPEN_CHALLENGES = BASE_URL + "/Player/Challenge";
+	public static final String ACCEPT_CHALLENGE = BASE_URL + "/Challenge/\\d+/Accept";
+	public static final String REFUSE_CHALLENGE = BASE_URL + "/Challenge/\\d+/Refuse";
+	public static final String WITHDRAW_CHALLENGE = BASE_URL + "/Challenge/\\d+/Withdraw";
+	public static final String OPEN_CHALLENGES = BASE_URL + "/Player/OpenChallenges";
 	
 	public static final String LIST_PLAYERS = BASE_URL + "/Player";
 	public static final String LIST_CHALLENGES = BASE_URL + "/Challenge";
@@ -208,6 +209,7 @@ public class FrontController extends SmartDispatcherServlet {
 	
 	/**
 	 * Could not get the Permalink.xml file to work!
+	 * TODO maybe a HashMap of different paths and a corresponding function.
 	 */
 	private AbstractDispatcher getDispatcher(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
 		
@@ -249,7 +251,7 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (isValid(path, WITHDRAW_CHALLENGE)) {
 			request.setAttribute("challenge", getSplitPath(path)[2]);
-			// TODO WithdrawFromChallengeDispatcher
+			dispatcher = new WithdrawFromChallengeDispatcher(request, response);
 		}
 		else if (path.equals(OPEN_CHALLENGES)) {
 			dispatcher = new OpenChallengesDispatcher(request, response);
@@ -297,8 +299,8 @@ public class FrontController extends SmartDispatcherServlet {
 		
 	}
 	
-	private boolean isValid(String path, String pathToMatch) {
-		Pattern pattern = Pattern.compile(pathToMatch);
+	private boolean isValid(String path, String pathRegex) {
+		Pattern pattern = Pattern.compile(pathRegex);
 		return pattern.matcher(path).matches();
 	}
 	
