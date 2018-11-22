@@ -22,6 +22,7 @@ public class ChallengePlayerFormDispatcher extends AbstractDispatcher {
 			forward(Global.CHALLENGE_FORM);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}

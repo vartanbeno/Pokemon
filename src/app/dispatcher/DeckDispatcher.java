@@ -22,6 +22,7 @@ public class DeckDispatcher extends AbstractDispatcher {
 			forward(Global.VIEW_DECK);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}

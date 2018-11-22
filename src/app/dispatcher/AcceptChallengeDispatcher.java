@@ -24,6 +24,7 @@ public class AcceptChallengeDispatcher extends AbstractDispatcher {
 			myResponse.sendRedirect(myRequest.getContextPath() + FrontController.OPEN_CHALLENGES);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
@@ -38,6 +39,7 @@ public class AcceptChallengeDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		

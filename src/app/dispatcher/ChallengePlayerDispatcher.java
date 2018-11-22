@@ -23,6 +23,7 @@ public class ChallengePlayerDispatcher extends AbstractDispatcher {
 			myResponse.sendRedirect(myRequest.getContextPath() + FrontController.CHALLENGE_PLAYER_FORM);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
@@ -35,6 +36,7 @@ public class ChallengePlayerDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}

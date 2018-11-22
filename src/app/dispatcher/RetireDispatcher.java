@@ -29,6 +29,7 @@ public class RetireDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}

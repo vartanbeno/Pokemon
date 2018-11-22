@@ -25,6 +25,7 @@ public class ViewDeckCommand extends AbstractCommand {
 			this.deck = getDeck(deckId);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new CommandException(e.getMessage());
 		}
 	}

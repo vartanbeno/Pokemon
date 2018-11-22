@@ -23,15 +23,14 @@ public class UploadDeckFormCommand extends AbstractCommand {
 
 	@Override
 	public void process() throws CommandException {
-		
 		try {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			numberOfDecks = DeckInputMapper.findByPlayer(getUserId()).size();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new CommandException(e.getMessage());
 		}
-		
 	}
 
 }

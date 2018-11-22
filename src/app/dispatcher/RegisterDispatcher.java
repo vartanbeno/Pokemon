@@ -24,7 +24,6 @@ public class RegisterDispatcher extends AbstractDispatcher {
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		
 		try {
 			myRequest.getSession(true).invalidate();
 			new RegisterCommand(myHelper).execute();
@@ -32,9 +31,9 @@ public class RegisterDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 }

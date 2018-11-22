@@ -17,15 +17,14 @@ public class UploadDeckDispatcher extends AbstractDispatcher {
 	
 	@Override
 	public void doGet() throws IOException, ServletException {
-		
 		try {
 			new UploadDeckFormCommand(myHelper).execute();
 			forward(Global.UPLOAD_DECK_FORM);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 	@Override

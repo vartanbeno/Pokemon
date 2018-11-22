@@ -71,6 +71,7 @@ public class DrawCardCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new CommandException(e.getMessage());
 		}
 		

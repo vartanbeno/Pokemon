@@ -49,6 +49,7 @@ public class RetireCommand extends AbstractCommand {
 			
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new CommandException(e.getMessage());
 		}
 		

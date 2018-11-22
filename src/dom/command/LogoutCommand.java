@@ -15,15 +15,14 @@ public class LogoutCommand extends AbstractCommand {
 	
 	@Override
 	public void process() throws CommandException {
-		
 		try {
 			checkIfLoggedIn(LOGOUT_FAIL);
 			this.message = LOGOUT_SUCCESS;
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new CommandException(e.getMessage());
 		}
-		
 	}
 
 }

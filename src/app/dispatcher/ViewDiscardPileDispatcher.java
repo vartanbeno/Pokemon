@@ -22,6 +22,7 @@ public class ViewDiscardPileDispatcher extends AbstractDispatcher {
 			forward(Global.VIEW_DISCARD);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}

@@ -29,16 +29,15 @@ public class RefuseChallengeDispatcher extends AbstractDispatcher {
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		
 		try {
 			new RefuseChallengeCommand(myHelper).execute();
 			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 }
