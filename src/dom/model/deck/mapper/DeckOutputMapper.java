@@ -56,12 +56,12 @@ public class DeckOutputMapper extends GenericOutputMapper<Long, Deck> {
 	
 	public static void updateStatic(Deck deck) throws SQLException, LostUpdateException {
 		int count = DeckTDG.update(deck.getId(), deck.getVersion(), deck.getPlayer().getId());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot update deck with id: %d.", deck.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update deck with id: %d.", deck.getId()));
 	}
 	
 	public static void deleteStatic(Deck deck) throws SQLException, LostUpdateException {
 		int count = DeckTDG.delete(deck.getId(), deck.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot delete deck with id: %d.", deck.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete deck with id: %d.", deck.getId()));
 		CardOutputMapper.deleteDeck(deck.getId());
 	}
 
