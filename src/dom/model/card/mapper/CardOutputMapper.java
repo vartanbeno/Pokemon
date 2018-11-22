@@ -47,12 +47,12 @@ public class CardOutputMapper extends GenericOutputMapper<Long, Card> {
 	
 	public static void updateStatic(Card card) throws SQLException, LostUpdateException {
 		int count = CardTDG.update(card.getId(), card.getVersion(), card.getType(), card.getName());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot update card with id: %d.", card.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update card with id: %d.", card.getId()));
 	}
 	
 	public static void deleteStatic(Card card) throws SQLException, LostUpdateException {
 		int count = CardTDG.delete(card.getId(), card.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot delete card with id: %d.", card.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete card with id: %d.", card.getId()));
 	}
 	
 	public static void deleteDeck(long deck) throws SQLException {

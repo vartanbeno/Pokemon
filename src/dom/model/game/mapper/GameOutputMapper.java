@@ -63,17 +63,17 @@ public class GameOutputMapper extends GenericOutputMapper<Long, Game> {
 	
 	public static void updateStatic(Game game) throws SQLException, LostUpdateException {
 		int count = GameTDG.update(game.getId(), game.getVersion(), game.getStatus());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot update game with id: %d.", game.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update game with id: %d.", game.getId()));
 	}
 	
 	public static void updateVersionStatic(Game game) throws SQLException, LostUpdateException {
 		int count = GameTDG.updateVersion(game.getId(), game.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot update game with id: %d.", game.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update game with id: %d.", game.getId()));
 	}
 	
 	public static void deleteStatic(Game game) throws SQLException, LostUpdateException {
 		int count = GameTDG.delete(game.getId(), game.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot delete game with id: %d.", game.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete game with id: %d.", game.getId()));
 	}
 
 }

@@ -19,14 +19,12 @@ public class RefuseChallengeDispatcher extends AbstractDispatcher {
 	
 	@Override
 	public void doGet() throws IOException, ServletException {
-		
 		try {
 			myResponse.sendRedirect(myRequest.getContextPath() + FrontController.OPEN_CHALLENGES);
 		}
 		catch (Exception e) {
 			fail(e.getMessage());
 		}
-		
 	}
 
 	@Override

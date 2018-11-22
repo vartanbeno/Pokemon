@@ -11,30 +11,25 @@
 
 <h2>Challenge a Player</h2>
 
-<form method="POST" autocomplete="off">
-
-	<label for="player">Challengee: </label>
-	<select name="player" required>
-		<option value="" selected disabled>Choose a player</option>
-		<c:forEach items="${users}" var="user">
-			<option value="${user.id}">${user.username}</option>
-		</c:forEach>
-	</select>
+<c:forEach items="${users}" var="user">
+	
+	<form method="POST" action="${user.id}/Challenge">
+	
+		<label for="deck">Choose your deck: </label>
+		<select name="deck" required>
+			<option value="" selected disabled>Your deck(s)</option>
+			<c:forEach items="${decks}" var="deck">
+				<option value="${deck.id}">${deck.id}</option>
+			</c:forEach>
+		</select>
+		
+		<button type="submit">Challenge ${user.username}</button>
+		
+	</form>
 	
 	<br>
 	
-	<label for="deck">Deck: </label>
-	<select name="deck" required>
-		<option value="" selected disabled>Choose a deck</option>
-		<c:forEach items="${decks}" var="deck">
-			<option value="${deck.id}">${deck.id}</option>
-		</c:forEach>
-	</select>
-	
-	<br>
-	
-	<button type="submit">Challenge</button>
-</form>
+</c:forEach>
 
 </body>
 </html>

@@ -33,7 +33,8 @@ public class ViewBoardCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
-			Game game = getGame();
+			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
+			Game game = getGame(gameId);
 			gameBoard = GameInputMapper.buildGameBoard(game);
 			
 			if (gameBoard.getGame().getStatus() == GameStatus.ongoing.ordinal()) {

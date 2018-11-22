@@ -1,13 +1,10 @@
 package dom.command;
 
-import java.util.List;
-
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.deck.IDeck;
-import dom.model.deck.mapper.DeckInputMapper;
 
 public class ViewDeckCommand extends AbstractCommand {
 	
@@ -16,32 +13,20 @@ public class ViewDeckCommand extends AbstractCommand {
 	@SetInRequestAttribute
 	public IDeck deck;
 	
-	@SetInRequestAttribute
-	public List<IDeck> decks;
-	
 	public ViewDeckCommand(Helper helper) {
 		super(helper);
 	}
 
 	@Override
 	public void process() throws CommandException {
-		
 		try {
-			
 			checkIfLoggedIn(NOT_LOGGED_IN);
-			
-			if (helper.getString("deck") != null) {
-				this.deck = getDeck();
-			}
-			else {
-				this.decks = DeckInputMapper.findByPlayer(getUserId());
-			}
-			
+			long deckId = Long.parseLong((String) helper.getRequestAttribute("deck"));
+			this.deck = getDeck(deckId);
 		}
 		catch (Exception e) {
 			throw new CommandException(e.getMessage());
 		}
-		
 	}
 
 }

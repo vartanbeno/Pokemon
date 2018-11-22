@@ -6,10 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.dsrg.soenea.uow.UoW;
-
 import app.Global;
-import dom.command.UploadDeckCommand;
 import dom.command.UploadDeckFormCommand;
 
 public class UploadDeckDispatcher extends AbstractDispatcher {
@@ -33,16 +30,7 @@ public class UploadDeckDispatcher extends AbstractDispatcher {
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		
-		try {
-			new UploadDeckCommand(myHelper).execute();
-			UoW.getCurrent().commit();
-			success();
-		}
-		catch (Exception e) {
-			fail(e.getMessage());
-		}
-		
+		doGet();
 	}
 
 }

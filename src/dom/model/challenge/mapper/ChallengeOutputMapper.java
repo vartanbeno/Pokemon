@@ -53,12 +53,12 @@ public class ChallengeOutputMapper extends GenericOutputMapper<Long, Challenge> 
 	
 	public static void updateStatic(Challenge challenge) throws SQLException, LostUpdateException {
 		int count = ChallengeTDG.update(challenge.getId(), challenge.getVersion(), challenge.getStatus());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot update challenge with id: %d.", challenge.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update challenge with id: %d.", challenge.getId()));
 	}
 	
 	public static void deleteStatic(Challenge challenge) throws SQLException, LostUpdateException {
 		int count = ChallengeTDG.delete(challenge.getId(), challenge.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Cannot delete challenge with id: %d.", challenge.getId()));
+		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete challenge with id: %d.", challenge.getId()));
 	}
 
 }

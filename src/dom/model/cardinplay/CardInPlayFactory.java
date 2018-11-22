@@ -14,16 +14,6 @@ import dom.model.user.IUser;
 
 public class CardInPlayFactory {
 	
-	public static CardInPlay createNew(long id, long version, IGame game, IUser player, IDeck deck, ICard card, int status)
-			throws MissingMappingException, MapperException {
-		
-		CardInPlay cardInPlay = new CardInPlay(id, version, game, player, deck, card, status);
-		UoW.getCurrent().registerNew(cardInPlay);
-		
-		return cardInPlay;
-		
-	}
-	
 	public static CardInPlay createNew(IGame game, IUser player, IDeck deck, ICard card)
 			throws MissingMappingException, MapperException, SQLException {
 		
@@ -32,19 +22,6 @@ public class CardInPlayFactory {
 		
 		return cardInPlay;
 		
-	}
-	
-	public static CardInPlay createNew(ICardInPlay cardInPlay)
-			throws MissingMappingException, MapperException {
-		return createNew(
-				cardInPlay.getId(),
-				cardInPlay.getVersion(),
-				cardInPlay.getGame(),
-				cardInPlay.getPlayer(),
-				cardInPlay.getDeck(),
-				cardInPlay.getCard(),
-				cardInPlay.getStatus()
-		);
 	}
 	
 	public static CardInPlay createClean(long id, long version, IGame game, IUser player, IDeck deck, ICard card, int status) {

@@ -16,7 +16,7 @@
 <c:forEach items="${challengesAgainstMe}" var="challenge">
 	<span>${challenge.challenger.username}</span>
 	
-	<form method="POST" action="${pageContext.request.contextPath}/AcceptChallenge">
+	<form method="POST" action="${pageContext.request.contextPath}/Poke/Challenge/${challenge.id}/Accept">
 		<input type="hidden" name="challenge" value="${challenge.id}" />
 		<select name="deck" required>
 			<option value="" selected disabled>Choose a deck</option>
@@ -27,7 +27,7 @@
 		<button type="submit">Accept</button>
 	</form>
 	
-	<form method="POST" action="${pageContext.request.contextPath}/RefuseChallenge">
+	<form method="POST" action="${pageContext.request.contextPath}/Poke/Challenge/${challenge.id}/Refuse">
 		<input type="hidden" name="challenge" value="${challenge.id}" />
 		<button type="submit">Refuse</button>
 	</form>
@@ -39,7 +39,7 @@
 <c:forEach items="${challengesAgainstOthers}" var="challenge">
 	<span>${challenge.challengee.username}</span>
 	
-	<form method="POST" action="${pageContext.request.contextPath}/RefuseChallenge">
+	<form method="POST" action="${pageContext.request.contextPath}/Poke/Challenge/${challenge.id}/Withdraw">
 		<input type="hidden" name="challenge" value="${challenge.id}" />
 		<button type="submit">Withdraw</button>
 	</form>

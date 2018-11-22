@@ -25,18 +25,23 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	 * Accept challenge fail messages.
 	 */
 	private static final String CHALLENGE_ID_FORMAT = "You must specify a challenge ID in the correct format (a positive integer).";
-	private static final String ACCEPT_CHALLENGE_SAME_ID = "You cannot accept a challenge against yourself.";
 	private static final String ACCEPT_CHALLENGE_DOES_NOT_EXIST = "You cannot accept a challenge that doesn't exist.";
 	
 	/**
 	 * Refuse challenge fail messages.
 	 */
-	private static final String REFUSE_CHALLENGE_DOES_NOT_EXIST = "You cannot refuse/withdraw from a challenge that doesn't exist.";
+	private static final String REFUSE_CHALLENGE_DOES_NOT_EXIST = "You cannot refuse a challenge that doesn't exist.";
+	
+	/**
+	 * Withdraw challenge fail messages.
+	 */
+	private static final String WITHDRAW_CHALLENGE_DOES_NOT_EXIST = "You cannot withdraw from a challenge that doesn't exist.";
 	
 	/**
 	 * Accept/refuse/withdraw challenge fail messages.
 	 */
 	private static final String NOT_PART_OF_CHALLENGE = "You must be part of the challenge to accept/refuse/withdraw from it.";
+	private static final String SAME_ID = "You cannot accept/refuse/withdraw from a challenge against yourself.";
 	
 	/**
 	 * Deck fail messages.
@@ -88,6 +93,15 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		
 	}
 	
+	protected Deck getDeck(long deckId) throws SQLException, CommandException {
+		
+		Deck deck = DeckInputMapper.findById(deckId);
+		if (deck == null) throw new CommandException(DECK_DOES_NOT_EXIST);
+		
+		return deck;
+		
+	}
+	
 	protected List<IDeck> getMyDecks() throws SQLException, CommandException {
 		
 		long userId = getUserId();
@@ -101,10 +115,9 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		
 	}
 	
-	protected Challenge getChallengeToAccept() throws SQLException, CommandException {
+	protected Challenge getChallenge() throws SQLException, CommandException {
 		
 		Long challengeId = null;
-		long userId = getUserId();
 		
 		try {
 			challengeId = helper.getLong("challenge");
@@ -115,8 +128,17 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		
 		Challenge challenge = ChallengeInputMapper.findById(challengeId);
 		
+		return challenge;
+		
+	}
+	
+	protected Challenge getChallengeToAccept() throws SQLException, CommandException {
+		
+		long userId = getUserId();
+		Challenge challenge = getChallenge();
+		
 		if (challenge == null) throw new CommandException(ACCEPT_CHALLENGE_DOES_NOT_EXIST);
-		if (userId == challenge.getChallenger().getId()) throw new CommandException(ACCEPT_CHALLENGE_SAME_ID);
+		if (userId == challenge.getChallenger().getId()) throw new CommandException(SAME_ID);
 		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
 			throw new CommandException(NOT_PART_OF_CHALLENGE);
 		
@@ -124,23 +146,29 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		
 	}
 	
-	protected Challenge getChallengeToRefuseOrWithdraw() throws SQLException, CommandException {
+	protected Challenge getChallengeToRefuse() throws SQLException, CommandException {
 		
-		Long challengeId = null;
 		long userId = getUserId();
-		
-		try {
-			challengeId = helper.getLong("challenge");
-		}
-		catch (NumberFormatException e) {
-			throw new CommandException(CHALLENGE_ID_FORMAT);
-		}
-		
-		Challenge challenge = ChallengeInputMapper.findById(challengeId);
+		Challenge challenge = getChallenge();
 		
 		if (challenge == null) throw new CommandException(REFUSE_CHALLENGE_DOES_NOT_EXIST);
 		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
 			throw new CommandException(NOT_PART_OF_CHALLENGE);
+		if (userId == challenge.getChallenger().getId()) throw new CommandException(SAME_ID);
+		
+		return challenge;
+		
+	}
+	
+	protected Challenge getChallengetoWithdrawFrom() throws SQLException, CommandException {
+		
+		long userId = getUserId();
+		Challenge challenge = getChallenge();
+		
+		if (challenge == null) throw new CommandException(WITHDRAW_CHALLENGE_DOES_NOT_EXIST);
+		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
+			throw new CommandException(NOT_PART_OF_CHALLENGE);
+		if (userId == challenge.getChallengee().getId()) throw new CommandException(SAME_ID);
 		
 		return challenge;
 		
@@ -161,6 +189,15 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		Game game = GameInputMapper.findById(gameId);
 		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
 		if (game.getChallenger().getId() != userId && game.getChallengee().getId() != userId) throw new CommandException(NOT_YOUR_GAME);
+		
+		return game;
+		
+	}
+	
+	protected Game getGame(long gameId) throws CommandException, SQLException {
+		
+		Game game = GameInputMapper.findById(gameId);
+		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
 		
 		return game;
 		

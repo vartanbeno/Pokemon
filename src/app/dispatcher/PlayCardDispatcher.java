@@ -6,11 +6,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dom.command.PlayPokemonToBenchCommand;
+import org.dsrg.soenea.uow.UoW;
 
-public class PlayPokemonToBenchDispatcher extends AbstractDispatcher {
+import dom.command.PlayCardCommand;
+
+public class PlayCardDispatcher extends AbstractDispatcher {
 	
-	public PlayPokemonToBenchDispatcher(HttpServletRequest request, HttpServletResponse response) {
+	public PlayCardDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
 	
@@ -23,7 +25,8 @@ public class PlayPokemonToBenchDispatcher extends AbstractDispatcher {
 	public void execute() throws ServletException, IOException {
 		
 		try {
-			new PlayPokemonToBenchCommand(myHelper).execute();;
+			new PlayCardCommand(myHelper).execute();
+			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {

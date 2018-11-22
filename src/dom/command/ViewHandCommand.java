@@ -30,7 +30,8 @@ public class ViewHandCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
-			Game game = getGame();
+			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
+			Game game = getGame(gameId);
 			
 			long userId = getUserId();
 			User player = userId == game.getChallenger().getId() ? (User) game.getChallenger() : (User) game.getChallengee();

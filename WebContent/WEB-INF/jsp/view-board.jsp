@@ -19,6 +19,12 @@
 					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop">
 						${card.card.id}<c:if test="${!loop.last}">,</c:if>
 					</c:forEach>
+				],
+				"detailedBench": [
+					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop">
+						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}" }
+						<c:if test="${!loop.last}">,</c:if>
+					</c:forEach>
 				]
 			},
 			"${gameBoard.game.challengee.id}": {
@@ -29,6 +35,12 @@
 				"bench": [
 					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop">
 						${card.card.id}<c:if test="${!loop.last}">,</c:if>
+					</c:forEach>
+				],
+				"detailedBench": [
+					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop">
+						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}" }
+						<c:if test="${!loop.last}">,</c:if>
 					</c:forEach>
 				]
 			}

@@ -7,6 +7,7 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.card.Card;
+import dom.model.card.CardType;
 import dom.model.card.ICard;
 import dom.model.card.tdg.CardTDG;
 import dom.model.deck.Deck;
@@ -63,7 +64,7 @@ public class UploadDeckCommand extends AbstractCommand {
 					throw new CommandException(FORMATTING_ERROR);
 				}
 				
-				if (!type.equals("e") && !type.equals("p") && !type.equals("t")) {
+				if (!type.equals(CardType.e.name()) && !type.equals(CardType.p.name()) && !type.equals(CardType.t.name())) {
 					throw new CommandException(CARD_TYPE_ERROR);
 				}
 				
