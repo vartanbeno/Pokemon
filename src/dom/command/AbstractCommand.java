@@ -3,6 +3,7 @@ package dom.command;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.ValidatorCommand;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
@@ -41,6 +42,7 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	/**
 	 * Deck fail messages.
 	 */
+	private static final String DECK_ID_FORMAT = "You must specify a deck ID in the correct format (a positive integer).";
 	private static final String DECK_DOES_NOT_EXIST = "The deck you specified does not exist.";
 	
 	/**
@@ -57,6 +59,14 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	@Override
 	public abstract void process() throws CommandException;
 	
+	protected String getPath() {
+		return (String) helper.getRequestAttribute("path");
+	}
+	
+	protected String[] getSplitPath() {
+		return StringUtils.split(getPath(), "/");
+	}
+	
 	protected long getUserId() {
 		return (long) helper.getSessionAttribute("userid");
 	}
@@ -68,6 +78,23 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		catch (NullPointerException e) {
 			throw new CommandException(message);
 		}
+	}
+	
+	protected Deck getDeck() throws SQLException, CommandException {
+		
+		Long deckId = null;
+		try {
+			deckId = helper.getLong("deck");
+		}
+		catch (NumberFormatException e) {
+			throw new CommandException(DECK_ID_FORMAT);
+		}
+		
+		Deck deck = DeckInputMapper.findById(deckId);
+		if (deck == null) throw new CommandException(DECK_DOES_NOT_EXIST);
+		
+		return deck;
+		
 	}
 	
 	protected Deck getDeck(long deckId) throws SQLException, CommandException {

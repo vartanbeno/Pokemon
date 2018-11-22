@@ -18,6 +18,7 @@ import org.dsrg.soenea.uow.UoW;
 import app.dispatcher.AbstractDispatcher;
 import app.dispatcher.AcceptChallengeDispatcher;
 import app.dispatcher.ChallengePlayerDispatcher;
+import app.dispatcher.ChallengePlayerFormDispatcher;
 import app.dispatcher.DrawCardDispatcher;
 import app.dispatcher.ListChallengesDispatcher;
 import app.dispatcher.ListGamesDispatcher;
@@ -80,6 +81,7 @@ public class FrontController extends SmartDispatcherServlet {
 	public static final String VIEW_ALL_DECKS_OR_UPLOAD = BASE_URL + "/Deck";
 	public static final String VIEW_DECK = VIEW_ALL_DECKS_OR_UPLOAD + "/\\d+";
 	
+	public static final String CHALLENGE_PLAYER_FORM = BASE_URL + "/Player/Challenge";
 	public static final String CHALLENGE_PLAYER = BASE_URL + "/Player/\\d+/Challenge";
 	public static final String ACCEPT_CHALLENGE = CHALLENGE_PLAYER + "/Accept";
 	public static final String REFUSE_CHALLENGE = CHALLENGE_PLAYER + "/Refuse";
@@ -237,6 +239,9 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (isValid(path, VIEW_DECK)) {
 			dispatcher = new DeckDispatcher(request, response);
+		}
+		else if (path.equals(CHALLENGE_PLAYER_FORM)) {
+			dispatcher = new ChallengePlayerFormDispatcher(request, response);
 		}
 		else if (isValid(path, CHALLENGE_PLAYER)) {
 			dispatcher = new ChallengePlayerDispatcher(request, response);

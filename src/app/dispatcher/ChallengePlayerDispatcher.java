@@ -8,9 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.dsrg.soenea.uow.UoW;
 
-import app.Global;
+import app.FrontController;
 import dom.command.ChallengePlayerCommand;
-import dom.command.ChallengePlayerFormCommand;
 
 public class ChallengePlayerDispatcher extends AbstractDispatcher {
 		
@@ -20,20 +19,16 @@ public class ChallengePlayerDispatcher extends AbstractDispatcher {
 	
 	@Override
 	public void doGet() throws IOException, ServletException {
-		
 		try {
-			new ChallengePlayerFormCommand(myHelper).execute();
-			forward(Global.CHALLENGE_FORM);
+			myResponse.sendRedirect(myRequest.getContextPath() + FrontController.CHALLENGE_PLAYER_FORM);
 		}
 		catch (Exception e) {
 			fail(e.getMessage());
 		}
-		
 	}
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		
 		try {
 			new ChallengePlayerCommand(myHelper).execute();
 			UoW.getCurrent().commit();
@@ -42,7 +37,6 @@ public class ChallengePlayerDispatcher extends AbstractDispatcher {
 		catch (Exception e) {
 			fail(e.getMessage());
 		}
-		
 	}
 
 }
