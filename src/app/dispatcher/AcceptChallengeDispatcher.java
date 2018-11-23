@@ -19,7 +19,6 @@ public class AcceptChallengeDispatcher extends AbstractDispatcher {
 	
 	@Override
 	public void doGet() throws IOException, ServletException {
-		
 		try {
 			myResponse.sendRedirect(myRequest.getContextPath() + FrontController.OPEN_CHALLENGES);
 		}
@@ -27,7 +26,6 @@ public class AcceptChallengeDispatcher extends AbstractDispatcher {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 	@Override

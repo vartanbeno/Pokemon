@@ -24,7 +24,9 @@ public class RefuseChallengeCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
-			Challenge challenge = getChallengeToRefuse();
+			long challengeId = Long.parseLong((String) helper.getRequestAttribute("challenge"));
+			Challenge challenge = getChallengeToAcceptOrRefuse(challengeId);
+			
 			challenge.setStatus(ChallengeStatus.refused.ordinal());
 			
 			ChallengeFactory.registerDirty(challenge);

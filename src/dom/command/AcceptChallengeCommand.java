@@ -22,7 +22,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 	
 	private static final String NO_DECK = "You must have a deck to accept a challenge.";
 	
-	private static final String ACCEPT_SUCCESS = "You have successfully accepted %1$s's challenge. Game %1$s has begun! %1$s drew their first card!";
+	private static final String ACCEPT_SUCCESS = "You have successfully accepted %1$s's challenge. Game %2$d has begun! %1$s drew their first card!";
 
 	public AcceptChallengeCommand(Helper helper) {
 		super(helper);
@@ -38,8 +38,11 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			List<IDeck> myDecks = getMyDecks();
 			if (myDecks.size() == 0) throw new CommandException(NO_DECK);
 			
-			Challenge challenge = getChallengeToAccept();
+			long challengeId = Long.parseLong((String) helper.getRequestAttribute("challenge"));
+			Challenge challenge = getChallengeToAcceptOrRefuse(challengeId);
+			
 			Deck myDeck = getDeck();
+			checkIfItsMyDeck(myDeck);
 			
 			challenge.setStatus(ChallengeStatus.accepted.ordinal());
 			

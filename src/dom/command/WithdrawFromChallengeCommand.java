@@ -24,7 +24,9 @@ public class WithdrawFromChallengeCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 						
-			Challenge challenge = getChallengetoWithdrawFrom();
+			long challengeId = Long.parseLong((String) helper.getRequestAttribute("challenge"));
+			Challenge challenge = getChallengeToWithdrawFrom(challengeId);
+			
 			challenge.setStatus(ChallengeStatus.withdrawn.ordinal());
 			
 			ChallengeFactory.registerDirty(challenge);
