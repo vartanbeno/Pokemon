@@ -24,6 +24,7 @@ public class PlayCardCommand extends AbstractCommand {
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
 	private static final String GAME_STOPPED = "This game is over. You cannot continue playing.";
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
+	private static final String NOT_YOUR_TURN = "It is not your turn yet.";
 	
 	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench!";
 	private static final String TRAINER_DISCARD_SUCCESS = "You have sent %s to the discard pile!";
@@ -46,6 +47,7 @@ public class PlayCardCommand extends AbstractCommand {
 			if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId())
 				throw new CommandException(NOT_YOUR_GAME);
 			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_STOPPED);
+			if (userId != game.getCurrentTurn()) throw new CommandException(NOT_YOUR_TURN);
 			
 			/**
 			 * This is the card index.
