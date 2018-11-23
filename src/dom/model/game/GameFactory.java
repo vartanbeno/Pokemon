@@ -12,19 +12,22 @@ import dom.model.user.IUser;
 
 public class GameFactory {
 	
-	public static Game createNew(IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status)
-			throws MissingMappingException, MapperException, SQLException {
+	public static Game createNew(
+			IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, long currentTurn, int status
+	) throws MissingMappingException, MapperException, SQLException {
 		
-		Game game = new Game(GameTDG.getMaxId(), 1, challenger, challengee, challengerDeck, challengeeDeck, status);
+		Game game = new Game(GameTDG.getMaxId(), 1, challenger, challengee, challengerDeck, challengeeDeck, currentTurn, status);
 		UoW.getCurrent().registerNew(game);
 		
 		return game;
 		
 	}
 	
-	public static Game createClean(long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status) {
+	public static Game createClean(
+			long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, long currentTurn, int status
+	) {
 		
-		Game game = new Game(id, version, challenger, challengee, challengerDeck, challengeeDeck, status);
+		Game game = new Game(id, version, challenger, challengee, challengerDeck, challengeeDeck, currentTurn, status);
 		UoW.getCurrent().registerClean(game);
 		
 		return game;
@@ -39,14 +42,16 @@ public class GameFactory {
 				game.getChallengee(),
 				game.getChallengerDeck(),
 				game.getChallengeeDeck(),
+				game.getCurrentTurn(),
 				game.getStatus()
 		);
 	}
 	
-	public static Game registerDirty(long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, int status)
-			throws MissingMappingException, MapperException {
+	public static Game registerDirty(
+			long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, long currentTurn, int status
+	) throws MissingMappingException, MapperException {
 		
-		Game game = new Game(id, version, challenger, challengee, challengerDeck, challengeeDeck, status);
+		Game game = new Game(id, version, challenger, challengee, challengerDeck, challengeeDeck, currentTurn, status);
 		UoW.getCurrent().registerDirty(game);
 		
 		return game;
@@ -62,6 +67,7 @@ public class GameFactory {
 				game.getChallengee(),
 				game.getChallengerDeck(),
 				game.getChallengeeDeck(),
+				game.getCurrentTurn(),
 				game.getStatus()
 		);
 	}

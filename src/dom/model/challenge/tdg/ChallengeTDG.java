@@ -15,8 +15,8 @@ import dom.model.user.tdg.UserTDG;
 /**
  * 
  * ChallengeTDG: Challenge Table Data Gateway.
- * Points to the challenges table.
- * Provides methods to find, insert, update, and delete challenges.
+ * Points to the Challenge table.
+ * Provides methods to insert, update, and delete challenges.
  * 
  * Also includes create/truncate/drop queries.
  * 

@@ -11,7 +11,7 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
 /**
  * 
  * UserTDG: User Table Data Gateway.
- * Points to the users table.
+ * Points to the User table.
  * Provides methods to insert, update, and delete users.
  * 
  * Also includes create/truncate/drop queries.

@@ -17,21 +17,25 @@ public class LoginDispatcher extends AbstractDispatcher {
 
 	@Override
 	public void doGet() throws IOException, ServletException {
-		forward(Global.LOGIN_FORM);
+		try {
+			forward(Global.LOGIN_FORM);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		
 		try {
 			myRequest.getSession(true).invalidate();
 			new LoginCommand(myHelper).execute();
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 }

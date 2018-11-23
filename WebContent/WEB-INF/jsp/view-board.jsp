@@ -8,6 +8,7 @@
 		"id": ${gameBoard.game.id},
 		"version": ${gameBoard.game.version},
 		"players": [${gameBoard.game.challenger.id}, ${gameBoard.game.challengee.id}],
+		"current": ${gameBoard.game.currentTurn},
 		"decks": [${gameBoard.game.challengerDeck.id}, ${gameBoard.game.challengeeDeck.id}],
 		"play": {
 			"${gameBoard.game.challenger.id}": {

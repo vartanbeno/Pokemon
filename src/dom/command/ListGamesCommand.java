@@ -22,15 +22,14 @@ public class ListGamesCommand extends AbstractCommand {
 
 	@Override
 	public void process() throws CommandException {
-		
 		try {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			games = GameInputMapper.findAll();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			throw new CommandException(e.getMessage());
 		}
-		
 	}
 
 }

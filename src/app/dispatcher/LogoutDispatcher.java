@@ -21,16 +21,15 @@ public class LogoutDispatcher extends AbstractDispatcher {
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		
 		try {
 			new LogoutCommand(myHelper).execute();
 			myRequest.getSession(true).invalidate();
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 }

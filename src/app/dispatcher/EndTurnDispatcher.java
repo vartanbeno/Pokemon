@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.dsrg.soenea.uow.UoW;
 
-import dom.command.DrawCardCommand;
+import dom.command.EndTurnCommand;
 
-public class DrawCardDispatcher extends AbstractDispatcher {
-	
-	public DrawCardDispatcher(HttpServletRequest request, HttpServletResponse response) {
+public class EndTurnDispatcher extends AbstractDispatcher {
+		
+	public EndTurnDispatcher(HttpServletRequest request, HttpServletResponse response) {
 		super.init(request, response);
 	}
 	
@@ -23,16 +23,15 @@ public class DrawCardDispatcher extends AbstractDispatcher {
 
 	@Override
 	public void execute() throws ServletException, IOException {
-		
 		try {
-			new DrawCardCommand(myHelper).execute();
+			new EndTurnCommand(myHelper).execute();
 			UoW.getCurrent().commit();
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 }

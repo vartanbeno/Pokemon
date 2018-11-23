@@ -19,6 +19,9 @@ public interface IGame extends IDomainObject<Long> {
 	public IDeck getChallengeeDeck();
 	public void setChallengeeDeck(IDeck challengeeDeck);
 	
+	public long getCurrentTurn();
+	public void setCurrentTurn(long currentTurn);
+	
 	public int getStatus();
 	public void setStatus(int status);
 	

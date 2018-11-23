@@ -20,7 +20,7 @@ import app.dispatcher.AbstractDispatcher;
 import app.dispatcher.AcceptChallengeDispatcher;
 import app.dispatcher.ChallengePlayerDispatcher;
 import app.dispatcher.ChallengePlayerFormDispatcher;
-import app.dispatcher.DrawCardDispatcher;
+import app.dispatcher.EndTurnDispatcher;
 import app.dispatcher.ListChallengesDispatcher;
 import app.dispatcher.ListGamesDispatcher;
 import app.dispatcher.ListPlayersDispatcher;
@@ -98,7 +98,6 @@ public class FrontController extends SmartDispatcherServlet {
 	public static final String VIEW_BOARD = BASE_URL + "/Game/\\d+";
 	public static final String VIEW_HAND = VIEW_BOARD + "/Hand";
 	public static final String VIEW_DISCARD_PILE = VIEW_BOARD + "/Player/\\d+/Discard";
-	public static final String DRAW_CARD = VIEW_BOARD + "/DrawCard";
 	public static final String PLAY_CARD = VIEW_BOARD + "/Hand/\\d+/Play";
 	
 	public static final String END_TURN = VIEW_BOARD + "/EndTurn";
@@ -282,10 +281,6 @@ public class FrontController extends SmartDispatcherServlet {
 			request.setAttribute("player", getSplitPath(path)[4]);
 			dispatcher = new ViewDiscardPileDispatcher(request, response);
 		}
-		else if (isValid(path, DRAW_CARD)) {
-			request.setAttribute("game", getSplitPath(path)[2]);
-			dispatcher = new DrawCardDispatcher(request, response);
-		}
 		else if (isValid(path, PLAY_CARD)) {
 			request.setAttribute("game", getSplitPath(path)[2]);
 			request.setAttribute("card", getSplitPath(path)[4]);
@@ -293,7 +288,7 @@ public class FrontController extends SmartDispatcherServlet {
 		}
 		else if (isValid(path, END_TURN)) {
 			request.setAttribute("game", getSplitPath(path)[2]);
-			// TODO EndTurnDispatcher
+			dispatcher = new EndTurnDispatcher(request, response);
 		}
 		else if (isValid(path, RETIRE)) {
 			request.setAttribute("game", getSplitPath(path)[2]);

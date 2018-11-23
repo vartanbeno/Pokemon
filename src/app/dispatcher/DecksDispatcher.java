@@ -25,6 +25,7 @@ public class DecksDispatcher extends AbstractDispatcher {
 			forward(Global.VIEW_DECKS);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}
@@ -37,6 +38,7 @@ public class DecksDispatcher extends AbstractDispatcher {
 			success();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}

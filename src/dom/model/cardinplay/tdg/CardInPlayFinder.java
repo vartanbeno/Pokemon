@@ -7,6 +7,13 @@ import java.sql.SQLException;
 
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
+/**
+ * 
+ * Provides methods to find records in the CardInPlay table.
+ * 
+ * @author vartanbeno
+ *
+ */
 public class CardInPlayFinder {
 
 	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", CardInPlayTDG.getColumns(), CardInPlayTDG.getTableName());

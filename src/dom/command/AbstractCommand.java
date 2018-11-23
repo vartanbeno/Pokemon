@@ -9,11 +9,13 @@ import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.challenge.Challenge;
+import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
+import dom.model.game.GameStatus;
 import dom.model.game.mapper.GameInputMapper;
 
 public abstract class AbstractCommand extends ValidatorCommand {
@@ -22,39 +24,27 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	public String message;
 	
 	/**
-	 * Accept challenge fail messages.
+	 * Challenge fail messages.
 	 */
-	private static final String CHALLENGE_ID_FORMAT = "You must specify a challenge ID in the correct format (a positive integer).";
-	private static final String ACCEPT_CHALLENGE_DOES_NOT_EXIST = "You cannot accept a challenge that doesn't exist.";
-	
-	/**
-	 * Refuse challenge fail messages.
-	 */
-	private static final String REFUSE_CHALLENGE_DOES_NOT_EXIST = "You cannot refuse a challenge that doesn't exist.";
-	
-	/**
-	 * Withdraw challenge fail messages.
-	 */
-	private static final String WITHDRAW_CHALLENGE_DOES_NOT_EXIST = "You cannot withdraw from a challenge that doesn't exist.";
-	
-	/**
-	 * Accept/refuse/withdraw challenge fail messages.
-	 */
+	private static final String CHALLENGE_NOT_OPEN = "You cannot accept/refuse/withdraw from a challenge that's not open.";
+	private static final String CHALLENGE_DOES_NOT_EXIST = "You cannot accept/refuse/withdraw from a challenge that doesn't exist.";
 	private static final String NOT_PART_OF_CHALLENGE = "You must be part of the challenge to accept/refuse/withdraw from it.";
 	private static final String SAME_ID = "You cannot accept/refuse/withdraw from a challenge against yourself.";
 	
 	/**
 	 * Deck fail messages.
 	 */
+	private static final String NOT_YOUR_DECK = "The deck you specified is not yours.";
 	private static final String DECK_ID_FORMAT = "You must specify a deck ID in the correct format (a positive integer).";
 	private static final String DECK_DOES_NOT_EXIST = "The deck you specified does not exist.";
 	
 	/**
 	 * Game fail messages.
 	 */
-	private static final String GAME_ID_FORMAT = "You must specify a game ID in the correct format (a positive integer).";
 	private static final String GAME_DOES_NOT_EXIST = "The game you specified does not exist.";
 	private static final String NOT_YOUR_GAME = "You are not part of this game.";
+	private static final String GAME_HAS_ENDED = "This game has already ended.";
+	private static final String NOT_YOUR_TURN = "It is not your turn yet.";
 
 	public AbstractCommand(Helper helper) {
 		super(helper);
@@ -102,6 +92,10 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		
 	}
 	
+	protected void checkIfItsMyDeck(IDeck deck) throws CommandException {
+		if (getUserId() != deck.getPlayer().getId()) throw new CommandException(NOT_YOUR_DECK);
+	}
+	
 	protected List<IDeck> getMyDecks() throws SQLException, CommandException {
 		
 		long userId = getUserId();
@@ -115,92 +109,68 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		
 	}
 	
-	protected Challenge getChallenge() throws SQLException, CommandException {
+	protected Challenge getChallengeToAcceptOrRefuse(long challengeId) throws SQLException, CommandException {
 		
-		Long challengeId = null;
-		
-		try {
-			challengeId = helper.getLong("challenge");
-		}
-		catch (NumberFormatException e) {
-			throw new CommandException(CHALLENGE_ID_FORMAT);
-		}
-		
+		long userId = getUserId();
 		Challenge challenge = ChallengeInputMapper.findById(challengeId);
 		
-		return challenge;
+		validateChallenge(challenge);
 		
-	}
-	
-	protected Challenge getChallengeToAccept() throws SQLException, CommandException {
-		
-		long userId = getUserId();
-		Challenge challenge = getChallenge();
-		
-		if (challenge == null) throw new CommandException(ACCEPT_CHALLENGE_DOES_NOT_EXIST);
-		if (userId == challenge.getChallenger().getId()) throw new CommandException(SAME_ID);
-		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
-			throw new CommandException(NOT_PART_OF_CHALLENGE);
-		
-		return challenge;
-		
-	}
-	
-	protected Challenge getChallengeToRefuse() throws SQLException, CommandException {
-		
-		long userId = getUserId();
-		Challenge challenge = getChallenge();
-		
-		if (challenge == null) throw new CommandException(REFUSE_CHALLENGE_DOES_NOT_EXIST);
-		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
-			throw new CommandException(NOT_PART_OF_CHALLENGE);
 		if (userId == challenge.getChallenger().getId()) throw new CommandException(SAME_ID);
 		
 		return challenge;
 		
 	}
 	
-	protected Challenge getChallengetoWithdrawFrom() throws SQLException, CommandException {
+	protected Challenge getChallengeToWithdrawFrom(long challengeId) throws SQLException, CommandException {
 		
 		long userId = getUserId();
-		Challenge challenge = getChallenge();
+		Challenge challenge = ChallengeInputMapper.findById(challengeId);
 		
-		if (challenge == null) throw new CommandException(WITHDRAW_CHALLENGE_DOES_NOT_EXIST);
-		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
-			throw new CommandException(NOT_PART_OF_CHALLENGE);
+		validateChallenge(challenge);
+		
 		if (userId == challenge.getChallengee().getId()) throw new CommandException(SAME_ID);
 		
 		return challenge;
 		
 	}
 	
-	protected Game getGame() throws CommandException, SQLException {
+	protected void validateChallenge(Challenge challenge) throws CommandException {
 		
-		Long gameId = null;
 		long userId = getUserId();
 		
-		try {
-			gameId = helper.getLong("game");
-		}
-		catch (NumberFormatException e) {
-			throw new CommandException(GAME_ID_FORMAT);
-		}
+		if (challenge == null) throw new CommandException(CHALLENGE_DOES_NOT_EXIST);
 		
-		Game game = GameInputMapper.findById(gameId);
-		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
-		if (game.getChallenger().getId() != userId && game.getChallengee().getId() != userId) throw new CommandException(NOT_YOUR_GAME);
+		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
+			throw new CommandException(NOT_PART_OF_CHALLENGE);
 		
-		return game;
-		
+		if (challenge.getStatus() != ChallengeStatus.open.ordinal())
+			throw new CommandException(CHALLENGE_NOT_OPEN);
+						
 	}
 	
 	protected Game getGame(long gameId) throws CommandException, SQLException {
-		
 		Game game = GameInputMapper.findById(gameId);
-		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
-		
+		checkIfGameExists(game);
 		return game;
-		
+	}
+	
+	protected void checkIfGameExists(Game game) throws CommandException {
+		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
+	}
+	
+	protected void checkIfImPartOfGame(Game game) throws CommandException {
+		long userId = getUserId();
+		if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId())
+			throw new CommandException(NOT_YOUR_GAME);
+	}
+	
+	protected void checkIfGameHasEnded(Game game) throws CommandException {
+		if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_HAS_ENDED);
+	}
+	
+	protected void checkIfItsMyTurn(Game game) throws CommandException {
+		if (getUserId() != game.getCurrentTurn()) throw new CommandException(NOT_YOUR_TURN);
 	}
 
 }

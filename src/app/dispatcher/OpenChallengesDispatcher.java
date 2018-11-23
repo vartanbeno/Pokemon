@@ -17,15 +17,14 @@ public class OpenChallengesDispatcher extends AbstractDispatcher {
 	
 	@Override
 	public void doGet() throws IOException, ServletException {
-		
 		try {
 			new OpenChallengesCommand(myHelper).execute();
 			forward(Global.OPEN_CHALLENGES_FORM);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
-		
 	}
 
 	@Override

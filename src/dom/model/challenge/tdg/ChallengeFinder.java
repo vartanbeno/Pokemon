@@ -9,6 +9,13 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.challenge.ChallengeStatus;
 
+/**
+ * 
+ * Provides methods to find records in the Challenge table.
+ * 
+ * @author vartanbeno
+ *
+ */
 public class ChallengeFinder {
 	
 	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", ChallengeTDG.getColumns(), ChallengeTDG.getTableName());

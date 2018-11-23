@@ -22,6 +22,7 @@ public class ViewHandDispatcher extends AbstractDispatcher {
 			forward(Global.VIEW_HAND);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			fail(e.getMessage());
 		}
 	}

@@ -17,8 +17,8 @@ import dom.model.user.tdg.UserTDG;
 /**
 *
 * CardNotInTDG: Card In Play Table Data Gateway.
-* Points to the cards_in_play table.
-* Provides methods to find, insert, and delete cards in play.
+* Points to the CardInPlay table.
+* Provides methods to insert, update, and delete cards in play.
 *
 * Also includes create/truncate/drop queries.
 * 
