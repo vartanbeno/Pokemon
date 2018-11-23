@@ -9,6 +9,7 @@ import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.challenge.Challenge;
+import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
@@ -25,6 +26,7 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	/**
 	 * Challenge fail messages.
 	 */
+	private static final String CHALLENGE_NOT_OPEN = "You cannot accept/refuse/withdraw from a challenge that's not open.";
 	private static final String CHALLENGE_DOES_NOT_EXIST = "You cannot accept/refuse/withdraw from a challenge that doesn't exist.";
 	private static final String NOT_PART_OF_CHALLENGE = "You must be part of the challenge to accept/refuse/withdraw from it.";
 	private static final String SAME_ID = "You cannot accept/refuse/withdraw from a challenge against yourself.";
@@ -155,6 +157,9 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		
 		if (userId != challenge.getChallenger().getId() && userId != challenge.getChallengee().getId())
 			throw new CommandException(NOT_PART_OF_CHALLENGE);
+		
+		if (challenge.getStatus() != ChallengeStatus.open.ordinal())
+			throw new CommandException(CHALLENGE_NOT_OPEN);
 				
 	}
 	
