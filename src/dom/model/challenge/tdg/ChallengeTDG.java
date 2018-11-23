@@ -9,8 +9,6 @@ import org.dsrg.soenea.service.UniqueIdFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 import dom.model.challenge.ChallengeStatus;
-import dom.model.deck.tdg.DeckTDG;
-import dom.model.user.tdg.UserTDG;
 
 /**
  * 
@@ -37,7 +35,7 @@ public class ChallengeTDG {
 			+ "status INT NOT NULL,"
 			+ "challenger_deck BIGINT NOT NULL,"
 			+ "PRIMARY KEY (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName(), DeckTDG.getTableName());
+			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	

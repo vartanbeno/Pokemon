@@ -8,8 +8,6 @@ import java.sql.Statement;
 import org.dsrg.soenea.service.UniqueIdFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
-import dom.model.user.tdg.UserTDG;
-
 /**
  * 
  * DeckTDG: Deck TabDeckle Data Gateway.
@@ -32,7 +30,7 @@ public class DeckTDG {
 			+ "version BIGINT NOT NULL,"
 			+ "player BIGINT NOT NULL,"
 			+ "PRIMARY KEY (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName());
+			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
