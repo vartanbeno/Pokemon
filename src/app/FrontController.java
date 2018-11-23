@@ -38,6 +38,9 @@ import app.dispatcher.DeckDispatcher;
 import app.dispatcher.DecksDispatcher;
 import app.dispatcher.ViewHandDispatcher;
 import app.dispatcher.WithdrawFromChallengeDispatcher;
+import dom.model.attachedenergy.AttachedEnergy;
+import dom.model.attachedenergy.mapper.AttachedEnergyOutputMapper;
+import dom.model.attachedenergy.tdg.AttachedEnergyTDG;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
 import dom.model.card.tdg.CardTDG;
@@ -148,6 +151,7 @@ public class FrontController extends SmartDispatcherServlet {
     		CardTDG.createTable();
     		GameTDG.createTable();
     		CardInPlayTDG.createTable();
+    		AttachedEnergyTDG.createTable();
     	}
     	catch (Exception e) {
 			e.printStackTrace();
@@ -162,6 +166,7 @@ public class FrontController extends SmartDispatcherServlet {
 			CardTDG.dropTable();
 			GameTDG.dropTable();
 			CardInPlayTDG.dropTable();
+			AttachedEnergyTDG.dropTable();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -178,6 +183,7 @@ public class FrontController extends SmartDispatcherServlet {
     	mapperFactory.addMapping(Card.class, CardOutputMapper.class);
     	mapperFactory.addMapping(Game.class, GameOutputMapper.class);
     	mapperFactory.addMapping(CardInPlay.class, CardInPlayOutputMapper.class);
+    	mapperFactory.addMapping(AttachedEnergy.class, AttachedEnergyOutputMapper.class);
     	
     	UoW.initMapperFactory(mapperFactory);
     	
