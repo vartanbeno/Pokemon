@@ -12,9 +12,9 @@ import dom.model.user.tdg.UserTDG;
 
 /**
  * 
- * DeckTDG: Deck Table Data Gateway.
+ * DeckTDG: Deck TabDeckle Data Gateway.
  * Points to the decks table.
- * Provides methods to find, insert, and delete decks.
+ * Provides methods to insert, update, and delete decks.
  * 
  * Also includes create/truncate/drop queries.
  * 

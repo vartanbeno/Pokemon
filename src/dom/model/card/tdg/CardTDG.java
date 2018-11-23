@@ -13,8 +13,8 @@ import dom.model.deck.tdg.DeckTDG;
 /**
  * 
  * CardTDG: Card Table Data Gateway.
- * Points to the cards table.
- * Provides methods to find, insert, and delete cards.
+ * Points to the Card table.
+ * Provides methods to insert, update, and delete cards.
  * 
  * Also includes create/truncate/drop queries.
  * 

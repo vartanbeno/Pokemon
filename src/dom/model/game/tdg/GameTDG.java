@@ -15,10 +15,10 @@ import dom.model.user.tdg.UserTDG;
 /**
  * 
  * GameTDG: Game Table Data Gateway.
- * Points to the games table.
+ * Points to the Game table.
+ * Provides methods to insert, update, and delete games.
  * 
- * Includes create/truncate/drop queries.
- * Find methods are in the GameFinder class.
+ * Also includes create/truncate/drop queries.
  * 
  * The status column has the following possible values:
  *  - 0: the game is still ongoing.
