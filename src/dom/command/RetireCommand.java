@@ -12,7 +12,6 @@ import dom.model.user.mapper.UserInputMapper;
 public class RetireCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to retire from a game.";
-	private static final String GAME_ALREADY_ENDED = "This game has already ended.";
     
 	private static final String RETIRE_SUCCESS = "You have successfully retired from your game against %s.";
 	
@@ -29,7 +28,9 @@ public class RetireCommand extends AbstractCommand {
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
-			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_ALREADY_ENDED);
+			
+			checkIfImPartOfGame(game);
+			checkIfGameHasEnded(game);
 			
 			long userId = getUserId();
 			User opponent = null;

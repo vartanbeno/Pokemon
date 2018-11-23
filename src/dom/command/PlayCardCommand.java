@@ -13,18 +13,14 @@ import dom.model.cardinplay.ICardInPlay;
 import dom.model.cardinplay.mapper.CardInPlayInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameFactory;
-import dom.model.game.GameStatus;
 
 public class PlayCardCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
-	private static final String NOT_YOUR_GAME = "You are not part of this game.";
 	private static final String BENCH_IS_FULL = "Your bench is full. It already has 5 Pokemon.";
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
-	private static final String GAME_STOPPED = "This game is over. You cannot continue playing.";
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
-	private static final String NOT_YOUR_TURN = "It is not your turn yet.";
 	
 	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench!";
 	private static final String TRAINER_DISCARD_SUCCESS = "You have sent %s to the discard pile!";
@@ -39,15 +35,13 @@ public class PlayCardCommand extends AbstractCommand {
 		try {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
-			long userId = getUserId();
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
 			
-			if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId())
-				throw new CommandException(NOT_YOUR_GAME);
-			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_STOPPED);
-			if (userId != game.getCurrentTurn()) throw new CommandException(NOT_YOUR_TURN);
+			checkIfImPartOfGame(game);
+			checkIfGameHasEnded(game);
+			checkIfItsMyTurn(game);
 			
 			/**
 			 * This is the card index.

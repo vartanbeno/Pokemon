@@ -34,6 +34,8 @@ public class ViewDiscardPileCommand extends AbstractCommand {
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
 			
+			checkIfImPartOfGame(game);
+			
 			long playerId = Long.parseLong((String) helper.getRequestAttribute("player"));
 			
 			if (playerId != game.getChallenger().getId() && playerId != game.getChallengee().getId())

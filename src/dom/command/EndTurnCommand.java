@@ -9,17 +9,12 @@ import dom.model.deck.IDeck;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.GameFactory;
-import dom.model.game.GameStatus;
 import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.IUser;
 
 public class EndTurnCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
-	
-	private static final String NOT_YOUR_GAME = "You are not part of this game.";
-	private static final String GAME_STOPPED = "This game is over. You cannot continue playing.";
-	private static final String NOT_YOUR_TURN = "It's not your turn yet.";
 	
 	private static final String END_TURN_SUCCESS = "You have ended your turn. %s just drew a card.";
 	
@@ -33,15 +28,13 @@ public class EndTurnCommand extends AbstractCommand {
 		try {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
-			long userId = getUserId();
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
 			
-			if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId())
-				throw new CommandException(NOT_YOUR_GAME);
-			if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_STOPPED);
-			if (userId != game.getCurrentTurn()) throw new CommandException(NOT_YOUR_TURN);
+			checkIfImPartOfGame(game);
+			checkIfGameHasEnded(game);
+			checkIfItsMyTurn(game);
 			
 			IUser nextTurnPlayer = game.getCurrentTurn() == game.getChallenger().getId() ?
 					game.getChallengee() : game.getChallenger();

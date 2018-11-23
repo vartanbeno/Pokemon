@@ -33,6 +33,8 @@ public class ViewHandCommand extends AbstractCommand {
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
 			
+			checkIfImPartOfGame(game);
+			
 			long userId = getUserId();
 			User player = userId == game.getChallenger().getId() ? (User) game.getChallenger() : (User) game.getChallengee();
 			
