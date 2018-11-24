@@ -9,6 +9,8 @@ import org.dsrg.soenea.domain.ObjectRemovedException;
 import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
 import org.dsrg.soenea.domain.mapper.IdentityMap;
 
+import dom.model.attachedenergy.IAttachedEnergy;
+import dom.model.attachedenergy.mapper.AttachedEnergyInputMapper;
 import dom.model.bench.Bench;
 import dom.model.bench.BenchFactory;
 import dom.model.bench.IBench;
@@ -62,6 +64,7 @@ public class BenchInputMapper {
 		Game game = GameInputMapper.findById(rs.getLong("game"));
 		User player = UserInputMapper.findById(rs.getLong("player"));
 		Card card = CardInputMapper.findById(rs.getLong("card"));
+		List<IAttachedEnergy> attachedEnergyCards = AttachedEnergyInputMapper.findByGameAndPlayer(rs.getLong("game"), rs.getLong("player"));
 		
 		return BenchFactory.createClean(
 				rs.getLong("id"),
@@ -69,7 +72,8 @@ public class BenchInputMapper {
 				game,
 				player,
 				rs.getLong("deck"),
-				card
+				card,
+				attachedEnergyCards
 		);
 		
 	}

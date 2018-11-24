@@ -41,6 +41,7 @@ import app.dispatcher.WithdrawFromChallengeDispatcher;
 import dom.model.attachedenergy.AttachedEnergy;
 import dom.model.attachedenergy.mapper.AttachedEnergyOutputMapper;
 import dom.model.attachedenergy.tdg.AttachedEnergyTDG;
+import dom.model.bench.tdg.BenchTDG;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
 import dom.model.card.tdg.CardTDG;
@@ -53,9 +54,11 @@ import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckOutputMapper;
 import dom.model.deck.tdg.DeckTDG;
+import dom.model.discard.tdg.DiscardTDG;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameOutputMapper;
 import dom.model.game.tdg.GameTDG;
+import dom.model.hand.tdg.HandTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserOutputMapper;
 import dom.model.user.tdg.UserTDG;
@@ -150,7 +153,9 @@ public class FrontController extends SmartDispatcherServlet {
     		ChallengeTDG.createTable();
     		CardTDG.createTable();
     		GameTDG.createTable();
-    		CardInPlayTDG.createTable();
+    		HandTDG.createTable();
+    		DiscardTDG.createTable();
+    		BenchTDG.createTable();
     		AttachedEnergyTDG.createTable();
     	}
     	catch (Exception e) {
@@ -166,6 +171,9 @@ public class FrontController extends SmartDispatcherServlet {
 			CardTDG.dropTable();
 			GameTDG.dropTable();
 			CardInPlayTDG.dropTable();
+			HandTDG.createTable();
+    		DiscardTDG.createTable();
+    		BenchTDG.createTable();
 			AttachedEnergyTDG.dropTable();
 		}
 		catch (Exception e) {

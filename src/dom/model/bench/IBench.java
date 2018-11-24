@@ -1,7 +1,10 @@
 package dom.model.bench;
 
+import java.util.List;
+
 import org.dsrg.soenea.domain.interf.IDomainObject;
 
+import dom.model.attachedenergy.IAttachedEnergy;
 import dom.model.card.ICard;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
@@ -19,5 +22,8 @@ public interface IBench extends IDomainObject<Long> {
 	
 	public ICard getCard();
 	public void setCard(ICard card);
+	
+	public List<IAttachedEnergy> getAttachedEnergyCards();
+	public void setAttachedEnergyCards(List<IAttachedEnergy> attachedEnergyCards);
 	
 }
