@@ -6,9 +6,8 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayInputMapper;
+import dom.model.discard.IDiscard;
+import dom.model.discard.mapper.DiscardInputMapper;
 import dom.model.game.Game;
 
 public class ViewDiscardPileCommand extends AbstractCommand {
@@ -17,8 +16,8 @@ public class ViewDiscardPileCommand extends AbstractCommand {
 	
 	private static final String NOT_PART_OF_GAME = "The player specified is not part of this game.";
 	
-	@SetInRequestAttribute
-	public List<ICardInPlay> discard;
+	@SetInRequestAttribute(attributeName = "discard")
+	public List<IDiscard> discardPile;
 	
 	public ViewDiscardPileCommand(Helper helper) {
 		super(helper);
@@ -41,9 +40,7 @@ public class ViewDiscardPileCommand extends AbstractCommand {
 			if (playerId != game.getChallenger().getId() && playerId != game.getChallengee().getId())
 				throw new CommandException(NOT_PART_OF_GAME);
 			
-			discard = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
-					game.getId(), playerId, CardStatus.discarded.ordinal()
-			);
+			discardPile = DiscardInputMapper.findByGameAndPlayer(game.getId(), playerId);
 			
 		}
 		catch (Exception e) {

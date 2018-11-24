@@ -2,7 +2,7 @@ package dom.model.attachedenergy;
 
 import org.dsrg.soenea.domain.DomainObject;
 
-import dom.model.cardinplay.ICardInPlay;
+import dom.model.bench.IBench;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
 
@@ -11,11 +11,11 @@ public class AttachedEnergy extends DomainObject<Long> implements IAttachedEnerg
 	private IGame game;
 	private long gameVersion;
 	private IUser player;
-	private ICardInPlay energyCard;
-	private ICardInPlay pokemonCard;
+	private IBench energyCard;
+	private IBench pokemonCard;
 	
 	public AttachedEnergy(
-			long id, long version, IGame game, long gameVersion, IUser player, ICardInPlay energyCard, ICardInPlay pokemonCard
+			long id, long version, IGame game, long gameVersion, IUser player, IBench energyCard, IBench pokemonCard
 	) {
 		super(id, version);
 		this.game = game;
@@ -56,22 +56,22 @@ public class AttachedEnergy extends DomainObject<Long> implements IAttachedEnerg
 	}
 
 	@Override
-	public ICardInPlay getEnergyCard() {
+	public IBench getEnergyCard() {
 		return energyCard;
 	}
 
 	@Override
-	public void setEnergyCard(ICardInPlay energyCard) {
+	public void setEnergyCard(IBench energyCard) {
 		this.energyCard = energyCard;
 	}
 
 	@Override
-	public ICardInPlay getPokemonCard() {
+	public IBench getPokemonCard() {
 		return pokemonCard;
 	}
 
 	@Override
-	public void setPokemonCard(ICardInPlay pokemonCard) {
+	public void setPokemonCard(IBench pokemonCard) {
 		this.pokemonCard = pokemonCard;
 	}
 	

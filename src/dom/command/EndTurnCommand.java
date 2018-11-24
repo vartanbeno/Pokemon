@@ -7,14 +7,14 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.card.ICard;
-import dom.model.cardinplay.CardInPlayFactory;
-import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.ICardInPlay;
 import dom.model.deck.IDeck;
+import dom.model.discard.DiscardFactory;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.GameFactory;
 import dom.model.game.mapper.GameInputMapper;
+import dom.model.hand.HandFactory;
+import dom.model.hand.IHand;
 import dom.model.user.IUser;
 
 public class EndTurnCommand extends AbstractCommand {
@@ -55,7 +55,7 @@ public class EndTurnCommand extends AbstractCommand {
 			 */
 			GameBoard gameInfo = GameInputMapper.buildGameBoard(game);
 			
-			List<ICardInPlay> previousTurnHand = new ArrayList<ICardInPlay>();
+			List<IHand> previousTurnHand = new ArrayList<IHand>();
 			IDeck nextTurnDeck = null;
 			
 			if (nextTurnPlayer.getId() == game.getChallenger().getId()) {
@@ -71,8 +71,8 @@ public class EndTurnCommand extends AbstractCommand {
 			 * When a player ends their turn, the other player draws a card.
 			 */
 			ICard card = nextTurnDeck.getCards().remove(0);
-			CardInPlayFactory.createNew(
-					game, nextTurnPlayer, nextTurnDeck, card
+			HandFactory.createNew(
+					game, nextTurnPlayer, nextTurnDeck.getId(), card
 			);
 			
 			this.message = String.format(END_TURN_SUCCESS, nextTurnPlayer.getUsername());
@@ -83,9 +83,15 @@ public class EndTurnCommand extends AbstractCommand {
 			 */
 			if (previousTurnHand.size() > 7) {
 				
-				ICardInPlay cardToDiscard = previousTurnHand.remove(0);
-				cardToDiscard.setStatus(CardStatus.discarded.ordinal());
-				CardInPlayFactory.registerDirty(cardToDiscard);
+				IHand cardToDiscard = previousTurnHand.remove(0);
+				
+				HandFactory.registerDeleted(cardToDiscard);
+				DiscardFactory.createNew(
+						cardToDiscard.getGame(),
+						cardToDiscard.getPlayer(),
+						cardToDiscard.getDeck(),
+						cardToDiscard.getCard()
+				);
 				
 				this.message = String.format(END_TURN_SUCCESS_AND_DISCARD, nextTurnPlayer.getUsername());
 				

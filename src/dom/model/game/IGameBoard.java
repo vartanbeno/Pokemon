@@ -2,29 +2,31 @@ package dom.model.game;
 
 import java.util.List;
 
-import dom.model.cardinplay.ICardInPlay;
+import dom.model.bench.IBench;
+import dom.model.discard.IDiscard;
+import dom.model.hand.IHand;
 
 public interface IGameBoard {
 	
 	public IGame getGame();
 	public void setGame(IGame game);
 	
-	public List<ICardInPlay> getChallengerHand();
-	public void setChallengerHand(List<ICardInPlay> challengerHand);
+	public List<IHand> getChallengerHand();
+	public void setChallengerHand(List<IHand> challengerHand);
 	
-	public List<ICardInPlay> getChallengeeHand();
-	public void setChallengeeHand(List<ICardInPlay> challengeeHand);
+	public List<IHand> getChallengeeHand();
+	public void setChallengeeHand(List<IHand> challengeeHand);
 	
-	public List<ICardInPlay> getChallengerBench();
-	public void setChallengerBench(List<ICardInPlay> challengerBench);
+	public List<IBench> getChallengerBench();
+	public void setChallengerBench(List<IBench> challengerBench);
 	
-	public List<ICardInPlay> getChallengeeBench();
-	public void setChallengeeBench(List<ICardInPlay> challengeeBench);
+	public List<IBench> getChallengeeBench();
+	public void setChallengeeBench(List<IBench> challengeeBench);
 	
-	public List<ICardInPlay> getChallengerDiscarded();
-	public void setChallengerDiscarded(List<ICardInPlay> challengerDiscarded);
+	public List<IDiscard> getChallengerDiscarded();
+	public void setChallengerDiscarded(List<IDiscard> challengerDiscarded);
 	
-	public List<ICardInPlay> getChallengeeDiscarded();
-	public void setChallengeeDiscarded(List<ICardInPlay> challengeeDiscarded);
+	public List<IDiscard> getChallengeeDiscarded();
+	public void setChallengeeDiscarded(List<IDiscard> challengeeDiscarded);
 
 }

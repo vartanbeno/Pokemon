@@ -6,7 +6,6 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.card.Card;
-import dom.model.cardinplay.CardInPlayFactory;
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
@@ -15,6 +14,7 @@ import dom.model.deck.IDeck;
 import dom.model.game.Game;
 import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
+import dom.model.hand.HandFactory;
 
 public class AcceptChallengeCommand extends AbstractCommand {
 	
@@ -62,8 +62,8 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			 * The card is at the top of the deck, so the first in the list is drawn.
 			 */
 			Card card = (Card) game.getChallengerDeck().getCards().remove(0);
-			CardInPlayFactory.createNew(
-					game, game.getChallenger(), game.getChallengerDeck(), card
+			HandFactory.createNew(
+					game, game.getChallenger(), game.getChallengerDeck().getId(), card
 			);
 			
 			this.message = String.format(ACCEPT_SUCCESS, challenge.getChallenger().getUsername(), game.getId());

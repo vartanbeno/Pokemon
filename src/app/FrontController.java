@@ -20,6 +20,8 @@ import app.dispatcher.AbstractDispatcher;
 import app.dispatcher.AcceptChallengeDispatcher;
 import app.dispatcher.ChallengePlayerDispatcher;
 import app.dispatcher.ChallengePlayerFormDispatcher;
+import app.dispatcher.DeckDispatcher;
+import app.dispatcher.DecksDispatcher;
 import app.dispatcher.EndTurnDispatcher;
 import app.dispatcher.ListChallengesDispatcher;
 import app.dispatcher.ListGamesDispatcher;
@@ -34,28 +36,32 @@ import app.dispatcher.RetireDispatcher;
 import app.dispatcher.UploadDeckDispatcher;
 import app.dispatcher.ViewBoardDispatcher;
 import app.dispatcher.ViewDiscardPileDispatcher;
-import app.dispatcher.DeckDispatcher;
-import app.dispatcher.DecksDispatcher;
 import app.dispatcher.ViewHandDispatcher;
 import app.dispatcher.WithdrawFromChallengeDispatcher;
 import dom.model.attachedenergy.AttachedEnergy;
 import dom.model.attachedenergy.mapper.AttachedEnergyOutputMapper;
 import dom.model.attachedenergy.tdg.AttachedEnergyTDG;
+import dom.model.bench.Bench;
+import dom.model.bench.mapper.BenchOutputMapper;
+import dom.model.bench.tdg.BenchTDG;
 import dom.model.card.Card;
 import dom.model.card.mapper.CardOutputMapper;
 import dom.model.card.tdg.CardTDG;
-import dom.model.cardinplay.CardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayOutputMapper;
-import dom.model.cardinplay.tdg.CardInPlayTDG;
 import dom.model.challenge.Challenge;
 import dom.model.challenge.mapper.ChallengeOutputMapper;
 import dom.model.challenge.tdg.ChallengeTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckOutputMapper;
 import dom.model.deck.tdg.DeckTDG;
+import dom.model.discard.Discard;
+import dom.model.discard.mapper.DiscardOutputMapper;
+import dom.model.discard.tdg.DiscardTDG;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameOutputMapper;
 import dom.model.game.tdg.GameTDG;
+import dom.model.hand.Hand;
+import dom.model.hand.mapper.HandOutputMapper;
+import dom.model.hand.tdg.HandTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserOutputMapper;
 import dom.model.user.tdg.UserTDG;
@@ -150,7 +156,9 @@ public class FrontController extends SmartDispatcherServlet {
     		ChallengeTDG.createTable();
     		CardTDG.createTable();
     		GameTDG.createTable();
-    		CardInPlayTDG.createTable();
+    		HandTDG.createTable();
+    		DiscardTDG.createTable();
+    		BenchTDG.createTable();
     		AttachedEnergyTDG.createTable();
     	}
     	catch (Exception e) {
@@ -165,7 +173,9 @@ public class FrontController extends SmartDispatcherServlet {
 			ChallengeTDG.dropTable();
 			CardTDG.dropTable();
 			GameTDG.dropTable();
-			CardInPlayTDG.dropTable();
+			HandTDG.createTable();
+    		DiscardTDG.createTable();
+    		BenchTDG.createTable();
 			AttachedEnergyTDG.dropTable();
 		}
 		catch (Exception e) {
@@ -182,7 +192,9 @@ public class FrontController extends SmartDispatcherServlet {
     	mapperFactory.addMapping(Challenge.class, ChallengeOutputMapper.class);
     	mapperFactory.addMapping(Card.class, CardOutputMapper.class);
     	mapperFactory.addMapping(Game.class, GameOutputMapper.class);
-    	mapperFactory.addMapping(CardInPlay.class, CardInPlayOutputMapper.class);
+    	mapperFactory.addMapping(Hand.class, HandOutputMapper.class);
+    	mapperFactory.addMapping(Discard.class, DiscardOutputMapper.class);
+    	mapperFactory.addMapping(Bench.class, BenchOutputMapper.class);
     	mapperFactory.addMapping(AttachedEnergy.class, AttachedEnergyOutputMapper.class);
     	
     	UoW.initMapperFactory(mapperFactory);
