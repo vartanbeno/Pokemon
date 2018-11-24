@@ -13,8 +13,8 @@ import dom.model.attachedenergy.AttachedEnergy;
 import dom.model.attachedenergy.AttachedEnergyFactory;
 import dom.model.attachedenergy.IAttachedEnergy;
 import dom.model.attachedenergy.tdg.AttachedEnergyFinder;
-import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayInputMapper;
+import dom.model.bench.IBench;
+import dom.model.bench.mapper.BenchInputMapper;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.User;
@@ -63,8 +63,8 @@ public class AttachedEnergyInputMapper {
 		Game game = GameInputMapper.findById(rs.getLong("game"));
 		User player = UserInputMapper.findById(rs.getLong("player"));
 		
-		ICardInPlay energyCard = CardInPlayInputMapper.findById(rs.getLong("energy_card"));
-		ICardInPlay pokemonCard = CardInPlayInputMapper.findById(rs.getLong("pokemon_card"));
+		IBench energyCard = BenchInputMapper.findById(rs.getLong("energy_card"));
+		IBench pokemonCard = BenchInputMapper.findById(rs.getLong("pokemon_card"));
 		
 		return AttachedEnergyFactory.createClean(
 				rs.getLong("id"), rs.getLong("version"),

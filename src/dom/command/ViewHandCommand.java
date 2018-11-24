@@ -6,10 +6,9 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayInputMapper;
 import dom.model.game.Game;
+import dom.model.hand.IHand;
+import dom.model.hand.mapper.HandInputMapper;
 import dom.model.user.User;
 
 public class ViewHandCommand extends AbstractCommand {
@@ -17,7 +16,7 @@ public class ViewHandCommand extends AbstractCommand {
 	private static final String NOT_LOGGED_IN = "You must be logged in to view your hand.";
 	
 	@SetInRequestAttribute
-	public List<ICardInPlay> hand;
+	public List<IHand> hand;
 	
 	public ViewHandCommand(Helper helper) {
 		super(helper);
@@ -38,9 +37,7 @@ public class ViewHandCommand extends AbstractCommand {
 			long userId = getUserId();
 			User player = userId == game.getChallenger().getId() ? (User) game.getChallenger() : (User) game.getChallengee();
 			
-			hand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
-					game.getId(), player.getId(), CardStatus.hand.ordinal()
-			);
+			hand = HandInputMapper.findByGameAndPlayer(game.getId(), player.getId());
 			
 		}
 		catch (Exception e) {

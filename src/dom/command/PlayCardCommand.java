@@ -1,18 +1,22 @@
 package dom.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
+import dom.model.attachedenergy.IAttachedEnergy;
+import dom.model.bench.BenchFactory;
+import dom.model.bench.IBench;
+import dom.model.bench.mapper.BenchInputMapper;
 import dom.model.card.CardType;
-import dom.model.cardinplay.CardInPlay;
-import dom.model.cardinplay.CardInPlayFactory;
-import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayInputMapper;
+import dom.model.discard.DiscardFactory;
 import dom.model.game.Game;
 import dom.model.game.GameFactory;
+import dom.model.hand.HandFactory;
+import dom.model.hand.IHand;
+import dom.model.hand.mapper.HandInputMapper;
 
 public class PlayCardCommand extends AbstractCommand {
 	
@@ -22,7 +26,7 @@ public class PlayCardCommand extends AbstractCommand {
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
 	
-	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench!";
+	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench! You now have %d Pokemon on your bench.";
 	private static final String TRAINER_DISCARD_SUCCESS = "You have sent %s to the discard pile!";
 	
 	public PlayCardCommand(Helper helper) {
@@ -54,41 +58,70 @@ public class PlayCardCommand extends AbstractCommand {
 			 */
 			int cardIndex = Integer.parseInt((String) helper.getRequestAttribute("card"));
 			
-			List<ICardInPlay> myHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
-					game.getId(), getUserId(), CardStatus.hand.ordinal()
-			);
+			List<IHand> myHand = HandInputMapper.findByGameAndPlayer(game.getId(), getUserId());
 			if (myHand.size() == 0) throw new CommandException(EMPTY_HAND);
 			
-			CardInPlay card;
+			IHand handCard;
 			try {
-				card = (CardInPlay) myHand.get(cardIndex);
+				handCard = myHand.get(cardIndex);
 			}
 			catch (IndexOutOfBoundsException e) {
 				throw new CommandException(NOT_IN_HAND);
 			}
 			
-			if (card.getCard().getType().equals(CardType.p.name())) {
+			if (handCard.getCard().getType().equals(CardType.p.name())) {
 				
-				List<ICardInPlay> myBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(
-						game.getId(), getUserId(), CardStatus.benched.ordinal()
+				List<IBench> myBench = BenchInputMapper.findByGameAndPlayer(game.getId(), getUserId());
+				
+				/**
+				 * Only 5 Pokemon are allowed on the bench.
+				 * 
+				 * Code taken from:
+				 * https://stackoverflow.com/questions/33503257/get-number-of-object-in-a-list-with-specific-matching-property-in-java
+				 */
+				long numberOfPokemonOnBench =
+						myBench.stream().filter(card -> card.getCard().getType().equals(CardType.p.name())).count();
+				
+				if (numberOfPokemonOnBench >= 5) throw new CommandException(BENCH_IS_FULL);
+				
+				/**
+				 * Delete card from hand.
+				 * Create card on bench.
+				 */
+				HandFactory.registerDeleted(handCard);
+				BenchFactory.createNew(
+						handCard.getGame(),
+						handCard.getPlayer(),
+						handCard.getDeck(),
+						handCard.getCard(),
+						new ArrayList<IAttachedEnergy>()
 				);
-				if (myBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
 				
-				card.setStatus(CardStatus.benched.ordinal());
-				this.message = String.format(POKEMON_BENCH_SUCCESS, card.getCard().getName());
+				this.message = String.format(POKEMON_BENCH_SUCCESS, handCard.getCard().getName(), numberOfPokemonOnBench + 1);
 				
 			}
-			else if (card.getCard().getType().equals(CardType.t.name())) {
-				card.setStatus(CardStatus.discarded.ordinal());
-				this.message = String.format(TRAINER_DISCARD_SUCCESS, card.getCard().getName());
+			else if (handCard.getCard().getType().equals(CardType.t.name())) {
+				
+				/**
+				 * Delete card from hand.
+				 * Create card in discard pile.
+				 */
+				HandFactory.registerDeleted(handCard);
+				DiscardFactory.createNew(
+						handCard.getGame(),
+						handCard.getPlayer(),
+						handCard.getDeck(),
+						handCard.getCard()
+				);
+				
+				this.message = String.format(TRAINER_DISCARD_SUCCESS, handCard.getCard().getName());
 			}
-			else if (card.getCard().getType().equals(CardType.e.name())) {
+			else if (handCard.getCard().getType().equals(CardType.e.name())) {
 				// TODO
 				throw new CommandException("energy card");
 			}
 			
 			GameFactory.registerDirty(game);
-			CardInPlayFactory.registerDirty(card);
 			
 		}
 		catch (Exception e) {

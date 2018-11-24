@@ -64,5 +64,20 @@ public class DiscardFactory {
 				discardCard.getCard()
 		);
 	}
+	
+	public static Discard registerDeleted(long id, long version, IGame game, IUser player, long deck, ICard card)
+			throws MissingMappingException, MapperException {
+		
+		Discard discardCard = new Discard(id, version, game, player, deck, card);
+		UoW.getCurrent().registerRemoved(discardCard);
+		
+		return discardCard;
+		
+	}
+	
+	public static Discard registerDeleted(IDiscard discardCard)
+			throws MissingMappingException, MapperException {
+		return registerDeleted(discardCard);
+	}
 
 }

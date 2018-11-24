@@ -64,5 +64,27 @@ public class HandFactory {
 				handCard.getCard()
 		);
 	}
+	
+	public static Hand registerDeleted(long id, long version, IGame game, IUser player, long deck, ICard card)
+			throws MissingMappingException, MapperException {
+		
+		Hand handCard = new Hand(id, version, game, player, deck, card);
+		UoW.getCurrent().registerRemoved(handCard);
+		
+		return handCard;
+		
+	}
+	
+	public static Hand registerDeleted(IHand handCard)
+			throws MissingMappingException, MapperException {
+		return registerDeleted(
+				handCard.getId(),
+				handCard.getVersion(),
+				handCard.getGame(),
+				handCard.getPlayer(),
+				handCard.getDeck(),
+				handCard.getCard()
+		);
+	}
 
 }

@@ -2,26 +2,28 @@ package dom.model.game;
 
 import java.util.List;
 
-import dom.model.cardinplay.ICardInPlay;
+import dom.model.bench.IBench;
+import dom.model.discard.IDiscard;
+import dom.model.hand.IHand;
 
 public class GameBoard implements IGameBoard {
 	
 	private IGame game;
 	
-	private List<ICardInPlay> challengerHand;
-	private List<ICardInPlay> challengeeHand;
+	private List<IHand> challengerHand;
+	private List<IHand> challengeeHand;
 	
-	private List<ICardInPlay> challengerBench;
-	private List<ICardInPlay> challengeeBench;
+	private List<IBench> challengerBench;
+	private List<IBench> challengeeBench;
 	
-	private List<ICardInPlay> challengerDiscarded;
-	private List<ICardInPlay> challengeeDiscarded;
+	private List<IDiscard> challengerDiscarded;
+	private List<IDiscard> challengeeDiscarded;
 	
 	public GameBoard(
 			IGame game,
-			List<ICardInPlay> challengerHand, List<ICardInPlay> challengeeHand,
-			List<ICardInPlay> challengerBench, List<ICardInPlay> challengeeBench,
-			List<ICardInPlay> challengerDiscarded, List<ICardInPlay> challengeeDiscarded
+			List<IHand> challengerHand, List<IHand> challengeeHand,
+			List<IBench> challengerBench, List<IBench> challengeeBench,
+			List<IDiscard> challengerDiscarded, List<IDiscard> challengeeDiscarded
 	) {
 		this.game = game;
 		this.challengerHand = challengerHand;
@@ -43,62 +45,62 @@ public class GameBoard implements IGameBoard {
 	}
 
 	@Override
-	public List<ICardInPlay> getChallengerHand() {
+	public List<IHand> getChallengerHand() {
 		return challengerHand;
 	}
 
 	@Override
-	public void setChallengerHand(List<ICardInPlay> challengerHand) {
+	public void setChallengerHand(List<IHand> challengerHand) {
 		this.challengerHand = challengerHand;
 	}
 
 	@Override
-	public List<ICardInPlay> getChallengeeHand() {
+	public List<IHand> getChallengeeHand() {
 		return challengeeHand;
 	}
 
 	@Override
-	public void setChallengeeHand(List<ICardInPlay> challengeeHand) {
+	public void setChallengeeHand(List<IHand> challengeeHand) {
 		this.challengeeHand = challengeeHand;
 	}
 
 	@Override
-	public List<ICardInPlay> getChallengerBench() {
+	public List<IBench> getChallengerBench() {
 		return challengerBench;
 	}
 
 	@Override
-	public void setChallengerBench(List<ICardInPlay> challengerBench) {
+	public void setChallengerBench(List<IBench> challengerBench) {
 		this.challengerBench = challengerBench;
 	}
 
 	@Override
-	public List<ICardInPlay> getChallengeeBench() {
+	public List<IBench> getChallengeeBench() {
 		return challengeeBench;
 	}
 
 	@Override
-	public void setChallengeeBench(List<ICardInPlay> challengeeBench) {
+	public void setChallengeeBench(List<IBench> challengeeBench) {
 		this.challengeeBench = challengeeBench;
 	}
 
 	@Override
-	public List<ICardInPlay> getChallengerDiscarded() {
+	public List<IDiscard> getChallengerDiscarded() {
 		return challengerDiscarded;
 	}
 
 	@Override
-	public void setChallengerDiscarded(List<ICardInPlay> challengerDiscarded) {
+	public void setChallengerDiscarded(List<IDiscard> challengerDiscarded) {
 		this.challengerDiscarded = challengerDiscarded;
 	}
 
 	@Override
-	public List<ICardInPlay> getChallengeeDiscarded() {
+	public List<IDiscard> getChallengeeDiscarded() {
 		return challengeeDiscarded;
 	}
 
 	@Override
-	public void setChallengeeDiscarded(List<ICardInPlay> challengeeDiscarded) {
+	public void setChallengeeDiscarded(List<IDiscard> challengeeDiscarded) {
 		this.challengeeDiscarded = challengeeDiscarded;
 	}
 

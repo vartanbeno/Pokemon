@@ -10,16 +10,19 @@ import org.dsrg.soenea.domain.ObjectRemovedException;
 import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
 import org.dsrg.soenea.domain.mapper.IdentityMap;
 
-import dom.model.cardinplay.CardStatus;
-import dom.model.cardinplay.ICardInPlay;
-import dom.model.cardinplay.mapper.CardInPlayInputMapper;
+import dom.model.bench.IBench;
+import dom.model.bench.mapper.BenchInputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.mapper.DeckInputMapper;
+import dom.model.discard.IDiscard;
+import dom.model.discard.mapper.DiscardInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameBoard;
 import dom.model.game.GameFactory;
 import dom.model.game.IGame;
 import dom.model.game.tdg.GameFinder;
+import dom.model.hand.IHand;
+import dom.model.hand.mapper.HandInputMapper;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -153,19 +156,19 @@ public class GameInputMapper {
 		Deck challengerDeck = (Deck) game.getChallengerDeck();
 		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
 		
-		List<ICardInPlay> challengerHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengerId.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengeeHand = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.hand.ordinal());
-		List<ICardInPlay> challengerBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengerId.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengeeBench = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.benched.ordinal());
-		List<ICardInPlay> challengerDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengerId.getId(), CardStatus.discarded.ordinal());
-		List<ICardInPlay> challengeeDiscarded = CardInPlayInputMapper.findByGameAndPlayerAndStatus(gameId, challengee.getId(), CardStatus.discarded.ordinal());
+		List<IHand> challengerHand = HandInputMapper.findByGameAndPlayer(gameId, challengerId.getId());
+		List<IHand> challengeeHand = HandInputMapper.findByGameAndPlayer(gameId, challengee.getId());
+		List<IBench> challengerBench = BenchInputMapper.findByGameAndPlayer(gameId, challengerId.getId());
+		List<IBench> challengeeBench = BenchInputMapper.findByGameAndPlayer(gameId, challengee.getId());
+		List<IDiscard> challengerDiscarded = DiscardInputMapper.findByGameAndPlayer(gameId, challengerId.getId());
+		List<IDiscard> challengeeDiscarded = DiscardInputMapper.findByGameAndPlayer(gameId, challengee.getId());
 		
 		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
 		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size();
 		
 		/**
 		 * We make sure to remove X number of cards from the 40-card deck.
-		 * Decks are always so it's just a matter of removing the first one X times.
+		 * Decks are always ordered so it's just a matter of removing the first one X times.
 		 * i.e. if we have 13 cards in play, we remove 13 cards from the top.
 		 * So now we have 27 cards left.
 		 */

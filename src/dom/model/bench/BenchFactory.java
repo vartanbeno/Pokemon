@@ -68,5 +68,20 @@ public class BenchFactory {
 				benchCard.getAttachedEnergyCards()
 		);
 	}
+	
+	public static Bench registerDeleted(long id, long version, IGame game, IUser player, long deck, ICard card, List<IAttachedEnergy> attachedEnergyCards)
+			throws MissingMappingException, MapperException {
+		
+		Bench benchCard = new Bench(id, version, game, player, deck, card, attachedEnergyCards);
+		UoW.getCurrent().registerRemoved(benchCard);
+		
+		return benchCard;
+		
+	}
+	
+	public static Bench registerDeleted(IBench benchCard)
+			throws MissingMappingException, MapperException {
+		return registerDeleted(benchCard);
+	}
 
 }
