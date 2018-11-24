@@ -8,9 +8,7 @@ import java.sql.Statement;
 import org.dsrg.soenea.service.UniqueIdFactory;
 import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
-import dom.model.deck.tdg.DeckTDG;
 import dom.model.game.GameStatus;
-import dom.model.user.tdg.UserTDG;
 
 /**
  * 
@@ -51,7 +49,7 @@ public class GameTDG {
 			+ "current_turn BIGINT NOT NULL,"
 			+ "status INT NOT NULL,"
 			+ "PRIMARY KEY (id)"
-			+ ") ENGINE=InnoDB;", TABLE_NAME, UserTDG.getTableName(), DeckTDG.getTableName());
+			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
 	private static final String TRUNCATE_TABLE = String.format("TRUNCATE TABLE %1$s;", TABLE_NAME);
 	
