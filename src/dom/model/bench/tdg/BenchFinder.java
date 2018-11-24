@@ -1,4 +1,4 @@
-package dom.model.discard.tdg;
+package dom.model.bench.tdg;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,20 +9,20 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
 
 /**
  * 
- * Provides methods to find records in the Discard table.
+ * Provides methods to find records in the Bench table.
  * 
  * @author vartanbeno
  *
  */
-public class DiscardFinder {
+public class BenchFinder {
 
-	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", DiscardTDG.getColumns(), DiscardTDG.getTableName());
+	private static final String FIND_ALL = String.format("SELECT %1$s FROM %2$s;", BenchTDG.getColumns(), BenchTDG.getTableName());
 	
 	private static final String FIND_BY_ID = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE id = ?;", DiscardTDG.getColumns(), DiscardTDG.getTableName());
+			+ "WHERE id = ?;", BenchTDG.getColumns(), BenchTDG.getTableName());
 	
 	private static final String FIND_BY_GAME_AND_PLAYER = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE game = ? AND player = ?;", DiscardTDG.getColumns(), DiscardTDG.getTableName());
+			+ "WHERE game = ? AND player = ?;", BenchTDG.getColumns(), BenchTDG.getTableName());
 
 	public static ResultSet findAll() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
