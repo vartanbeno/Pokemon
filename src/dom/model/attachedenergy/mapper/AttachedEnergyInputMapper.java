@@ -58,6 +58,17 @@ public class AttachedEnergyInputMapper {
 		
 	}
 	
+	public static List<IAttachedEnergy> findByGameAndGameVersionAndPlayer(long game, long gameVersion, long player) throws SQLException {
+		
+		ResultSet rs = AttachedEnergyFinder.findByGameAndGameVersionAndPlayer(game, gameVersion, player);
+		
+		List<IAttachedEnergy> attachedEnergies = buildAttachedEnergies(rs);
+		rs.close();
+		
+		return attachedEnergies;
+		
+	}
+	
 	public static AttachedEnergy buildAttachedEnergy(ResultSet rs) throws SQLException {
 		
 		Game game = GameInputMapper.findById(rs.getLong("game"));
