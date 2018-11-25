@@ -49,7 +49,7 @@ public class AttachedEnergyOutputMapper extends GenericOutputMapper<Long, Attach
 				attachedEnergy.getGameVersion(),
 				attachedEnergy.getPlayer().getId(),
 				attachedEnergy.getEnergyCard().getId(),
-				attachedEnergy.getPokemonCard().getId()
+				attachedEnergy.getPokemonCard()
 		);
 	}
 	
@@ -58,7 +58,7 @@ public class AttachedEnergyOutputMapper extends GenericOutputMapper<Long, Attach
 				attachedEnergy.getId(),
 				attachedEnergy.getVersion(),
 				attachedEnergy.getEnergyCard().getId(),
-				attachedEnergy.getPokemonCard().getId()
+				attachedEnergy.getPokemonCard()
 		);
 		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update attached energy with id: %d.", attachedEnergy.getId()));
 	}

@@ -7,14 +7,14 @@ import org.dsrg.soenea.uow.MissingMappingException;
 import org.dsrg.soenea.uow.UoW;
 
 import dom.model.attachedenergy.tdg.AttachedEnergyTDG;
-import dom.model.bench.IBench;
+import dom.model.card.ICard;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
 
 public class AttachedEnergyFactory {
 	
 	public static AttachedEnergy createNew(
-			IGame game, long gameVersion, IUser player, IBench energyCard, IBench pokemonCard
+			IGame game, long gameVersion, IUser player, ICard energyCard, long pokemonCard
 	) throws MissingMappingException, MapperException, SQLException {
 		
 		AttachedEnergy attachedEnergy = new AttachedEnergy(AttachedEnergyTDG.getMaxId(), 1, game, gameVersion, player, energyCard, pokemonCard);
@@ -25,7 +25,7 @@ public class AttachedEnergyFactory {
 	}
 	
 	public static AttachedEnergy createClean(
-			long id, long version, IGame game, long gameVersion, IUser player, IBench energyCard, IBench pokemonCard
+			long id, long version, IGame game, long gameVersion, IUser player, ICard energyCard, long pokemonCard
 	) {
 		
 		AttachedEnergy attachedEnergy = new AttachedEnergy(id, version, game, gameVersion, player, energyCard, pokemonCard);

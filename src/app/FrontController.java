@@ -173,9 +173,9 @@ public class FrontController extends SmartDispatcherServlet {
 			ChallengeTDG.dropTable();
 			CardTDG.dropTable();
 			GameTDG.dropTable();
-			HandTDG.createTable();
-    		DiscardTDG.createTable();
-    		BenchTDG.createTable();
+			HandTDG.dropTable();
+    		DiscardTDG.dropTable();
+    		BenchTDG.dropTable();
 			AttachedEnergyTDG.dropTable();
 		}
 		catch (Exception e) {

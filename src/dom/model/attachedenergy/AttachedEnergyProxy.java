@@ -5,7 +5,7 @@ import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.proxy.DomainObjectProxy;
 
 import dom.model.attachedenergy.mapper.AttachedEnergyInputMapper;
-import dom.model.bench.IBench;
+import dom.model.card.ICard;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
 
@@ -46,22 +46,22 @@ public class AttachedEnergyProxy extends DomainObjectProxy<Long, AttachedEnergy>
 	}
 
 	@Override
-	public IBench getEnergyCard() {
+	public ICard getEnergyCard() {
 		return getInnerObject().getEnergyCard();
 	}
 
 	@Override
-	public void setEnergyCard(IBench energyCard) {
+	public void setEnergyCard(ICard energyCard) {
 		getInnerObject().setEnergyCard(energyCard);
 	}
 
 	@Override
-	public IBench getPokemonCard() {
+	public long getPokemonCard() {
 		return getInnerObject().getPokemonCard();
 	}
 
 	@Override
-	public void setPokemonCard(IBench pokemonCard) {
+	public void setPokemonCard(long pokemonCard) {
 		getInnerObject().setPokemonCard(pokemonCard);
 	}
 

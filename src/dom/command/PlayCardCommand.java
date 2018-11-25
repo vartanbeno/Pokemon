@@ -2,11 +2,14 @@ package dom.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
+import dom.model.attachedenergy.AttachedEnergyFactory;
 import dom.model.attachedenergy.IAttachedEnergy;
+import dom.model.attachedenergy.mapper.AttachedEnergyInputMapper;
 import dom.model.bench.BenchFactory;
 import dom.model.bench.IBench;
 import dom.model.bench.mapper.BenchInputMapper;
@@ -25,8 +28,12 @@ public class PlayCardCommand extends AbstractCommand {
 	private static final String BENCH_IS_FULL = "Your bench is full. It already has 5 Pokemon.";
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
+	private static final String POKEMON_NOT_SPECIFIED = "You must specify a Pokemon (non-negative integer).";
+	private static final String NOT_ON_BENCH = "That card is not on your bench. You cannot attach an energy to it.";
+	private static final String ENERGY_ALREADY_PLAYED = "You have already played an energy card this turn.";
 	
 	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench! You now have %d Pokemon on your bench.";
+	private static final String ATTACH_ENERGY_SUCCESS = "You have successfully attached a %s energy card to %s!";
 	private static final String TRAINER_DISCARD_SUCCESS = "You have sent %s to the discard pile!";
 	
 	public PlayCardCommand(Helper helper) {
@@ -69,36 +76,84 @@ public class PlayCardCommand extends AbstractCommand {
 				throw new CommandException(NOT_IN_HAND);
 			}
 			
-			if (handCard.getCard().getType().equals(CardType.p.name())) {
+			if (handCard.getCard().getType().equals(CardType.p.name()) || handCard.getCard().getType().equals(CardType.e.name())) {
 				
 				List<IBench> myBench = BenchInputMapper.findByGameAndPlayer(game.getId(), getUserId());
 				
 				/**
-				 * Only 5 Pokemon are allowed on the bench.
-				 * 
 				 * Code taken from:
-				 * https://stackoverflow.com/questions/33503257/get-number-of-object-in-a-list-with-specific-matching-property-in-java
+				 * https://stackoverflow.com/questions/35650974/create-list-of-object-from-another-using-java8-streams
 				 */
-				long numberOfPokemonOnBench =
-						myBench.stream().filter(card -> card.getCard().getType().equals(CardType.p.name())).count();
+				List<IBench> pokemonOnBench =
+						myBench.stream().filter(card -> card.getCard().getType().equals(CardType.p.name())).collect(Collectors.toList());
 				
-				if (numberOfPokemonOnBench >= 5) throw new CommandException(BENCH_IS_FULL);
-				
-				/**
-				 * Delete card from hand.
-				 * Create card on bench.
-				 */
-				HandFactory.registerDeleted(handCard);
-				BenchFactory.createNew(
-						handCard.getGame(),
-						handCard.getPlayer(),
-						handCard.getDeck(),
-						handCard.getCard(),
-						new ArrayList<IAttachedEnergy>()
-				);
-				
-				this.message = String.format(POKEMON_BENCH_SUCCESS, handCard.getCard().getName(), numberOfPokemonOnBench + 1);
-				
+				if (handCard.getCard().getType().equals(CardType.p.name())) {
+					
+					/**
+					 * Delete card from hand.
+					 * Create card on bench.
+					 */
+					HandFactory.registerDeleted(handCard);
+					BenchFactory.createNew(
+							handCard.getGame(),
+							handCard.getPlayer(),
+							handCard.getDeck(),
+							handCard.getCard(),
+							new ArrayList<IAttachedEnergy>()
+					);
+					
+					if (pokemonOnBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
+					
+					this.message = String.format(POKEMON_BENCH_SUCCESS, handCard.getCard().getName(), pokemonOnBench.size() + 1);
+					
+				}
+				else {
+					
+					List<IAttachedEnergy> thisTurnEnergies =
+							AttachedEnergyInputMapper.findByGameAndGameVersionAndPlayer(game.getId(), game.getVersion(), game.getCurrentTurn());
+					
+					if (thisTurnEnergies.size() > 0) {
+						throw new CommandException(ENERGY_ALREADY_PLAYED);
+					}
+					
+					int pokemon;
+					try {
+						pokemon = helper.getInt("pokemon");
+					}
+					catch (NumberFormatException e) {
+						e.printStackTrace();
+						throw new CommandException(POKEMON_NOT_SPECIFIED);
+					}
+					
+					IBench pokemonCard = null;
+					try {
+						pokemonCard = pokemonOnBench.get(pokemon);
+					}
+					catch (IndexOutOfBoundsException e) {
+						e.printStackTrace();
+						throw new CommandException(NOT_ON_BENCH);
+					}
+					
+					/**
+					 * Delete card from hand.
+					 * Attach it to a Pokemon on the bench.
+					 */
+					HandFactory.registerDeleted(handCard);
+					AttachedEnergyFactory.createNew(
+							handCard.getGame(),
+							handCard.getGame().getVersion(),
+							handCard.getPlayer(),
+							handCard.getCard(),
+							pokemonCard.getId()
+					);
+					
+					this.message = String.format(
+							ATTACH_ENERGY_SUCCESS,
+							handCard.getCard().getName(), pokemonCard.getCard().getName()
+					);
+					
+				}
+								
 			}
 			else if (handCard.getCard().getType().equals(CardType.t.name())) {
 				
@@ -115,13 +170,11 @@ public class PlayCardCommand extends AbstractCommand {
 				);
 				
 				this.message = String.format(TRAINER_DISCARD_SUCCESS, handCard.getCard().getName());
-			}
-			else if (handCard.getCard().getType().equals(CardType.e.name())) {
-				// TODO
-				throw new CommandException("energy card");
+				
 			}
 			
-			GameFactory.registerDirty(game);
+			// TODO should we increment game version?
+//			GameFactory.registerDirty(game);
 			
 		}
 		catch (Exception e) {
