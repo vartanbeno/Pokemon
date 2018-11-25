@@ -54,13 +54,15 @@ public class UploadDeckCommand extends AbstractCommand {
 			
 			for (String cardString : cardsArray) {
 				
-				String type, name = "";
+				String[] cardInfo = cardString.replace("\"", "").split(" ");
+				String type = "";
+				String name = "";
 				
 				try {
-					type = cardString.substring(0, 1);
-					name = cardString.substring(3, cardString.length() - 1);
+					type = cardInfo[0];
+					name = cardInfo[1];
 				}
-				catch (StringIndexOutOfBoundsException e) {
+				catch (IndexOutOfBoundsException e) {
 					throw new CommandException(FORMATTING_ERROR);
 				}
 				
