@@ -12,5 +12,8 @@ public interface ICard extends IDomainObject<Long> {
 	
 	public String getName();
 	public void setName(String name);
+	
+	public String getBasic();
+	public void setBasic(String basic);
 
 }

@@ -10,7 +10,12 @@
 	],
 	"detailedHand": [
 		<c:forEach items="${hand}" var="handCard" varStatus="loop">
-			{ "id": ${handCard.card.id}, "type": "${handCard.card.type}", "name": "${handCard.card.name}" }
+			{
+				"id": ${handCard.card.id},
+				"type": "${handCard.card.type}",
+				"name": "${handCard.card.name}",
+				"basic": "${handCard.card.basic}"
+			}
 			<c:if test="${!loop.last}">,</c:if>
 		</c:forEach>
 	]

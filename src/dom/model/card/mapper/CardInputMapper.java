@@ -48,7 +48,8 @@ public class CardInputMapper {
 				rs.getLong("version"),
 				rs.getLong("deck"),
 				rs.getString("type"),
-				rs.getString("name")
+				rs.getString("name"),
+				rs.getString("basic")
 		);
 		
 	}
