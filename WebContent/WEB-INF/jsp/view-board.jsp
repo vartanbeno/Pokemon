@@ -26,6 +26,27 @@
 						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}" }
 						<c:if test="${!loop.last}">,</c:if>
 					</c:forEach>
+				],
+				"benchWithEnergy": [
+					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop1">
+						{ "id": ${card.card.id}, "e": [
+							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+								${e.energyCard.id}<c:if test="${!loop2.last}">,</c:if>
+							</c:forEach>
+						] }
+						<c:if test="${!loop1.last}">,</c:if>
+					</c:forEach>
+				],
+				"detailedBenchWithEnergy": [
+					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop1">
+						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "e": [
+							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+								{ "id": ${e.energyCard.id}, "name": "${e.energyCard.name}" }
+								<c:if test="${!loop2.last}">,</c:if>
+							</c:forEach>
+						] }
+						<c:if test="${!loop1.last}">,</c:if>
+					</c:forEach>
 				]
 			},
 			"${gameBoard.game.challengee.id}": {
@@ -42,6 +63,27 @@
 					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop">
 						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}" }
 						<c:if test="${!loop.last}">,</c:if>
+					</c:forEach>
+				],
+				"benchWithEnergy": [
+					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop1">
+						{ "id": ${card.card.id}, "e": [
+							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+								${e.energyCard.id}<c:if test="${!loop2.last}">,</c:if>
+							</c:forEach>
+						] }
+						<c:if test="${!loop1.last}">,</c:if>
+					</c:forEach>
+				],
+				"detailedBenchWithEnergy": [
+					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop1">
+						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "e": [
+							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+								{ "id": ${e.energyCard.id}, "name": "${e.energyCard.name}" }
+								<c:if test="${!loop2.last}">,</c:if>
+							</c:forEach>
+						] }
+						<c:if test="${!loop1.last}">,</c:if>
 					</c:forEach>
 				]
 			}

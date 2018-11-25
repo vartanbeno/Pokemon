@@ -163,8 +163,21 @@ public class GameInputMapper {
 		List<IDiscard> challengerDiscarded = DiscardInputMapper.findByGameAndPlayer(gameId, challengerId.getId());
 		List<IDiscard> challengeeDiscarded = DiscardInputMapper.findByGameAndPlayer(gameId, challengee.getId());
 		
-		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size();
-		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size();
+		/**
+		 * We also have to take into account energy cards that are attached to benched Pokemon.
+		 */
+		int challengerAttachedEnergies = 0;		
+		for (IBench benchCard : challengerBench) {
+			challengerAttachedEnergies += benchCard.getAttachedEnergyCards().size();
+		}
+		
+		int challengeeAttachedEnergies = 0;
+		for (IBench benchCard : challengeeBench) {
+			challengeeAttachedEnergies += benchCard.getAttachedEnergyCards().size();
+		}
+		
+		int challengerCardsNotInDeck = challengerHand.size() + challengerBench.size() + challengerDiscarded.size() + challengerAttachedEnergies;
+		int challengeeCardsNotInDeck = challengeeHand.size() + challengeeBench.size() + challengeeDiscarded.size() + challengeeAttachedEnergies;
 		
 		/**
 		 * We make sure to remove X number of cards from the 40-card deck.

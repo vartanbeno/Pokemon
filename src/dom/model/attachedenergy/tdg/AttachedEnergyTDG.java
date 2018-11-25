@@ -19,6 +19,9 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
  * Pokemon on the bench can have energy cards attached to them.
  * Each row in this table represents one energy card, attached to a certain Pokemon card in a game.
  * 
+ * The energy_card attribute refers to a card in the Card table.
+ * The pokemon_card attribute refered to a card in the Bench table.
+ * 
  * Since a player can only play one energy per turn, we keep track of this in the game_version column.
  * When a player plays an energy card, the game's current version is stored in that move.
  * If they attempt to play another energy card in the same turn (i.e. the same game version), they should get an error.

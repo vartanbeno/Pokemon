@@ -64,7 +64,9 @@ public class BenchInputMapper {
 		Game game = GameInputMapper.findById(rs.getLong("game"));
 		User player = UserInputMapper.findById(rs.getLong("player"));
 		Card card = CardInputMapper.findById(rs.getLong("card"));
-		List<IAttachedEnergy> attachedEnergyCards = AttachedEnergyInputMapper.findByGameAndPlayer(rs.getLong("game"), rs.getLong("player"));
+		
+		List<IAttachedEnergy> attachedEnergyCards =
+				AttachedEnergyInputMapper.findByGameAndPlayerAndPokemonCard(rs.getLong("game"), rs.getLong("player"), rs.getLong("id"));
 		
 		return BenchFactory.createClean(
 				rs.getLong("id"),

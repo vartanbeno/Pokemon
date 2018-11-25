@@ -13,8 +13,8 @@ import dom.model.attachedenergy.AttachedEnergy;
 import dom.model.attachedenergy.AttachedEnergyFactory;
 import dom.model.attachedenergy.IAttachedEnergy;
 import dom.model.attachedenergy.tdg.AttachedEnergyFinder;
-import dom.model.bench.IBench;
-import dom.model.bench.mapper.BenchInputMapper;
+import dom.model.card.ICard;
+import dom.model.card.mapper.CardInputMapper;
 import dom.model.game.Game;
 import dom.model.game.mapper.GameInputMapper;
 import dom.model.user.User;
@@ -58,18 +58,38 @@ public class AttachedEnergyInputMapper {
 		
 	}
 	
+	public static List<IAttachedEnergy> findByGameAndPlayerAndPokemonCard(long game, long player, long card) throws SQLException {
+		
+		ResultSet rs = AttachedEnergyFinder.findByGameAndPlayerAndPokemonCard(game, player, card);
+		
+		List<IAttachedEnergy> attachedEnergies = buildAttachedEnergies(rs);
+		rs.close();
+		
+		return attachedEnergies;
+		
+	}
+	
+	public static List<IAttachedEnergy> findByGameAndGameVersionAndPlayer(long game, long gameVersion, long player) throws SQLException {
+		
+		ResultSet rs = AttachedEnergyFinder.findByGameAndGameVersionAndPlayer(game, gameVersion, player);
+		
+		List<IAttachedEnergy> attachedEnergies = buildAttachedEnergies(rs);
+		rs.close();
+		
+		return attachedEnergies;
+		
+	}
+	
 	public static AttachedEnergy buildAttachedEnergy(ResultSet rs) throws SQLException {
 		
 		Game game = GameInputMapper.findById(rs.getLong("game"));
 		User player = UserInputMapper.findById(rs.getLong("player"));
-		
-		IBench energyCard = BenchInputMapper.findById(rs.getLong("energy_card"));
-		IBench pokemonCard = BenchInputMapper.findById(rs.getLong("pokemon_card"));
+		ICard energyCard = CardInputMapper.findById(rs.getLong("energy_card"));
 		
 		return AttachedEnergyFactory.createClean(
 				rs.getLong("id"), rs.getLong("version"),
 				game, rs.getLong("game_version"), player,
-				energyCard, pokemonCard
+				energyCard, rs.getLong("pokemon_card")
 		);
 		
 	}
