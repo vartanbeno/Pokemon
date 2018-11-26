@@ -59,6 +59,16 @@ public class BenchProxy extends DomainObjectProxy<Long, Bench> implements IBench
 	}
 	
 	@Override
+	public ICard getPredecessor() {
+		return getInnerObject().getPredecessor();
+	}
+	
+	@Override
+	public void setPredecessor(ICard predecessor) {
+		getInnerObject().setPredecessor(predecessor);
+	}
+	
+	@Override
 	public List<IAttachedEnergy> getAttachedEnergyCards() {
 		return getInnerObject().getAttachedEnergyCards();
 	}

@@ -23,6 +23,9 @@ public interface IBench extends IDomainObject<Long> {
 	public ICard getCard();
 	public void setCard(ICard card);
 	
+	public ICard getPredecessor();
+	public void setPredecessor(ICard predecessor);
+	
 	public List<IAttachedEnergy> getAttachedEnergyCards();
 	public void setAttachedEnergyCards(List<IAttachedEnergy> attachedEnergyCards);
 	

@@ -15,14 +15,16 @@ public class Bench extends DomainObject<Long> implements IBench {
 	private IUser player;
 	private long deck;
 	private ICard card;
+	private ICard predecessor;
 	private List<IAttachedEnergy> attachedEnergyCards;
 
-	protected Bench(long id, long version, IGame game, IUser player, long deck, ICard card, List<IAttachedEnergy> attachedEnergyCards) {
+	protected Bench(long id, long version, IGame game, IUser player, long deck, ICard card, ICard predecessor, List<IAttachedEnergy> attachedEnergyCards) {
 		super(id, version);
 		this.game = game;
 		this.player = player;
 		this.deck = deck;
 		this.card = card;
+		this.predecessor = predecessor;
 		this.attachedEnergyCards = attachedEnergyCards;
 	}
 
@@ -64,6 +66,16 @@ public class Bench extends DomainObject<Long> implements IBench {
 	@Override
 	public void setCard(ICard card) {
 		this.card = card;
+	}
+	
+	@Override
+	public ICard getPredecessor() {
+		return predecessor;
+	}
+	
+	@Override
+	public void setPredecessor(ICard predecessor) {
+		this.predecessor = predecessor;
 	}
 	
 	@Override

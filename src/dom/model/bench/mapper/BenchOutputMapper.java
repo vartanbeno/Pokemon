@@ -48,12 +48,13 @@ public class BenchOutputMapper extends GenericOutputMapper<Long, Bench> {
 				benchCard.getGame().getId(),
 				benchCard.getPlayer().getId(),
 				benchCard.getDeck(),
-				benchCard.getCard().getId()
+				benchCard.getCard().getId(),
+				benchCard.getPredecessor().getId()
 		);
 	}
 	
 	public static void updateStatic(Bench benchCard) throws SQLException, LostUpdateException {
-		int count = BenchTDG.update(benchCard.getId(), benchCard.getVersion(), benchCard.getCard().getId());
+		int count = BenchTDG.update(benchCard.getId(), benchCard.getVersion(), benchCard.getCard().getId(), benchCard.getPredecessor().getId());
 		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update card in play with id: %d.", benchCard.getId()));
 	}
 	
