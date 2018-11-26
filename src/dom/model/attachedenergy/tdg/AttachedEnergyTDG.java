@@ -22,8 +22,8 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
  * The energy_card attribute refers to a card in the Card table.
  * The pokemon_card attribute refered to a card in the Bench table.
  * 
- * Since a player can only play one energy per turn, we keep track of this in the game_version column.
- * When a player plays an energy card, the game's current version is stored in that move.
+ * Since a player can only play one energy per turn, we keep track of this in the game_turn column.
+ * When a player plays an energy card, the game's current turn is stored in the game_turn attribute.
  * If they attempt to play another energy card in the same turn (i.e. the same game version), they should get an error.
  * 
  * @author vartanbeno
@@ -33,13 +33,13 @@ public class AttachedEnergyTDG {
 	
 	private static final String TABLE_NAME = "AttachedEnergy";
 	
-	private static final String COLUMNS = "id, version, game, game_version, player, energy_card, pokemon_card";
+	private static final String COLUMNS = "id, version, game, game_turn, player, energy_card, pokemon_card";
 	
 	private static final String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %1$s("
 			+ "id BIGINT NOT NULL,"
 			+ "version BIGINT NOT NULL,"
 			+ "game BIGINT NOT NULL,"
-			+ "game_version BIGINT NOT NULL,"
+			+ "game_turn BIGINT NOT NULL,"
 			+ "player BIGINT NOT NULL,"
 			+ "energy_card BIGINT NOT NULL,"
 			+ "pokemon_card BIGINT NOT NULL,"
@@ -84,14 +84,14 @@ public class AttachedEnergyTDG {
 		s.close();
 	}
 	
-	public static int insert(long id, long version, long game, long gameVersion, long player, long energyCard, long pokemonCard) throws SQLException {
+	public static int insert(long id, long version, long game, long gameTurn, long player, long energyCard, long pokemonCard) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
 		ps.setLong(1, id);
 		ps.setLong(2, version);
 		ps.setLong(3, game);
-		ps.setLong(4, gameVersion);
+		ps.setLong(4, gameTurn);
 		ps.setLong(5, player);
 		ps.setLong(6, energyCard);
 		ps.setLong(7, pokemonCard);

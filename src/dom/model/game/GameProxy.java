@@ -63,6 +63,16 @@ public class GameProxy extends DomainObjectProxy<Long, Game> implements IGame {
 	public void setCurrentTurn(long currentTurn) {
 		getInnerObject().setCurrentTurn(currentTurn);
 	}
+	
+	@Override
+	public long getTurn() {
+		return getInnerObject().getTurn();
+	}
+	
+	@Override
+	public void setTurn(long turn) {
+		getInnerObject().setTurn(turn);
+	}
 
 	@Override
 	public int getStatus() {

@@ -46,6 +46,7 @@ public class EndTurnCommand extends AbstractCommand {
 					game.getChallengee() : game.getChallenger();
 					
 			game.setCurrentTurn(nextTurnPlayer.getId());
+			game.setTurn(game.getTurn() + 1);
 			GameFactory.registerDirty(game);
 			
 			/**

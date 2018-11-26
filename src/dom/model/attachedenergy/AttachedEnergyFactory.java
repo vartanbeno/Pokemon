@@ -14,10 +14,10 @@ import dom.model.user.IUser;
 public class AttachedEnergyFactory {
 	
 	public static AttachedEnergy createNew(
-			IGame game, long gameVersion, IUser player, ICard energyCard, long pokemonCard
+			IGame game, long gameTurn, IUser player, ICard energyCard, long pokemonCard
 	) throws MissingMappingException, MapperException, SQLException {
 		
-		AttachedEnergy attachedEnergy = new AttachedEnergy(AttachedEnergyTDG.getMaxId(), 1, game, gameVersion, player, energyCard, pokemonCard);
+		AttachedEnergy attachedEnergy = new AttachedEnergy(AttachedEnergyTDG.getMaxId(), 1, game, gameTurn, player, energyCard, pokemonCard);
 		UoW.getCurrent().registerNew(attachedEnergy);
 		
 		return attachedEnergy;
@@ -25,10 +25,10 @@ public class AttachedEnergyFactory {
 	}
 	
 	public static AttachedEnergy createClean(
-			long id, long version, IGame game, long gameVersion, IUser player, ICard energyCard, long pokemonCard
+			long id, long version, IGame game, long gameTurn, IUser player, ICard energyCard, long pokemonCard
 	) {
 		
-		AttachedEnergy attachedEnergy = new AttachedEnergy(id, version, game, gameVersion, player, energyCard, pokemonCard);
+		AttachedEnergy attachedEnergy = new AttachedEnergy(id, version, game, gameTurn, player, energyCard, pokemonCard);
 		UoW.getCurrent().registerClean(attachedEnergy);
 		
 		return attachedEnergy;
@@ -38,7 +38,7 @@ public class AttachedEnergyFactory {
 	public static AttachedEnergy createClean(IAttachedEnergy attachedEnergy) {
 		return createClean(
 				attachedEnergy.getId(), attachedEnergy.getVersion(),
-				attachedEnergy.getGame(), attachedEnergy.getGameVersion(), attachedEnergy.getPlayer(),
+				attachedEnergy.getGame(), attachedEnergy.getGameTurn(), attachedEnergy.getPlayer(),
 				attachedEnergy.getEnergyCard(), attachedEnergy.getPokemonCard()
 		);
 	}

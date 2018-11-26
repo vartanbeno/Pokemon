@@ -26,13 +26,13 @@ public class AttachedEnergyProxy extends DomainObjectProxy<Long, AttachedEnergy>
 	}
 
 	@Override
-	public long getGameVersion() {
-		return getInnerObject().getGameVersion();
+	public long getGameTurn() {
+		return getInnerObject().getGameTurn();
 	}
 
 	@Override
-	public void setGameVersion(long gameVersion) {
-		getInnerObject().setGameVersion(gameVersion);
+	public void setGameTurn(long gameTurn) {
+		getInnerObject().setGameTurn(gameTurn);
 	}
 
 	@Override

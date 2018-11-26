@@ -9,17 +9,17 @@ import dom.model.user.IUser;
 public class AttachedEnergy extends DomainObject<Long> implements IAttachedEnergy {
 	
 	private IGame game;
-	private long gameVersion;
+	private long gameTurn;
 	private IUser player;
 	private ICard energyCard;
 	private long pokemonCard;
 	
 	public AttachedEnergy(
-			long id, long version, IGame game, long gameVersion, IUser player, ICard energyCard, long pokemonCard
+			long id, long version, IGame game, long gameTurn, IUser player, ICard energyCard, long pokemonCard
 	) {
 		super(id, version);
 		this.game = game;
-		this.gameVersion = gameVersion;
+		this.gameTurn = gameTurn;
 		this.player = player;
 		this.energyCard = energyCard;
 		this.pokemonCard = pokemonCard;
@@ -36,13 +36,13 @@ public class AttachedEnergy extends DomainObject<Long> implements IAttachedEnerg
 	}
 
 	@Override
-	public long getGameVersion() {
-		return gameVersion;
+	public long getGameTurn() {
+		return gameTurn;
 	}
 
 	@Override
-	public void setGameVersion(long gameVersion) {
-		this.gameVersion = gameVersion;
+	public void setGameTurn(long gameTurn) {
+		this.gameTurn = gameTurn;
 	}
 
 	@Override

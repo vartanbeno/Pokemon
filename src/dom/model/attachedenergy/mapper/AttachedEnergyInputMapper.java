@@ -69,9 +69,9 @@ public class AttachedEnergyInputMapper {
 		
 	}
 	
-	public static List<IAttachedEnergy> findByGameAndGameVersionAndPlayer(long game, long gameVersion, long player) throws SQLException {
+	public static List<IAttachedEnergy> findByGameAndGameTurnAndPlayer(long game, long gameTurn, long player) throws SQLException {
 		
-		ResultSet rs = AttachedEnergyFinder.findByGameAndGameVersionAndPlayer(game, gameVersion, player);
+		ResultSet rs = AttachedEnergyFinder.findByGameAndGameTurnAndPlayer(game, gameTurn, player);
 		
 		List<IAttachedEnergy> attachedEnergies = buildAttachedEnergies(rs);
 		rs.close();
@@ -88,7 +88,7 @@ public class AttachedEnergyInputMapper {
 		
 		return AttachedEnergyFactory.createClean(
 				rs.getLong("id"), rs.getLong("version"),
-				game, rs.getLong("game_version"), player,
+				game, rs.getLong("game_turn"), player,
 				energyCard, rs.getLong("pokemon_card")
 		);
 		

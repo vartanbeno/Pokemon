@@ -28,8 +28,8 @@ public class AttachedEnergyFinder {
 	private static final String FIND_BY_GAME_AND_PLAYER_AND_POKEMON_CARD = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE game = ? AND player = ? AND pokemon_card = ?;", AttachedEnergyTDG.getColumns(), AttachedEnergyTDG.getTableName());
 	
-	private static final String FIND_BY_GAME_AND_GAME_VERSION_AND_PLAYER = String.format("SELECT %1$s FROM %2$s "
-			+ "WHERE game = ? AND game_version = ? AND player = ?;", AttachedEnergyTDG.getColumns(), AttachedEnergyTDG.getTableName());
+	private static final String FIND_BY_GAME_AND_GAME_TURN_AND_PLAYER = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE game = ? AND game_turn = ? AND player = ?;", AttachedEnergyTDG.getColumns(), AttachedEnergyTDG.getTableName());
 	
 	public static ResultSet findById(long id) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
@@ -70,12 +70,12 @@ public class AttachedEnergyFinder {
 		return ps.executeQuery();
 	}
 	
-	public static ResultSet findByGameAndGameVersionAndPlayer(long game, long gameVersion, long player) throws SQLException {
+	public static ResultSet findByGameAndGameTurnAndPlayer(long game, long gameTurn, long player) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
-		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME_AND_GAME_VERSION_AND_PLAYER);
+		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME_AND_GAME_TURN_AND_PLAYER);
 		ps.setLong(1, game);
-		ps.setLong(2, gameVersion);
+		ps.setLong(2, gameTurn);
 		ps.setLong(3, player);
 		
 		return ps.executeQuery();
