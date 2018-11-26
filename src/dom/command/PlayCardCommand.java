@@ -18,6 +18,7 @@ import dom.model.bench.mapper.BenchInputMapper;
 import dom.model.card.CardType;
 import dom.model.discard.DiscardFactory;
 import dom.model.game.Game;
+import dom.model.game.GameFactory;
 import dom.model.game.IGame;
 import dom.model.hand.HandFactory;
 import dom.model.hand.IHand;
@@ -77,8 +78,11 @@ public class PlayCardCommand extends AbstractCommand {
 				playTrainer(handCard);
 			}
 			
-			// TODO should we increment game version?
-//			GameFactory.registerDirty(game);
+			/**
+			 * This increments the game version by 1.
+			 * Doesn't modify the current_turn or turn attributes.
+			 */
+			GameFactory.registerDirty(game);
 			
 		}
 		catch (Exception e) {
@@ -196,7 +200,7 @@ public class PlayCardCommand extends AbstractCommand {
 			throws SQLException, CommandException, MissingMappingException, MapperException {
 		
 		List<IAttachedEnergy> thisTurnEnergies =
-				AttachedEnergyInputMapper.findByGameAndGameVersionAndPlayer(game.getId(), game.getVersion(), game.getCurrentTurn());
+				AttachedEnergyInputMapper.findByGameAndGameTurnAndPlayer(game.getId(), game.getTurn(), game.getCurrentTurn());
 		
 		if (thisTurnEnergies.size() > 0) {
 			throw new CommandException(ENERGY_ALREADY_PLAYED);
@@ -221,7 +225,7 @@ public class PlayCardCommand extends AbstractCommand {
 		HandFactory.registerDeleted(energyCard);
 		AttachedEnergyFactory.createNew(
 				energyCard.getGame(),
-				energyCard.getGame().getVersion(),
+				energyCard.getGame().getTurn(),
 				energyCard.getPlayer(),
 				energyCard.getCard(),
 				pokemonCard.getId()

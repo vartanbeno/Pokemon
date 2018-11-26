@@ -46,7 +46,7 @@ public class AttachedEnergyOutputMapper extends GenericOutputMapper<Long, Attach
 				attachedEnergy.getId(),
 				attachedEnergy.getVersion(),
 				attachedEnergy.getGame().getId(),
-				attachedEnergy.getGameVersion(),
+				attachedEnergy.getGameTurn(),
 				attachedEnergy.getPlayer().getId(),
 				attachedEnergy.getEnergyCard().getId(),
 				attachedEnergy.getPokemonCard()

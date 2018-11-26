@@ -11,8 +11,8 @@ public interface IAttachedEnergy extends IDomainObject<Long> {
 	public IGame getGame();
 	public void setGame(IGame game);
 	
-	public long getGameVersion();
-	public void setGameVersion(long gameVersion);
+	public long getGameTurn();
+	public void setGameTurn(long gameTurn);
 	
 	public IUser getPlayer();
 	public void setPlayer(IUser player);
