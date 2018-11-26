@@ -48,12 +48,18 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			
 			ChallengeFactory.registerDirty(challenge);
 			
+			/**
+			 * Create a game.
+			 * Current turn is challenger's, because when a game starts, it's the challenger's turn.
+			 * Value of turn is 1, because it's the 1st turn of the game.
+			 */
 			Game game = GameFactory.createNew(
 					challenge.getChallenger(),
 					challenge.getChallengee(),
 					challenge.getChallengerDeck(),
 					myDeck,
 					challenge.getChallenger().getId(),
+					1,
 					GameStatus.ongoing.ordinal()
 			);
 			

@@ -22,6 +22,9 @@ public interface IGame extends IDomainObject<Long> {
 	public long getCurrentTurn();
 	public void setCurrentTurn(long currentTurn);
 	
+	public long getTurn();
+	public void setTurn(long turn);
+	
 	public int getStatus();
 	public void setStatus(int status);
 	

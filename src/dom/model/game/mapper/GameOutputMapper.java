@@ -30,15 +30,6 @@ public class GameOutputMapper extends GenericOutputMapper<Long, Game> {
 			throw new MapperException(e);
 		}
 	}
-	
-	public void updateVersion(Game game) throws MapperException {
-		try {
-			updateVersionStatic(game);
-		}
-		catch (SQLException e) {
-			throw new MapperException(e);
-		}
-	}
 
 	@Override
 	public void delete(Game game) throws MapperException {
@@ -58,17 +49,13 @@ public class GameOutputMapper extends GenericOutputMapper<Long, Game> {
 				game.getChallengee().getId(),
 				game.getChallengerDeck().getId(),
 				game.getChallengeeDeck().getId(),
-				game.getCurrentTurn()
+				game.getCurrentTurn(),
+				game.getTurn()
 		);
 	}
 	
 	public static void updateStatic(Game game) throws SQLException, LostUpdateException {
-		int count = GameTDG.update(game.getId(), game.getVersion(), game.getCurrentTurn(), game.getStatus());
-		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update game with id: %d.", game.getId()));
-	}
-	
-	public static void updateVersionStatic(Game game) throws SQLException, LostUpdateException {
-		int count = GameTDG.updateVersion(game.getId(), game.getVersion());
+		int count = GameTDG.update(game.getId(), game.getVersion(), game.getCurrentTurn(), game.getTurn(), game.getStatus());
 		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update game with id: %d.", game.getId()));
 	}
 	
