@@ -16,7 +16,6 @@ import dom.model.bench.mapper.BenchInputMapper;
 import dom.model.card.CardType;
 import dom.model.discard.DiscardFactory;
 import dom.model.game.Game;
-import dom.model.game.GameFactory;
 import dom.model.hand.HandFactory;
 import dom.model.hand.IHand;
 import dom.model.hand.mapper.HandInputMapper;
@@ -26,13 +25,16 @@ public class PlayCardCommand extends AbstractCommand {
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
 	private static final String BENCH_IS_FULL = "Your bench is full. It already has 5 Pokemon.";
-	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot bench it.";
+	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot play it.";
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
-	private static final String POKEMON_NOT_SPECIFIED = "You must specify a Pokemon (non-negative integer).";
+	private static final String POKEMON_NOT_SPECIFIED_ENERGY = "You must specify a Pokemon (non-negative integer).";
+	private static final String POKEMON_NOT_SPECIFIED_EVOLVE = "You must specify a Pokemon (non-negative integer) that can evolve into %s.";
 	private static final String NOT_ON_BENCH = "That card is not on your bench. You cannot attach an energy to it.";
 	private static final String ENERGY_ALREADY_PLAYED = "You have already played an energy card this turn.";
+	private static final String EVOLVE_FAILURE = "%s cannot evolve into %s.";
 	
 	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench! You now have %d Pokemon on your bench.";
+	private static final String EVOLVE_SUCCESS = "You have successfully evolved %s into %s!";
 	private static final String ATTACH_ENERGY_SUCCESS = "You have successfully attached a %s energy card to %s!";
 	private static final String TRAINER_DISCARD_SUCCESS = "You have sent %s to the discard pile!";
 	
@@ -89,22 +91,65 @@ public class PlayCardCommand extends AbstractCommand {
 				
 				if (handCard.getCard().getType().equals(CardType.p.name())) {
 					
-					/**
-					 * Delete card from hand.
-					 * Create card on bench.
-					 */
-					HandFactory.registerDeleted(handCard);
-					BenchFactory.createNew(
-							handCard.getGame(),
-							handCard.getPlayer(),
-							handCard.getDeck(),
-							handCard.getCard(),
-							new ArrayList<IAttachedEnergy>()
-					);
-					
-					if (pokemonOnBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
-					
-					this.message = String.format(POKEMON_BENCH_SUCCESS, handCard.getCard().getName(), pokemonOnBench.size() + 1);
+					Integer pokemon = getPokemon();
+					if (handCard.getCard().getBasic() != "" && pokemon != null) {
+						
+						IBench pokemonToEvolve = pokemonOnBench.get(pokemon);
+						
+						if (!handCard.getCard().getBasic().equals(pokemonToEvolve.getCard().getName())) {
+							throw new CommandException(
+									String.format(EVOLVE_FAILURE,
+											pokemonToEvolve.getCard().getName(), handCard.getCard().getName()));
+						}
+						
+						/**
+						 * Delete card from hand.
+						 * Replace card on bench with card from hand, keeping all attached energies.
+						 * Place replaced card in discard pile.
+						 */
+						HandFactory.registerDeleted(handCard);
+						BenchFactory.registerDirty(
+								pokemonToEvolve.getId(),
+								pokemonToEvolve.getVersion(),
+								pokemonToEvolve.getGame(),
+								pokemonToEvolve.getPlayer(),
+								pokemonToEvolve.getDeck(),
+								handCard.getCard(),
+								pokemonToEvolve.getAttachedEnergyCards()
+						);
+						DiscardFactory.createNew(
+								pokemonToEvolve.getGame(),
+								pokemonToEvolve.getPlayer(),
+								pokemonToEvolve.getDeck(),
+								pokemonToEvolve.getCard()
+						);
+						
+						this.message = String.format(EVOLVE_SUCCESS, pokemonToEvolve.getCard().getName(), handCard.getCard().getName());
+						
+					}
+					else if (!handCard.getCard().getBasic().isEmpty() && pokemon == null) {
+						throw new CommandException(String.format(POKEMON_NOT_SPECIFIED_EVOLVE, handCard.getCard().getName()));
+					}
+					else {
+						
+						/**
+						 * Delete card from hand.
+						 * Create card on bench.
+						 */
+						HandFactory.registerDeleted(handCard);
+						BenchFactory.createNew(
+								handCard.getGame(),
+								handCard.getPlayer(),
+								handCard.getDeck(),
+								handCard.getCard(),
+								new ArrayList<IAttachedEnergy>()
+						);
+						
+						if (pokemonOnBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
+						
+						this.message = String.format(POKEMON_BENCH_SUCCESS, handCard.getCard().getName(), pokemonOnBench.size() + 1);
+						
+					}
 					
 				}
 				else {
@@ -116,14 +161,8 @@ public class PlayCardCommand extends AbstractCommand {
 						throw new CommandException(ENERGY_ALREADY_PLAYED);
 					}
 					
-					int pokemon;
-					try {
-						pokemon = helper.getInt("pokemon");
-					}
-					catch (NumberFormatException e) {
-						e.printStackTrace();
-						throw new CommandException(POKEMON_NOT_SPECIFIED);
-					}
+					Integer pokemon = getPokemon();
+					if (pokemon == null) throw new CommandException(POKEMON_NOT_SPECIFIED_ENERGY);
 					
 					IBench pokemonCard = null;
 					try {
@@ -182,6 +221,17 @@ public class PlayCardCommand extends AbstractCommand {
 			throw new CommandException(e.getMessage());
 		}
 		
+	}
+	
+	private Integer getPokemon() {
+		
+		Integer pokemon = null;
+		try {
+			pokemon = helper.getInt("pokemon");
+		}
+		catch (NumberFormatException e) { }
+		
+		return pokemon;
 	}
 
 }
