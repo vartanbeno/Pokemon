@@ -6,8 +6,6 @@ import org.dsrg.soenea.domain.MapperException;
 import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
 import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
-import dom.model.card.Card;
-import dom.model.card.ICard;
 import dom.model.card.mapper.CardOutputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.tdg.DeckTDG;
@@ -45,13 +43,7 @@ public class DeckOutputMapper extends GenericOutputMapper<Long, Deck> {
 	}
 	
 	public static void insertStatic(Deck deck) throws SQLException {
-		
 		DeckTDG.insert(deck.getId(), deck.getVersion(), deck.getPlayer().getId());
-		
-		for (ICard card : deck.getCards()) {
-			CardOutputMapper.insertStatic((Card) card);
-		}
-		
 	}
 	
 	public static void updateStatic(Deck deck) throws SQLException, LostUpdateException {

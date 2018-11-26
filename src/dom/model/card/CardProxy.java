@@ -41,6 +41,16 @@ public class CardProxy extends DomainObjectProxy<Long, Card> implements ICard {
 	public void setName(String name) {
 		getInnerObject().setName(name);
 	}
+	
+	@Override
+	public String getBasic() {
+		return getInnerObject().getBasic();
+	}
+
+	@Override
+	public void setBasic(String basic) {
+		getInnerObject().setBasic(basic);
+	}
 
 	@Override
 	protected Card getFromMapper(Long id) throws MapperException, DomainObjectCreationException {
@@ -52,7 +62,5 @@ public class CardProxy extends DomainObjectProxy<Long, Card> implements ICard {
 			return null;
 		}
 	}
-	
-	
 
 }

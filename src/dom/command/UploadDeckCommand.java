@@ -7,12 +7,12 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.card.Card;
+import dom.model.card.CardFactory;
 import dom.model.card.CardType;
 import dom.model.card.ICard;
 import dom.model.card.tdg.CardTDG;
 import dom.model.deck.Deck;
 import dom.model.deck.DeckFactory;
-import dom.model.deck.tdg.DeckTDG;
 import dom.model.user.User;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -50,17 +50,27 @@ public class UploadDeckCommand extends AbstractCommand {
 			if (cardsArray.length != number) throw new CommandException(String.format(CARDS_FAIL_MESSAGE, cardsArray.length, number));
 			
 			List<ICard> cards = new ArrayList<ICard>();
-			Deck deck = new Deck(DeckTDG.getMaxId(), 1, player, cards);
+			Deck deck = DeckFactory.createNew(player, cards);
 			
 			for (String cardString : cardsArray) {
 				
-				String type, name = "";
+				String[] cardInfo = cardString.replace("\"", "").split(" ");
+				
+				String type = "";
+				String name = "";
+				String basic = "";
 				
 				try {
-					type = cardString.substring(0, 1);
-					name = cardString.substring(3, cardString.length() - 1);
+					type = cardInfo[0];
+					name = cardInfo[1];
+					try {
+						basic = cardInfo[2];
+					}
+					catch (IndexOutOfBoundsException e) {
+						// don't do anything
+					}
 				}
-				catch (StringIndexOutOfBoundsException e) {
+				catch (IndexOutOfBoundsException e) {
 					throw new CommandException(FORMATTING_ERROR);
 				}
 				
@@ -68,13 +78,10 @@ public class UploadDeckCommand extends AbstractCommand {
 					throw new CommandException(CARD_TYPE_ERROR);
 				}
 				
-				Card card = new Card(CardTDG.getMaxId(), 1, deck.getId(), type, name);
+				Card card = CardFactory.createNew(deck.getId(), type, name, basic);
 				cards.add(card);
 				
 			}
-			
-			deck.setCards(cards);
-			DeckFactory.createNew(deck);
 			
 			this.message = UPLOAD_SUCCESS;
 			

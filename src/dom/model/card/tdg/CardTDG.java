@@ -16,6 +16,9 @@ import org.dsrg.soenea.service.threadLocal.DbRegistry;
  * 
  * Also includes create/truncate/drop queries.
  * 
+ * A card's basic attribute is its basic form, i.e. Charmeleon's basic form is Charmander
+ * because Charmander evolves into Charmeleon.
+ * 
  * @author vartanbeno
  *
  */
@@ -23,7 +26,7 @@ public class CardTDG {
 	
 	private static final String TABLE_NAME = "Card";
 	
-	private static final String COLUMNS = "id, version, deck, type, name";
+	private static final String COLUMNS = "id, version, deck, type, name, basic";
 	
 	private static final int CARDS_PER_DECK = 40;
 	
@@ -33,6 +36,7 @@ public class CardTDG {
 			+ "deck BIGINT NOT NULL,"
 			+ "type VARCHAR(1) NOT NULL,"
 			+ "name VARCHAR(30) NOT NULL,"
+			+ "basic VARCHAR(30) NOT NULL,"
 			+ "PRIMARY KEY (id)"
 			+ ") ENGINE=InnoDB;", TABLE_NAME);
 	
@@ -40,9 +44,9 @@ public class CardTDG {
 	
 	private static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %1$s;", TABLE_NAME);
 	
-	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
+	private static final String INSERT = String.format("INSERT INTO %1$s (%2$s) VALUES (?, ?, ?, ?, ?, ?);", TABLE_NAME, COLUMNS);
 	
-	private static final String UPDATE = String.format("UPDATE %1$s SET type = ?, name = ?, version = (version + 1) "
+	private static final String UPDATE = String.format("UPDATE %1$s SET type = ?, name = ?, basic = ?, version = (version + 1) "
 			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
 	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
@@ -80,7 +84,7 @@ public class CardTDG {
 		s.close();
 	}
 	
-	public static int insert(long id, long version, long deck, String type, String name) throws SQLException {
+	public static int insert(long id, long version, long deck, String type, String name, String basic) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(INSERT);
@@ -89,6 +93,7 @@ public class CardTDG {
 		ps.setLong(3, deck);
 		ps.setString(4, type);
 		ps.setString(5, name);
+		ps.setString(6, basic);
 		
 		int result = ps.executeUpdate();
 		ps.close();
@@ -96,14 +101,15 @@ public class CardTDG {
 		return result;
 	}
 	
-	public static int update(long id, long version, String type, String name) throws SQLException {
+	public static int update(long id, long version, String type, String name, String basic) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		
 		PreparedStatement ps = con.prepareStatement(UPDATE);
 		ps.setString(1, type);
 		ps.setString(2, name);
-		ps.setLong(3, id);
-		ps.setLong(4, version);
+		ps.setString(3, basic);
+		ps.setLong(4, id);
+		ps.setLong(5, version);
 		
 		int result = ps.executeUpdate();
 		ps.close();

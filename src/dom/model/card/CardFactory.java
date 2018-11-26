@@ -10,19 +10,19 @@ import dom.model.card.tdg.CardTDG;
 
 public class CardFactory {
 	
-	public static Card createNew(long deck, String type, String name)
+	public static Card createNew(long deck, String type, String name, String basic)
 			throws MissingMappingException, MapperException, SQLException {
 		
-		Card card = new Card(CardTDG.getMaxId(), 1, deck, type, name);
+		Card card = new Card(CardTDG.getMaxId(), 1, deck, type, name, basic);
 		UoW.getCurrent().registerNew(card);
 		
 		return card;
 		
 	}
 	
-	public static Card createClean(long id, long version, long deck, String type, String name) {
+	public static Card createClean(long id, long version, long deck, String type, String name, String basic) {
 		
-		Card card = new Card(id, version, deck, type, name);
+		Card card = new Card(id, version, deck, type, name, basic);
 		UoW.getCurrent().registerClean(card);
 		
 		return card;
@@ -30,7 +30,7 @@ public class CardFactory {
 	}
 	
 	public static Card createClean(ICard card) {
-		return createClean(card.getId(), card.getVersion(), card.getDeck(), card.getType(), card.getName());
+		return createClean(card.getId(), card.getVersion(), card.getDeck(), card.getType(), card.getName(), card.getBasic());
 	}
 
 }

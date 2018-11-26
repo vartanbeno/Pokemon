@@ -10,7 +10,8 @@
 				{
 					"id": ${card.id},
 					"t": "${card.type}",
-					"n": "${card.name}"
+					"n": "${card.name}",
+					"b": "${card.basic}"
 				}<c:if test="${!loop.last}">,</c:if>
 			</c:forEach>
 		]

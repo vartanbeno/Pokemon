@@ -7,12 +7,14 @@ public class Card extends DomainObject<Long> implements ICard {
 	private long deck;
 	private String type;
 	private String name;
+	private String basic;
 	
-	public Card(long id, long version, long deck, String type, String name) {
+	public Card(long id, long version, long deck, String type, String name, String basic) {
 		super(id, version);
 		this.deck = deck;
 		this.type = type;
 		this.name = name;
+		this.basic = basic;
 	}
 
 	@Override
@@ -43,6 +45,16 @@ public class Card extends DomainObject<Long> implements ICard {
 	@Override
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Override
+	public String getBasic() {
+		return basic;
+	}
+
+	@Override
+	public void setBasic(String basic) {
+		this.basic = basic;
 	}
 
 }

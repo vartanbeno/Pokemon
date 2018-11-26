@@ -42,11 +42,11 @@ public class CardOutputMapper extends GenericOutputMapper<Long, Card> {
 	}
 	
 	public static void insertStatic(Card card) throws SQLException {
-		CardTDG.insert(card.getId(), card.getVersion(), card.getDeck(), card.getType(), card.getName());
+		CardTDG.insert(card.getId(), card.getVersion(), card.getDeck(), card.getType(), card.getName(), card.getBasic());
 	}
 	
 	public static void updateStatic(Card card) throws SQLException, LostUpdateException {
-		int count = CardTDG.update(card.getId(), card.getVersion(), card.getType(), card.getName());
+		int count = CardTDG.update(card.getId(), card.getVersion(), card.getType(), card.getName(), card.getBasic());
 		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update card with id: %d.", card.getId()));
 	}
 	

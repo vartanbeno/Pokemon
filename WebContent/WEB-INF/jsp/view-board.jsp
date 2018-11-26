@@ -17,17 +17,6 @@
 				"decksize": ${fn:length(gameBoard.game.challengerDeck.cards)},
 				"discardsize": ${fn:length(gameBoard.challengerDiscarded)},
 				"bench": [
-					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop">
-						${card.card.id}<c:if test="${!loop.last}">,</c:if>
-					</c:forEach>
-				],
-				"detailedBench": [
-					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop">
-						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}" }
-						<c:if test="${!loop.last}">,</c:if>
-					</c:forEach>
-				],
-				"benchWithEnergy": [
 					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop1">
 						{ "id": ${card.card.id}, "e": [
 							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
@@ -37,7 +26,7 @@
 						<c:if test="${!loop1.last}">,</c:if>
 					</c:forEach>
 				],
-				"detailedBenchWithEnergy": [
+				"detailedBench": [
 					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop1">
 						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "e": [
 							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
@@ -55,17 +44,6 @@
 				"decksize": ${fn:length(gameBoard.game.challengeeDeck.cards)},
 				"discardsize": ${fn:length(gameBoard.challengeeDiscarded)},
 				"bench": [
-					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop">
-						${card.card.id}<c:if test="${!loop.last}">,</c:if>
-					</c:forEach>
-				],
-				"detailedBench": [
-					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop">
-						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}" }
-						<c:if test="${!loop.last}">,</c:if>
-					</c:forEach>
-				],
-				"benchWithEnergy": [
 					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop1">
 						{ "id": ${card.card.id}, "e": [
 							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
@@ -75,7 +53,7 @@
 						<c:if test="${!loop1.last}">,</c:if>
 					</c:forEach>
 				],
-				"detailedBenchWithEnergy": [
+				"detailedBench": [
 					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop1">
 						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "e": [
 							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
