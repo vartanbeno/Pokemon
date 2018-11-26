@@ -15,19 +15,22 @@ import dom.model.user.IUser;
 
 public class BenchFactory {
 	
-	public static Bench createNew(IGame game, IUser player, long deck, ICard card, List<IAttachedEnergy> attachedEnergyCards)
-			throws MissingMappingException, MapperException, SQLException {
+	public static Bench createNew(
+			IGame game, IUser player, long deck, ICard card, ICard predecessor, List<IAttachedEnergy> attachedEnergyCards
+	) throws MissingMappingException, MapperException, SQLException {
 		
-		Bench benchCard = new Bench(BenchTDG.getMaxId(), 1, game, player, deck, card, attachedEnergyCards);
+		Bench benchCard = new Bench(BenchTDG.getMaxId(), 1, game, player, deck, card, predecessor, attachedEnergyCards);
 		UoW.getCurrent().registerNew(benchCard);
 		
 		return benchCard;
 		
 	}
 	
-	public static Bench createClean(long id, long version, IGame game, IUser player, long deck, ICard card, List<IAttachedEnergy> attachedEnergyCards) {
+	public static Bench createClean(
+			long id, long version, IGame game, IUser player, long deck, ICard card, ICard predecessor, List<IAttachedEnergy> attachedEnergyCards
+	) {
 		
-		Bench benchCard = new Bench(id, version, game, player, deck, card, attachedEnergyCards);
+		Bench benchCard = new Bench(id, version, game, player, deck, card, predecessor, attachedEnergyCards);
 		UoW.getCurrent().registerClean(benchCard);
 		
 		return benchCard;
@@ -42,14 +45,16 @@ public class BenchFactory {
 				benchCard.getPlayer(),
 				benchCard.getDeck(),
 				benchCard.getCard(),
+				benchCard.getPredecessor(),
 				benchCard.getAttachedEnergyCards()
 		);
 	}
 	
-	public static Bench registerDirty(long id, long version, IGame game, IUser player, long deck, ICard card, List<IAttachedEnergy> attachedEnergyCards)
-			throws MissingMappingException, MapperException {
+	public static Bench registerDirty(
+			long id, long version, IGame game, IUser player, long deck, ICard card, ICard predecessor, List<IAttachedEnergy> attachedEnergyCards
+	) throws MissingMappingException, MapperException {
 		
-		Bench benchCard = new Bench(id, version, game, player, deck, card, attachedEnergyCards);
+		Bench benchCard = new Bench(id, version, game, player, deck, card, predecessor, attachedEnergyCards);
 		UoW.getCurrent().registerDirty(benchCard);
 		
 		return benchCard;
@@ -65,14 +70,16 @@ public class BenchFactory {
 				benchCard.getPlayer(),
 				benchCard.getDeck(),
 				benchCard.getCard(),
+				benchCard.getPredecessor(),
 				benchCard.getAttachedEnergyCards()
 		);
 	}
 	
-	public static Bench registerDeleted(long id, long version, IGame game, IUser player, long deck, ICard card, List<IAttachedEnergy> attachedEnergyCards)
-			throws MissingMappingException, MapperException {
+	public static Bench registerDeleted(
+			long id, long version, IGame game, IUser player, long deck, ICard card, ICard predecessor, List<IAttachedEnergy> attachedEnergyCards
+	) throws MissingMappingException, MapperException {
 		
-		Bench benchCard = new Bench(id, version, game, player, deck, card, attachedEnergyCards);
+		Bench benchCard = new Bench(id, version, game, player, deck, card, predecessor, attachedEnergyCards);
 		UoW.getCurrent().registerRemoved(benchCard);
 		
 		return benchCard;

@@ -151,6 +151,7 @@ public class PlayCardCommand extends AbstractCommand {
 					pokemonToEvolve.getPlayer(),
 					pokemonToEvolve.getDeck(),
 					pokemonCard.getCard(),
+					pokemonToEvolve.getCard(),
 					pokemonToEvolve.getAttachedEnergyCards()
 			);
 			DiscardFactory.createNew(
@@ -171,12 +172,14 @@ public class PlayCardCommand extends AbstractCommand {
 			/**
 			 * Delete card from hand.
 			 * Create card on bench.
+			 * Its predecessor is itself, since it doesn't have a 'basic' type and doesn't replace anything on the bench.
 			 */
 			HandFactory.registerDeleted(pokemonCard);
 			BenchFactory.createNew(
 					pokemonCard.getGame(),
 					pokemonCard.getPlayer(),
 					pokemonCard.getDeck(),
+					pokemonCard.getCard(),
 					pokemonCard.getCard(),
 					new ArrayList<IAttachedEnergy>()
 			);

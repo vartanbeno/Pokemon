@@ -18,22 +18,37 @@
 				"discardsize": ${fn:length(gameBoard.challengerDiscarded)},
 				"bench": [
 					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop1">
-						{ "id": ${card.card.id}, "e": [
-							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
-								${e.energyCard.id}<c:if test="${!loop2.last}">,</c:if>
-							</c:forEach>
-						] }
+						{
+							"id": ${card.card.id}, "e": [
+								<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+									${e.energyCard.id}<c:if test="${!loop2.last}">,</c:if>
+								</c:forEach>
+							]
+							<c:if test="${card.card.id != card.predecessor.id}">
+							,
+							"b": ${card.predecessor.id}
+							</c:if>
+						}
 						<c:if test="${!loop1.last}">,</c:if>
 					</c:forEach>
 				],
 				"detailedBench": [
 					<c:forEach items="${gameBoard.challengerBench}" var="card" varStatus="loop1">
-						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "e": [
-							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
-								{ "id": ${e.energyCard.id}, "name": "${e.energyCard.name}" }
-								<c:if test="${!loop2.last}">,</c:if>
-							</c:forEach>
-						] }
+						{
+							"id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "energies": [
+								<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+									{ "id": ${e.energyCard.id}, "name": "${e.energyCard.name}" }
+									<c:if test="${!loop2.last}">,</c:if>
+								</c:forEach>
+							]
+							<c:if test="${card.card.id != card.predecessor.id}">
+							,
+							"predecessor": {
+								"id": ${card.predecessor.id},
+								"name": "${card.predecessor.name}"
+							}
+							</c:if>
+						}
 						<c:if test="${!loop1.last}">,</c:if>
 					</c:forEach>
 				]
@@ -45,22 +60,37 @@
 				"discardsize": ${fn:length(gameBoard.challengeeDiscarded)},
 				"bench": [
 					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop1">
-						{ "id": ${card.card.id}, "e": [
-							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
-								${e.energyCard.id}<c:if test="${!loop2.last}">,</c:if>
-							</c:forEach>
-						] }
+						{
+							"id": ${card.card.id}, "e": [
+								<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+									${e.energyCard.id}<c:if test="${!loop2.last}">,</c:if>
+								</c:forEach>
+							]
+							<c:if test="${card.card.id != card.predecessor.id}">
+							,
+							"b": ${card.predecessor.id}
+							</c:if>
+						}
 						<c:if test="${!loop1.last}">,</c:if>
 					</c:forEach>
 				],
 				"detailedBench": [
 					<c:forEach items="${gameBoard.challengeeBench}" var="card" varStatus="loop1">
-						{ "id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "e": [
-							<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
-								{ "id": ${e.energyCard.id}, "name": "${e.energyCard.name}" }
-								<c:if test="${!loop2.last}">,</c:if>
-							</c:forEach>
-						] }
+						{
+							"id": ${card.card.id}, "type": "${card.card.type}", "name": "${card.card.name}", "energies": [
+								<c:forEach items="${card.attachedEnergyCards}" var="e" varStatus="loop2">
+									{ "id": ${e.energyCard.id}, "name": "${e.energyCard.name}" }
+									<c:if test="${!loop2.last}">,</c:if>
+								</c:forEach>
+							]
+							<c:if test="${card.card.id != card.predecessor.id}">
+							,
+							"predecessor": {
+								"id": ${card.predecessor.id},
+								"name": "${card.predecessor.name}"
+							}
+							</c:if>
+						}
 						<c:if test="${!loop1.last}">,</c:if>
 					</c:forEach>
 				]
