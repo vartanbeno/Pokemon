@@ -10,7 +10,8 @@
 				"version": ${challenge.version},
 				"challenger": ${challenge.challenger.id},
 				"challengee": ${challenge.challengee.id},
-				"status": ${challenge.status}
+				"status": ${challenge.status},
+				"deck": ${challenge.challengerDeck.id}
 			}<c:if test="${!loop.last}">,</c:if>
 		</c:forEach>
 	]
