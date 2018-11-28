@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 {
-	"board": {
+	"game": {
 		"id": ${gameBoard.game.id},
 		"version": ${gameBoard.game.version},
 		"players": [${gameBoard.game.challenger.id}, ${gameBoard.game.challengee.id}],
