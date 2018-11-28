@@ -35,6 +35,9 @@ public class ViewBoardCommand extends AbstractCommand {
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
 			Game game = getGame(gameId);
+			
+			checkIfImPartOfGame(game);
+			
 			gameBoard = GameInputMapper.buildGameBoard(game);
 			
 			if (gameBoard.getGame().getStatus() == GameStatus.ongoing.ordinal()) {
