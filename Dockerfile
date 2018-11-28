@@ -1,4 +1,4 @@
-FROM tomcat:8-jre8
+FROM tomcat:8-jre8-alpine
 
 # Removing Tomcat's default web app.
 RUN rm -rf /usr/local/tomcat/webapps/
