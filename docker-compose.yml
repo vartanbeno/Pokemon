@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3"
 
 services:
   client:
@@ -7,6 +7,12 @@ services:
     build: ./
     image: pokemon
     container_name: pokemon-client
+    environment:
+      # DB_HOST can also just be 'db'
+      DB_HOST: pokemon-db
+      DB_NAME: pokemon?characterEncoding=utf8
+      DB_USER: vartanbeno
+      DB_PASS: password
     ports:
       - "8080:8080"
 
