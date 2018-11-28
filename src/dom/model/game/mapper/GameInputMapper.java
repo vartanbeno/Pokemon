@@ -12,7 +12,7 @@ import org.dsrg.soenea.domain.mapper.IdentityMap;
 
 import dom.model.bench.IBench;
 import dom.model.bench.mapper.BenchInputMapper;
-import dom.model.deck.Deck;
+import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.discard.IDiscard;
 import dom.model.discard.mapper.DiscardInputMapper;
@@ -23,7 +23,7 @@ import dom.model.game.IGame;
 import dom.model.game.tdg.GameFinder;
 import dom.model.hand.IHand;
 import dom.model.hand.mapper.HandInputMapper;
-import dom.model.user.User;
+import dom.model.user.IUser;
 import dom.model.user.mapper.UserInputMapper;
 
 public class GameInputMapper {
@@ -110,10 +110,10 @@ public class GameInputMapper {
 	
 	public static Game buildGame(ResultSet rs) throws SQLException {
 		
-		User challenger = UserInputMapper.findById(rs.getLong("challenger"));
-		User challengee = UserInputMapper.findById(rs.getLong("challengee"));
-		Deck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
-		Deck challengeeDeck = DeckInputMapper.findById(rs.getLong("challengee_deck"));
+		IUser challenger = UserInputMapper.findById(rs.getLong("challenger"));
+		IUser challengee = UserInputMapper.findById(rs.getLong("challengee"));
+		IDeck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
+		IDeck challengeeDeck = DeckInputMapper.findById(rs.getLong("challengee_deck"));
 		
 		return GameFactory.createClean(
 				rs.getLong("id"),
@@ -152,10 +152,10 @@ public class GameInputMapper {
 		
 		long gameId = game.getId();
 		
-		User challengerId = (User) game.getChallenger();
-		User challengee = (User) game.getChallengee();
-		Deck challengerDeck = (Deck) game.getChallengerDeck();
-		Deck challengeeDeck = (Deck) game.getChallengeeDeck();
+		IUser challengerId = game.getChallenger();
+		IUser challengee = game.getChallengee();
+		IDeck challengerDeck = game.getChallengerDeck();
+		IDeck challengeeDeck = game.getChallengeeDeck();
 		
 		List<IHand> challengerHand = HandInputMapper.findByGameAndPlayer(gameId, challengerId.getId());
 		List<IHand> challengeeHand = HandInputMapper.findByGameAndPlayer(gameId, challengee.getId());

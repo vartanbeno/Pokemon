@@ -5,7 +5,7 @@ import java.util.List;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.card.Card;
+import dom.model.card.ICard;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.IChallenge;
@@ -66,7 +66,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			 * When a game first starts, the challenger draws a card.
 			 * The card is at the top of the deck, so the first in the list is drawn.
 			 */
-			Card card = (Card) game.getChallengerDeck().getCards().remove(0);
+			ICard card = game.getChallengerDeck().getCards().remove(0);
 			HandFactory.createNew(
 					game, game.getChallenger(), game.getChallengerDeck().getId(), card
 			);
