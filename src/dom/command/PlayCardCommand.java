@@ -28,7 +28,6 @@ public class PlayCardCommand extends AbstractCommand {
 	
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
-	private static final String BENCH_IS_FULL = "Your bench is full. It already has 5 Pokemon.";
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot play it.";
 	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
 	private static final String POKEMON_NOT_SPECIFIED_ENERGY = "You must specify a Pokemon (non-negative integer) to attach the energy to.";
@@ -36,6 +35,7 @@ public class PlayCardCommand extends AbstractCommand {
 	private static final String NOT_ON_BENCH = "That card is not on your bench. You cannot attach an energy to it.";
 	private static final String ENERGY_ALREADY_PLAYED = "You have already played an energy card this turn.";
 	private static final String EVOLVE_FAILURE = "%s cannot evolve into %s.";
+	private static final String CANNOT_PLAY_TRAINER = "You cannot play a trainer onto a Pokemon.";
 	
 	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench! You now have %d Pokemon on your bench.";
 	private static final String EVOLVE_SUCCESS = "You have successfully evolved %s into %s!";
@@ -188,8 +188,6 @@ public class PlayCardCommand extends AbstractCommand {
 					new ArrayList<IAttachedEnergy>()
 			);
 			
-			if (pokemonOnBench.size() >= 5) throw new CommandException(BENCH_IS_FULL);
-			
 			this.message = String.format(POKEMON_BENCH_SUCCESS, pokemonCard.getCard().getName(), pokemonOnBench.size() + 1);
 			
 		}
@@ -239,7 +237,10 @@ public class PlayCardCommand extends AbstractCommand {
 	}
 	
 	private void playTrainer(IHand trainerCard)
-			throws MissingMappingException, MapperException, SQLException {
+			throws MissingMappingException, MapperException, SQLException, CommandException {
+		
+		Integer pokemon = getPokemon();
+		if (pokemon != null) throw new CommandException(CANNOT_PLAY_TRAINER);
 		
 		/**
 		 * Delete card from hand.
