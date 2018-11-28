@@ -1,0 +1,26 @@
+version: "2.1"
+
+services:
+  client:
+    depends_on:
+      - db
+    build: ./
+    image: pokemon
+    container_name: pokemon-client
+    ports:
+      - "8080:8080"
+
+  db:
+    image: mysql:8
+    container_name: pokemon-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pokemon
+      MYSQL_USER: vartanbeno
+      MYSQL_PASSWORD: password
+    volumes:
+      - "./data:/var/lib/mysql:rw"
+      - "./mysql-init:/docker-entrypoint-initdb.d"
+    ports:
+      - "3306:3306"
+

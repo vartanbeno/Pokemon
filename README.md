@@ -16,11 +16,17 @@ This is a web application built using various architectural patterns. The goal w
 5. Go to [localhost:8080/Pokemon/Register](http://localhost:8080/Pokemon/Register) and play around with the project!
     - This is assuming that the context root of the project is `Pokemon`.
 
-### Getting the Database Set Up
+### Running the Application (with Docker)
 
-See [here](docker-mysql8-db/README.md) for more info. Make sure the credentials match the ones [here](src/MyResources.properties).
+Running the application can very easily be done with Docker. Simply run `docker-compose up`, and the rest will be taken care of. You can also specify the `-d` or `--detach` option to run it in detached mode.
 
-Once you have it set up, you can run [Setup](src/Setup.java) to create the necessary tables.
+The [docker-compose.yml](docker-compose.yml) file spawns 2 containers: one for Tomcat, and another for the MySQL database. When the latter is first run, [this SQL script](mysql-init/init.sql) is executed to set up the tables.
+
+It's important to mention that for the Tomcat container to communicate with the database, before generating the WAR file, I changed the MySQL hostname in [MyResources.properties](src/MyResources.properties) from `localhost:3306` to `db`.
+
+That's because the container used for the database has `db` as a name for its service. You could also set it to `pokemon-db`, since that's the name of the container.
+
+To run the convenient main methods in [src/main](src/main), make sure the MySQL hostname in the properties file is set to `localhost:3306`, since port 3306 is exposed on the running database container.
 
 ## Usage
 
