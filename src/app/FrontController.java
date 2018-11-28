@@ -128,8 +128,28 @@ public class FrontController extends SmartDispatcherServlet {
     	
     	try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(null, null, null, null);
-			connectionFactory.defaultInitialization();
+			
+			/**
+			 * The following environment variables are useful if this project is
+			 * run with docker-compose. They are set in the Tomcat container.
+			 */
+			String dbHost = System.getenv("DB_HOST");
+			String dbName = System.getenv("DB_NAME");
+			String dbUser = System.getenv("DB_USER");
+			String dbPass = System.getenv("DB_PASS");
+			
+			MySQLConnectionFactory connectionFactory = new MySQLConnectionFactory(dbHost, dbName, dbUser, dbPass);
+			
+			/**
+			 * If even a single one of the environment variables is null, meaning
+			 * we're most likely not running the application in a container, then
+			 * use the default initialization, which gets the needed credentials
+			 * from the MyResources.properties file.
+			 */
+			if (dbHost == null || dbName == null || dbUser == null || dbPass == null) {
+				connectionFactory.defaultInitialization();
+			}
+			
 			DbRegistry.setConFactory(key, connectionFactory);
 			DbRegistry.setTablePrefix(key, "");
 		}
