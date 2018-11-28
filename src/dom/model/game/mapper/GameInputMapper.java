@@ -148,7 +148,7 @@ public class GameInputMapper {
 		
 	}
 	
-	public static GameBoard buildGameBoard(Game game) throws SQLException {
+	public static GameBoard buildGameBoard(IGame game) throws SQLException {
 		
 		long gameId = game.getId();
 		

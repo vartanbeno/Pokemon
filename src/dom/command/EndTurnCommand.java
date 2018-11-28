@@ -9,9 +9,9 @@ import org.dsrg.soenea.domain.helper.Helper;
 import dom.model.card.ICard;
 import dom.model.deck.IDeck;
 import dom.model.discard.DiscardFactory;
-import dom.model.game.Game;
-import dom.model.game.GameBoard;
 import dom.model.game.GameFactory;
+import dom.model.game.IGame;
+import dom.model.game.IGameBoard;
 import dom.model.game.mapper.GameInputMapper;
 import dom.model.hand.HandFactory;
 import dom.model.hand.IHand;
@@ -36,7 +36,7 @@ public class EndTurnCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
-			Game game = getGame(gameId);
+			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
 			checkIfGameHasEnded(game);
@@ -54,7 +54,7 @@ public class EndTurnCommand extends AbstractCommand {
 			 * i.e. number of cards left in each deck.
 			 * Also the player's hand (player who ended the turn). We'll need that to check its size.
 			 */
-			GameBoard gameInfo = GameInputMapper.buildGameBoard(game);
+			IGameBoard gameInfo = GameInputMapper.buildGameBoard(game);
 			
 			List<IHand> previousTurnHand = new ArrayList<IHand>();
 			IDeck nextTurnDeck = null;

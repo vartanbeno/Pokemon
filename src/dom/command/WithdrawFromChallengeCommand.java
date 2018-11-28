@@ -3,9 +3,9 @@ package dom.command;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
+import dom.model.challenge.IChallenge;
 
 public class WithdrawFromChallengeCommand extends AbstractCommand {
 	
@@ -25,7 +25,7 @@ public class WithdrawFromChallengeCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 						
 			long challengeId = Long.parseLong((String) helper.getRequestAttribute("challenge"));
-			Challenge challenge = getChallengeToWithdrawFrom(challengeId);
+			IChallenge challenge = getChallengeToWithdrawFrom(challengeId);
 			
 			challenge.setStatus(ChallengeStatus.withdrawn.ordinal());
 			

@@ -6,10 +6,10 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.game.Game;
+import dom.model.game.IGame;
 import dom.model.hand.IHand;
 import dom.model.hand.mapper.HandInputMapper;
-import dom.model.user.User;
+import dom.model.user.IUser;
 
 public class ViewHandCommand extends AbstractCommand {
 	
@@ -30,12 +30,12 @@ public class ViewHandCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
-			Game game = getGame(gameId);
+			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
 			
 			long userId = getUserId();
-			User player = userId == game.getChallenger().getId() ? (User) game.getChallenger() : (User) game.getChallengee();
+			IUser player = userId == game.getChallenger().getId() ? game.getChallenger() : game.getChallengee();
 			
 			hand = HandInputMapper.findByGameAndPlayer(game.getId(), player.getId());
 			
