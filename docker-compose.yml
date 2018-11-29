@@ -1,9 +1,10 @@
-version: "3"
+version: "2.1"
 
 services:
   client:
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     build: ./
     image: pokemon
     container_name: pokemon-client
@@ -29,4 +30,7 @@ services:
       - "./mysql-init:/docker-entrypoint-initdb.d"
     ports:
       - "3306:3306"
-
+    healthcheck:
+      test: mysql -u$$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE
+      interval: 15s
+      retries: 6
