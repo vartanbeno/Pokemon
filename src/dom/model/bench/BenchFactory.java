@@ -37,19 +37,6 @@ public class BenchFactory {
 		
 	}
 	
-	public static Bench createClean(IBench benchCard) {
-		return createClean(
-				benchCard.getId(),
-				benchCard.getVersion(),
-				benchCard.getGame(),
-				benchCard.getPlayer(),
-				benchCard.getDeck(),
-				benchCard.getCard(),
-				benchCard.getPredecessor(),
-				benchCard.getAttachedEnergyCards()
-		);
-	}
-	
 	public static Bench registerDirty(
 			long id, long version, IGame game, IUser player, long deck, ICard card, ICard predecessor, List<IAttachedEnergy> attachedEnergyCards
 	) throws MissingMappingException, MapperException {
@@ -61,20 +48,6 @@ public class BenchFactory {
 		
 	}
 	
-	public static Bench registerDirty(IBench benchCard)
-			throws MissingMappingException, MapperException {
-		return registerDirty(
-				benchCard.getId(),
-				benchCard.getVersion(),
-				benchCard.getGame(),
-				benchCard.getPlayer(),
-				benchCard.getDeck(),
-				benchCard.getCard(),
-				benchCard.getPredecessor(),
-				benchCard.getAttachedEnergyCards()
-		);
-	}
-	
 	public static Bench registerDeleted(
 			long id, long version, IGame game, IUser player, long deck, ICard card, ICard predecessor, List<IAttachedEnergy> attachedEnergyCards
 	) throws MissingMappingException, MapperException {
@@ -84,11 +57,6 @@ public class BenchFactory {
 		
 		return benchCard;
 		
-	}
-	
-	public static Bench registerDeleted(IBench benchCard)
-			throws MissingMappingException, MapperException {
-		return registerDeleted(benchCard);
 	}
 
 }

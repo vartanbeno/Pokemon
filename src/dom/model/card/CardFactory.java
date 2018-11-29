@@ -28,9 +28,5 @@ public class CardFactory {
 		return card;
 		
 	}
-	
-	public static Card createClean(ICard card) {
-		return createClean(card.getId(), card.getVersion(), card.getDeck(), card.getType(), card.getName(), card.getBasic());
-	}
 
 }

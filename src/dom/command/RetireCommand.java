@@ -44,7 +44,17 @@ public class RetireCommand extends AbstractCommand {
 				opponent = UserInputMapper.findById(game.getChallenger().getId());
 			}
 			
-			GameFactory.registerDirty(game);
+			GameFactory.registerDirty(
+					game.getId(),
+					game.getVersion(),
+					game.getChallenger(),
+					game.getChallengee(),
+					game.getChallengerDeck(),
+					game.getChallengeeDeck(),
+					game.getCurrentTurn(),
+					game.getTurn(),
+					game.getStatus()
+			);
 			
 			this.message = String.format(RETIRE_SUCCESS, opponent.getUsername());
 			

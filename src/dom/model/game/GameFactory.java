@@ -34,20 +34,6 @@ public class GameFactory {
 		
 	}
 	
-	public static Game createClean(IGame game) {
-		return createClean(
-				game.getId(),
-				game.getVersion(),
-				game.getChallenger(),
-				game.getChallengee(),
-				game.getChallengerDeck(),
-				game.getChallengeeDeck(),
-				game.getCurrentTurn(),
-				game.getTurn(),
-				game.getStatus()
-		);
-	}
-	
 	public static Game registerDirty(
 			long id, long version, IUser challenger, IUser challengee, IDeck challengerDeck, IDeck challengeeDeck, long currentTurn, long turn, int status
 	) throws MissingMappingException, MapperException {
@@ -57,21 +43,6 @@ public class GameFactory {
 		
 		return game;
 		
-	}
-	
-	public static Game registerDirty(IGame game)
-			throws MissingMappingException, MapperException {
-		return registerDirty(
-				game.getId(),
-				game.getVersion(),
-				game.getChallenger(),
-				game.getChallengee(),
-				game.getChallengerDeck(),
-				game.getChallengeeDeck(),
-				game.getCurrentTurn(),
-				game.getTurn(),
-				game.getStatus()
-		);
 	}
 
 }

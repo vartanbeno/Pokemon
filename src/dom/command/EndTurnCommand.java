@@ -99,7 +99,14 @@ public class EndTurnCommand extends AbstractCommand {
 				
 				IHand cardToDiscard = previousTurnHand.remove(0);
 				
-				HandFactory.registerDeleted(cardToDiscard);
+				HandFactory.registerDeleted(
+						cardToDiscard.getId(),
+						cardToDiscard.getVersion(),
+						cardToDiscard.getGame(),
+						cardToDiscard.getPlayer(),
+						cardToDiscard.getDeck(),
+						cardToDiscard.getCard()
+				);
 				DiscardFactory.createNew(
 						cardToDiscard.getGame(),
 						cardToDiscard.getPlayer(),

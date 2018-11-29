@@ -32,17 +32,6 @@ public class HandFactory {
 		
 	}
 	
-	public static Hand createClean(IHand handCard) {
-		return createClean(
-				handCard.getId(),
-				handCard.getVersion(),
-				handCard.getGame(),
-				handCard.getPlayer(),
-				handCard.getDeck(),
-				handCard.getCard()
-		);
-	}
-	
 	public static Hand registerDirty(long id, long version, IGame game, IUser player, long deck, ICard card)
 			throws MissingMappingException, MapperException {
 		
@@ -53,18 +42,6 @@ public class HandFactory {
 		
 	}
 	
-	public static Hand registerDirty(IHand handCard)
-			throws MissingMappingException, MapperException {
-		return registerDirty(
-				handCard.getId(),
-				handCard.getVersion(),
-				handCard.getGame(),
-				handCard.getPlayer(),
-				handCard.getDeck(),
-				handCard.getCard()
-		);
-	}
-	
 	public static Hand registerDeleted(long id, long version, IGame game, IUser player, long deck, ICard card)
 			throws MissingMappingException, MapperException {
 		
@@ -73,18 +50,6 @@ public class HandFactory {
 		
 		return handCard;
 		
-	}
-	
-	public static Hand registerDeleted(IHand handCard)
-			throws MissingMappingException, MapperException {
-		return registerDeleted(
-				handCard.getId(),
-				handCard.getVersion(),
-				handCard.getGame(),
-				handCard.getPlayer(),
-				handCard.getDeck(),
-				handCard.getCard()
-		);
 	}
 
 }

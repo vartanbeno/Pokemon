@@ -28,9 +28,5 @@ public class UserFactory {
 		return user;
 		
 	}
-	
-	public static User createClean(IUser user) {
-		return createClean(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
-	}
 
 }

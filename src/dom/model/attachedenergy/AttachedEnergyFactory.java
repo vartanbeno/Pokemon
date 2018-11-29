@@ -34,13 +34,5 @@ public class AttachedEnergyFactory {
 		return attachedEnergy;
 		
 	}
-	
-	public static AttachedEnergy createClean(IAttachedEnergy attachedEnergy) {
-		return createClean(
-				attachedEnergy.getId(), attachedEnergy.getVersion(),
-				attachedEnergy.getGame(), attachedEnergy.getGameTurn(), attachedEnergy.getPlayer(),
-				attachedEnergy.getEnergyCard(), attachedEnergy.getPokemonCard()
-		);
-	}
 
 }
