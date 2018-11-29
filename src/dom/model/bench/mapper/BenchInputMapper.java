@@ -59,6 +59,27 @@ public class BenchInputMapper {
 		
 	}
 	
+	public static Bench findByGameAndPlayerAndCard(long game, long player, long card) throws SQLException {
+		
+		Bench benchCard = null;
+		
+		ResultSet rs = BenchFinder.findByGameAndPlayerAndCard(game, player, card);
+		
+		if (rs.next()) {
+			
+			long id = rs.getLong("id");
+			
+			benchCard = getFromIdentityMap(id);
+			if (benchCard == null) benchCard = buildBenchCard(rs);
+			
+			rs.close();
+			
+		}
+		
+		return benchCard;
+		
+	}
+	
 	public static Bench buildBenchCard(ResultSet rs) throws SQLException {
 		
 		Game game = GameInputMapper.findById(rs.getLong("game"));

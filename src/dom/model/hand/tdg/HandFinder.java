@@ -23,6 +23,9 @@ public class HandFinder {
 	
 	private static final String FIND_BY_GAME_AND_PLAYER = String.format("SELECT %1$s FROM %2$s "
 			+ "WHERE game = ? AND player = ?;", HandTDG.getColumns(), HandTDG.getTableName());
+	
+	private static final String FIND_BY_GAME_AND_PLAYER_AND_CARD = String.format("SELECT %1$s FROM %2$s "
+			+ "WHERE game = ? AND player = ? AND card = ?;", HandTDG.getColumns(), HandTDG.getTableName());
 
 	public static ResultSet findAll() throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
@@ -47,6 +50,17 @@ public class HandFinder {
 		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME_AND_PLAYER);
 		ps.setLong(1, game);
 		ps.setLong(2, player);
+		
+		return ps.executeQuery();
+	}
+	
+	public static ResultSet findByGameAndPlayerAndCard(long game, long player, long card) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+
+		PreparedStatement ps = con.prepareStatement(FIND_BY_GAME_AND_PLAYER_AND_CARD);
+		ps.setLong(1, game);
+		ps.setLong(2, player);
+		ps.setLong(3, card);
 		
 		return ps.executeQuery();
 	}
