@@ -57,6 +57,27 @@ public class HandInputMapper {
 		
 	}
 	
+	public static Hand findByGameAndPlayerAndCard(long game, long player, long card) throws SQLException {
+		
+		Hand handCard = null;
+		
+		ResultSet rs = HandFinder.findByGameAndPlayerAndCard(game, player, card);
+		
+		if (rs.next()) {
+			
+			long id = rs.getLong("id");
+			
+			handCard = getFromIdentityMap(id);
+			if (handCard == null) handCard = buildHandCard(rs);
+			
+			rs.close();
+			
+		}
+		
+		return handCard;
+		
+	}
+	
 	public static Hand buildHandCard(ResultSet rs) throws SQLException {
 		
 		Game game = GameInputMapper.findById(rs.getLong("game"));

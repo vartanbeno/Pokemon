@@ -28,16 +28,14 @@ public class PlayCardCommand extends AbstractCommand {
 	private static final String NOT_LOGGED_IN = "You must be logged in to play.";
 	
 	private static final String NOT_IN_HAND = "That card is not in your hand. You cannot play it.";
-	private static final String EMPTY_HAND = "You do not have any cards in your hand.";
 	private static final String POKEMON_NOT_SPECIFIED_ENERGY = "You must specify a Pokemon (non-negative integer) to attach the energy to.";
 	private static final String POKEMON_NOT_SPECIFIED_EVOLVE = "You must specify a basic Pokemon (non-negative integer) that can evolve into %s.";
-	private static final String NOT_ON_BENCH_ENERGY = "That Pokemon is not on your bench. You cannot attach an energy to it.";
-	private static final String NOT_ON_BENCH_EVOLVE = "That Pokemon is not on your bench. You cannot evolve it.";
+	private static final String NOT_ON_BENCH = "That Pokemon is not on your bench. You cannot attach an energy to it.";
 	private static final String ENERGY_ALREADY_PLAYED = "You have already played an energy card this turn.";
 	private static final String EVOLVE_FAILURE = "%s cannot evolve into %s.";
 	private static final String CANNOT_PLAY_TRAINER = "You cannot play a trainer onto a Pokemon.";
 	
-	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench! You now have %d Pokemon on your bench.";
+	private static final String POKEMON_BENCH_SUCCESS = "You have sent %s to the bench!";
 	private static final String EVOLVE_SUCCESS = "You have successfully evolved %s into %s!";
 	private static final String ATTACH_ENERGY_SUCCESS = "You have successfully attached a %s energy card to %s!";
 	private static final String TRAINER_DISCARD_SUCCESS = "You have sent %s to the discard pile!";
@@ -66,13 +64,11 @@ public class PlayCardCommand extends AbstractCommand {
 			
 			if (handCard.getCard().getType().equals(CardType.p.name()) || handCard.getCard().getType().equals(CardType.e.name())) {
 				
-				List<IBench> myBench = BenchInputMapper.findByGameAndPlayer(game.getId(), getUserId());
-				
 				if (handCard.getCard().getType().equals(CardType.p.name())) {
-					playPokemon(handCard, myBench);
+					playPokemon(game, handCard);
 				}
 				else {
-					playEnergy(game, handCard, myBench);
+					playEnergy(game, handCard);
 				}
 				
 			}
@@ -106,70 +102,59 @@ public class PlayCardCommand extends AbstractCommand {
 	
 	private IHand getCardFromHand(IGame game) throws SQLException, CommandException {
 		
-		/**
-		 * This is the card index.
-		 * Example: let's say your hand is: [2, 5, 9, 12, 27]
-		 * Going off of a zero-based index:
-		 * If you choose card 0, you get 2.
-		 * If you choose card 3, you get 12.
-		 * If you choose card 10, you should get an error.
-		 * etc.
-		 */
-		int cardIndex = Integer.parseInt((String) helper.getRequestAttribute("card"));
+		long cardId = Long.parseLong((String) helper.getRequestAttribute("card"));
+		IHand handCard = HandInputMapper.findByGameAndPlayerAndCard(game.getId(), getUserId(), cardId);
 		
-		List<IHand> myHand = HandInputMapper.findByGameAndPlayer(game.getId(), getUserId());
-		if (myHand.size() == 0) throw new CommandException(EMPTY_HAND);
+		if (handCard == null) throw new CommandException(NOT_IN_HAND);
 		
-		IHand handCard;
-		try {
-			handCard = myHand.get(cardIndex);
-		}
-		catch (IndexOutOfBoundsException e) {
-			throw new CommandException(NOT_IN_HAND);
-		}
 		return handCard;
+		
 	}
 	
-	private Integer getBasic() {
-		Integer basic = null;
+	private IBench getCardFromBench(IGame game, long cardId) throws SQLException, CommandException {
+		
+		IBench benchCard = BenchInputMapper.findByGameAndPlayerAndCard(game.getId(), getUserId(), cardId);
+		
+		if (benchCard == null) throw new CommandException(NOT_ON_BENCH);
+		
+		return benchCard;
+		
+	}
+	
+	private Long getBasic() {
+		Long basic = null;
 		try {
-			basic = helper.getInt("basic");
+			basic = helper.getLong("basic");
 		}
 		catch (NumberFormatException e) { }
 		
 		return basic;
 	}
 	
-	private Integer getPokemon() {
-		Integer pokemon = null;
+	private Long getPokemon() {
+		Long pokemon = null;
 		try {
-			pokemon = helper.getInt("pokemon");
+			pokemon = helper.getLong("pokemon");
 		}
 		catch (NumberFormatException e) { }
 		
 		return pokemon;
 	}
 	
-	private void playPokemon(IHand pokemonCard, List<IBench> pokemonOnBench)
+	private void playPokemon(IGame game, IHand pokemonInHand)
 			throws CommandException, MissingMappingException, MapperException, SQLException {
 		
-		Integer basicPokemon = getBasic();
-		if (!pokemonCard.getCard().getBasic().isEmpty() && basicPokemon != null) {
+		Long basicPokemon = getBasic();
+		
+		if (!pokemonInHand.getCard().getBasic().isEmpty() && basicPokemon != null) {
 			
-			IBench pokemonToEvolve = null;
-			try {
-				pokemonToEvolve = pokemonOnBench.get(basicPokemon);
-			}
-			catch (IndexOutOfBoundsException e) {
-				e.printStackTrace();
-				throw new CommandException(NOT_ON_BENCH_EVOLVE);
-			}
+			IBench pokemonOnBench = getCardFromBench(game, basicPokemon);
 			
-			if (!pokemonCard.getCard().getBasic().equals(pokemonToEvolve.getCard().getName())) {
+			if (!pokemonInHand.getCard().getBasic().equals(pokemonOnBench.getCard().getName())) {
 				throw new CommandException(
 						String.format(
 								EVOLVE_FAILURE,
-								pokemonToEvolve.getCard().getName(), pokemonCard.getCard().getName()
+								pokemonOnBench.getCard().getName(), pokemonInHand.getCard().getName()
 						)
 				);
 			}
@@ -180,35 +165,35 @@ public class PlayCardCommand extends AbstractCommand {
 			 * Place replaced card in discard pile.
 			 */
 			HandFactory.registerDeleted(
-					pokemonCard.getId(),
-					pokemonCard.getVersion(),
-					pokemonCard.getGame(),
-					pokemonCard.getPlayer(),
-					pokemonCard.getDeck(),
-					pokemonCard.getCard()
+					pokemonInHand.getId(),
+					pokemonInHand.getVersion(),
+					pokemonInHand.getGame(),
+					pokemonInHand.getPlayer(),
+					pokemonInHand.getDeck(),
+					pokemonInHand.getCard()
 			);
 			BenchFactory.registerDirty(
-					pokemonToEvolve.getId(),
-					pokemonToEvolve.getVersion(),
-					pokemonToEvolve.getGame(),
-					pokemonToEvolve.getPlayer(),
-					pokemonToEvolve.getDeck(),
-					pokemonCard.getCard(),
-					pokemonToEvolve.getCard(),
-					pokemonToEvolve.getAttachedEnergyCards()
+					pokemonOnBench.getId(),
+					pokemonOnBench.getVersion(),
+					pokemonOnBench.getGame(),
+					pokemonOnBench.getPlayer(),
+					pokemonOnBench.getDeck(),
+					pokemonInHand.getCard(),
+					pokemonOnBench.getCard(),
+					pokemonOnBench.getAttachedEnergyCards()
 			);
 			DiscardFactory.createNew(
-					pokemonToEvolve.getGame(),
-					pokemonToEvolve.getPlayer(),
-					pokemonToEvolve.getDeck(),
-					pokemonToEvolve.getCard()
+					pokemonOnBench.getGame(),
+					pokemonOnBench.getPlayer(),
+					pokemonOnBench.getDeck(),
+					pokemonOnBench.getCard()
 			);
 			
-			this.message = String.format(EVOLVE_SUCCESS, pokemonToEvolve.getCard().getName(), pokemonCard.getCard().getName());
+			this.message = String.format(EVOLVE_SUCCESS, pokemonOnBench.getCard().getName(), pokemonInHand.getCard().getName());
 			
 		}
-		else if (!pokemonCard.getCard().getBasic().isEmpty() && basicPokemon == null) {
-			throw new CommandException(String.format(POKEMON_NOT_SPECIFIED_EVOLVE, pokemonCard.getCard().getName()));
+		else if (!pokemonInHand.getCard().getBasic().isEmpty() && basicPokemon == null) {
+			throw new CommandException(String.format(POKEMON_NOT_SPECIFIED_EVOLVE, pokemonInHand.getCard().getName()));
 		}
 		else {
 			
@@ -218,29 +203,29 @@ public class PlayCardCommand extends AbstractCommand {
 			 * Its predecessor is itself, since it doesn't have a 'basic' type and doesn't replace anything on the bench.
 			 */
 			HandFactory.registerDeleted(
-					pokemonCard.getId(),
-					pokemonCard.getVersion(),
-					pokemonCard.getGame(),
-					pokemonCard.getPlayer(),
-					pokemonCard.getDeck(),
-					pokemonCard.getCard()
+					pokemonInHand.getId(),
+					pokemonInHand.getVersion(),
+					pokemonInHand.getGame(),
+					pokemonInHand.getPlayer(),
+					pokemonInHand.getDeck(),
+					pokemonInHand.getCard()
 			);
 			BenchFactory.createNew(
-					pokemonCard.getGame(),
-					pokemonCard.getPlayer(),
-					pokemonCard.getDeck(),
-					pokemonCard.getCard(),
-					pokemonCard.getCard(),
+					pokemonInHand.getGame(),
+					pokemonInHand.getPlayer(),
+					pokemonInHand.getDeck(),
+					pokemonInHand.getCard(),
+					pokemonInHand.getCard(),
 					new ArrayList<IAttachedEnergy>()
 			);
 			
-			this.message = String.format(POKEMON_BENCH_SUCCESS, pokemonCard.getCard().getName(), pokemonOnBench.size() + 1);
+			this.message = String.format(POKEMON_BENCH_SUCCESS, pokemonInHand.getCard().getName());
 			
 		}
 		
 	}
 	
-	private void playEnergy(IGame game, IHand energyCard, List<IBench> pokemonOnBench)
+	private void playEnergy(IGame game, IHand energyInHand)
 			throws SQLException, CommandException, MissingMappingException, MapperException {
 		
 		List<IAttachedEnergy> thisTurnEnergies =
@@ -250,41 +235,34 @@ public class PlayCardCommand extends AbstractCommand {
 			throw new CommandException(ENERGY_ALREADY_PLAYED);
 		}
 		
-		Integer pokemon = getPokemon();
+		Long pokemon = getPokemon();
 		if (pokemon == null) throw new CommandException(POKEMON_NOT_SPECIFIED_ENERGY);
 		
-		IBench pokemonCard = null;
-		try {
-			pokemonCard = pokemonOnBench.get(pokemon);
-		}
-		catch (IndexOutOfBoundsException e) {
-			e.printStackTrace();
-			throw new CommandException(NOT_ON_BENCH_ENERGY);
-		}
+		IBench pokemonCard = getCardFromBench(game, pokemon);
 		
 		/**
 		 * Delete card from hand.
 		 * Attach it to a Pokemon on the bench.
 		 */
 		HandFactory.registerDeleted(
-				energyCard.getId(),
-				energyCard.getVersion(),
-				energyCard.getGame(),
-				energyCard.getPlayer(),
-				energyCard.getDeck(),
-				energyCard.getCard()
+				energyInHand.getId(),
+				energyInHand.getVersion(),
+				energyInHand.getGame(),
+				energyInHand.getPlayer(),
+				energyInHand.getDeck(),
+				energyInHand.getCard()
 		);
 		AttachedEnergyFactory.createNew(
-				energyCard.getGame(),
-				energyCard.getGame().getTurn(),
-				energyCard.getPlayer(),
-				energyCard.getCard(),
+				energyInHand.getGame(),
+				energyInHand.getGame().getTurn(),
+				energyInHand.getPlayer(),
+				energyInHand.getCard(),
 				pokemonCard.getId()
 		);
 		
 		this.message = String.format(
 				ATTACH_ENERGY_SUCCESS,
-				energyCard.getCard().getName(), pokemonCard.getCard().getName()
+				energyInHand.getCard().getName(), pokemonCard.getCard().getName()
 		);
 		
 	}
@@ -292,7 +270,7 @@ public class PlayCardCommand extends AbstractCommand {
 	private void playTrainer(IHand trainerCard)
 			throws MissingMappingException, MapperException, SQLException, CommandException {
 		
-		Integer pokemon = getPokemon();
+		Long pokemon = getPokemon();
 		if (pokemon != null) throw new CommandException(CANNOT_PLAY_TRAINER);
 		
 		/**

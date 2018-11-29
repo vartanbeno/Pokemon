@@ -14,11 +14,15 @@
  <p>Upload a deck of ${numberOfCards} cards. One line per card.</p>
  
  <p>
- 	Types are e/p/t (energy/pokemon/trainer). Names can be anything
+ 	Types are e/p/t (energy/pokemon/trainer). Names can be anything.
  	<br>
  	<b>Format:</b> [type] "[name]"
  	<br>
- 	<b>Example:</b> p "Charizard"
+ 	<b>Example:</b> p "Charmander"
+ 	<br>
+ 	You can also put evolving Pokemon, the evolved form coming first.
+ 	<br>
+ 	<b>Example:</b> p "Charmeleon" "Charmander"
  </p>
  
  <form method="POST" action="Deck">
