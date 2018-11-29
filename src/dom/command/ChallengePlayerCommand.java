@@ -9,7 +9,7 @@ import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.IDeck;
-import dom.model.user.User;
+import dom.model.user.IUser;
 import dom.model.user.mapper.UserInputMapper;
 
 public class ChallengePlayerCommand extends AbstractCommand {
@@ -49,8 +49,8 @@ public class ChallengePlayerCommand extends AbstractCommand {
 			Challenge challenge = ChallengeInputMapper.findOpenByChallengerAndChallengee(challengerId, challengeeId);
 			if (challenge != null) throw new CommandException(String.format(ALREADY_CHALLENGED, challenge.getChallengee().getUsername()));
 			
-			User challenger = UserInputMapper.findById(challengerId);
-			User challengee = UserInputMapper.findById(challengeeId);
+			IUser challenger = UserInputMapper.findById(challengerId);
+			IUser challengee = UserInputMapper.findById(challengeeId);
 			
 			if (challengee == null) throw new CommandException(CHALLENGEE_DOES_NOT_EXIST);
 			

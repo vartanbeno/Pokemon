@@ -3,10 +3,10 @@ package dom.command;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.game.Game;
 import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
-import dom.model.user.User;
+import dom.model.game.IGame;
+import dom.model.user.IUser;
 import dom.model.user.mapper.UserInputMapper;
 
 public class RetireCommand extends AbstractCommand {
@@ -27,13 +27,13 @@ public class RetireCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
-			Game game = getGame(gameId);
+			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
 			checkIfGameHasEnded(game);
 			
 			long userId = getUserId();
-			User opponent = null;
+			IUser opponent = null;
 			
 			if (userId == game.getChallenger().getId()) {
 				game.setStatus(GameStatus.challengerRetired.ordinal());

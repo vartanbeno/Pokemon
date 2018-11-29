@@ -4,8 +4,8 @@ import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.command.impl.annotation.SetInRequestAttribute;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.game.Game;
 import dom.model.game.GameStatus;
+import dom.model.game.IGame;
 import dom.model.game.IGameBoard;
 import dom.model.game.mapper.GameInputMapper;
 
@@ -34,7 +34,7 @@ public class ViewBoardCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
-			Game game = getGame(gameId);
+			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
 			

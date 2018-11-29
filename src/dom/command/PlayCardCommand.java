@@ -17,7 +17,6 @@ import dom.model.bench.IBench;
 import dom.model.bench.mapper.BenchInputMapper;
 import dom.model.card.CardType;
 import dom.model.discard.DiscardFactory;
-import dom.model.game.Game;
 import dom.model.game.GameFactory;
 import dom.model.game.IGame;
 import dom.model.hand.HandFactory;
@@ -54,7 +53,7 @@ public class PlayCardCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
-			Game game = getGame(gameId);
+			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
 			checkIfGameHasEnded(game);
@@ -72,7 +71,7 @@ public class PlayCardCommand extends AbstractCommand {
 				else {
 					playEnergy(game, handCard, myBench);
 				}
-							
+				
 			}
 			else if (handCard.getCard().getType().equals(CardType.t.name())) {
 				playTrainer(handCard);

@@ -6,14 +6,13 @@ import java.util.List;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.card.Card;
 import dom.model.card.CardFactory;
 import dom.model.card.CardType;
 import dom.model.card.ICard;
 import dom.model.card.tdg.CardTDG;
-import dom.model.deck.Deck;
 import dom.model.deck.DeckFactory;
-import dom.model.user.User;
+import dom.model.deck.IDeck;
+import dom.model.user.IUser;
 import dom.model.user.mapper.UserInputMapper;
 
 public class UploadDeckCommand extends AbstractCommand {
@@ -37,7 +36,7 @@ public class UploadDeckCommand extends AbstractCommand {
 			
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
-			User player = UserInputMapper.findById(getUserId());
+			IUser player = UserInputMapper.findById(getUserId());
 			
 			/**
 			 * We delete carriage returns (\r) by replacing them with an empty String "".
@@ -50,7 +49,7 @@ public class UploadDeckCommand extends AbstractCommand {
 			if (cardsArray.length != number) throw new CommandException(String.format(CARDS_FAIL_MESSAGE, cardsArray.length, number));
 			
 			List<ICard> cards = new ArrayList<ICard>();
-			Deck deck = DeckFactory.createNew(player, cards);
+			IDeck deck = DeckFactory.createNew(player, cards);
 			
 			for (String cardString : cardsArray) {
 				
@@ -78,7 +77,7 @@ public class UploadDeckCommand extends AbstractCommand {
 					throw new CommandException(CARD_TYPE_ERROR);
 				}
 				
-				Card card = CardFactory.createNew(deck.getId(), type, name, basic);
+				ICard card = CardFactory.createNew(deck.getId(), type, name, basic);
 				cards.add(card);
 				
 			}

@@ -5,15 +5,14 @@ import java.util.List;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.card.Card;
-import dom.model.challenge.Challenge;
+import dom.model.card.ICard;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.ChallengeStatus;
-import dom.model.deck.Deck;
+import dom.model.challenge.IChallenge;
 import dom.model.deck.IDeck;
-import dom.model.game.Game;
 import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
+import dom.model.game.IGame;
 import dom.model.hand.HandFactory;
 
 public class AcceptChallengeCommand extends AbstractCommand {
@@ -39,9 +38,9 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			if (myDecks.size() == 0) throw new CommandException(NO_DECK);
 			
 			long challengeId = Long.parseLong((String) helper.getRequestAttribute("challenge"));
-			Challenge challenge = getChallengeToAcceptOrRefuse(challengeId);
+			IChallenge challenge = getChallengeToAcceptOrRefuse(challengeId);
 			
-			Deck myDeck = getDeck();
+			IDeck myDeck = getDeck();
 			checkIfItsMyDeck(myDeck);
 			
 			challenge.setStatus(ChallengeStatus.accepted.ordinal());
@@ -53,7 +52,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			 * Current turn is challenger's, because when a game starts, it's the challenger's turn.
 			 * Value of turn is 1, because it's the 1st turn of the game.
 			 */
-			Game game = GameFactory.createNew(
+			IGame game = GameFactory.createNew(
 					challenge.getChallenger(),
 					challenge.getChallengee(),
 					challenge.getChallengerDeck(),
@@ -67,7 +66,7 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			 * When a game first starts, the challenger draws a card.
 			 * The card is at the top of the deck, so the first in the list is drawn.
 			 */
-			Card card = (Card) game.getChallengerDeck().getCards().remove(0);
+			ICard card = game.getChallengerDeck().getCards().remove(0);
 			HandFactory.createNew(
 					game, game.getChallenger(), game.getChallengerDeck().getId(), card
 			);

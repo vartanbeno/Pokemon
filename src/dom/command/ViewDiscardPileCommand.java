@@ -8,7 +8,7 @@ import org.dsrg.soenea.domain.helper.Helper;
 
 import dom.model.discard.IDiscard;
 import dom.model.discard.mapper.DiscardInputMapper;
-import dom.model.game.Game;
+import dom.model.game.IGame;
 
 public class ViewDiscardPileCommand extends AbstractCommand {
 	
@@ -31,7 +31,7 @@ public class ViewDiscardPileCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
-			Game game = getGame(gameId);
+			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
 			

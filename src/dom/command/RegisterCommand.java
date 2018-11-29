@@ -3,7 +3,7 @@ package dom.command;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.user.User;
+import dom.model.user.IUser;
 import dom.model.user.UserFactory;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -30,7 +30,7 @@ public class RegisterCommand extends AbstractCommand {
 				throw new CommandException(ENTER_USER_AND_PASS);
 			}
 			
-			User user = UserInputMapper.findByUsername(username);
+			IUser user = UserInputMapper.findByUsername(username);
 			if (user != null) {
 				throw new CommandException(String.format(USERNAME_TAKEN, username));
 			}

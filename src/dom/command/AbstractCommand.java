@@ -16,6 +16,7 @@ import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.game.Game;
 import dom.model.game.GameStatus;
+import dom.model.game.IGame;
 import dom.model.game.mapper.GameInputMapper;
 
 public abstract class AbstractCommand extends ValidatorCommand {
@@ -159,17 +160,17 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
 	}
 	
-	protected void checkIfImPartOfGame(Game game) throws CommandException {
+	protected void checkIfImPartOfGame(IGame game) throws CommandException {
 		long userId = getUserId();
 		if (userId != game.getChallenger().getId() && userId != game.getChallengee().getId())
 			throw new CommandException(NOT_YOUR_GAME);
 	}
 	
-	protected void checkIfGameHasEnded(Game game) throws CommandException {
+	protected void checkIfGameHasEnded(IGame game) throws CommandException {
 		if (game.getStatus() != GameStatus.ongoing.ordinal()) throw new CommandException(GAME_HAS_ENDED);
 	}
 	
-	protected void checkIfItsMyTurn(Game game) throws CommandException {
+	protected void checkIfItsMyTurn(IGame game) throws CommandException {
 		if (getUserId() != game.getCurrentTurn()) throw new CommandException(NOT_YOUR_TURN);
 	}
 
