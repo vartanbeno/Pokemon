@@ -53,6 +53,8 @@ public class PlayCardCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
+			long gameVersion = getVersion();
+			
 			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
@@ -81,7 +83,17 @@ public class PlayCardCommand extends AbstractCommand {
 			 * This increments the game version by 1.
 			 * Doesn't modify the current_turn or turn attributes.
 			 */
-			GameFactory.registerDirty(game);
+			GameFactory.registerDirty(
+					game.getId(),
+					gameVersion,
+					game.getChallenger(),
+					game.getChallengee(),
+					game.getChallengerDeck(),
+					game.getChallengeeDeck(),
+					game.getCurrentTurn(),
+					game.getTurn(),
+					game.getStatus()
+			);
 			
 		}
 		catch (Exception e) {
@@ -146,7 +158,14 @@ public class PlayCardCommand extends AbstractCommand {
 			 * Replace card on bench with card from hand, keeping all attached energies.
 			 * Place replaced card in discard pile.
 			 */
-			HandFactory.registerDeleted(pokemonCard);
+			HandFactory.registerDeleted(
+					pokemonCard.getId(),
+					pokemonCard.getVersion(),
+					pokemonCard.getGame(),
+					pokemonCard.getPlayer(),
+					pokemonCard.getDeck(),
+					pokemonCard.getCard()
+			);
 			BenchFactory.registerDirty(
 					pokemonToEvolve.getId(),
 					pokemonToEvolve.getVersion(),
@@ -177,7 +196,14 @@ public class PlayCardCommand extends AbstractCommand {
 			 * Create card on bench.
 			 * Its predecessor is itself, since it doesn't have a 'basic' type and doesn't replace anything on the bench.
 			 */
-			HandFactory.registerDeleted(pokemonCard);
+			HandFactory.registerDeleted(
+					pokemonCard.getId(),
+					pokemonCard.getVersion(),
+					pokemonCard.getGame(),
+					pokemonCard.getPlayer(),
+					pokemonCard.getDeck(),
+					pokemonCard.getCard()
+			);
 			BenchFactory.createNew(
 					pokemonCard.getGame(),
 					pokemonCard.getPlayer(),
@@ -219,7 +245,14 @@ public class PlayCardCommand extends AbstractCommand {
 		 * Delete card from hand.
 		 * Attach it to a Pokemon on the bench.
 		 */
-		HandFactory.registerDeleted(energyCard);
+		HandFactory.registerDeleted(
+				energyCard.getId(),
+				energyCard.getVersion(),
+				energyCard.getGame(),
+				energyCard.getPlayer(),
+				energyCard.getDeck(),
+				energyCard.getCard()
+		);
 		AttachedEnergyFactory.createNew(
 				energyCard.getGame(),
 				energyCard.getGame().getTurn(),
@@ -245,7 +278,14 @@ public class PlayCardCommand extends AbstractCommand {
 		 * Delete card from hand.
 		 * Create card in discard pile.
 		 */
-		HandFactory.registerDeleted(trainerCard);
+		HandFactory.registerDeleted(
+				trainerCard.getId(),
+				trainerCard.getVersion(),
+				trainerCard.getGame(),
+				trainerCard.getPlayer(),
+				trainerCard.getDeck(),
+				trainerCard.getCard()
+		);
 		DiscardFactory.createNew(
 				trainerCard.getGame(),
 				trainerCard.getPlayer(),

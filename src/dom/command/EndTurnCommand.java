@@ -36,6 +36,8 @@ public class EndTurnCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
+			long gameVersion = getVersion();
+			
 			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
@@ -47,7 +49,18 @@ public class EndTurnCommand extends AbstractCommand {
 					
 			game.setCurrentTurn(nextTurnPlayer.getId());
 			game.setTurn(game.getTurn() + 1);
-			GameFactory.registerDirty(game);
+			
+			GameFactory.registerDirty(
+					game.getId(),
+					gameVersion,
+					game.getChallenger(),
+					game.getChallengee(),
+					game.getChallengerDeck(),
+					game.getChallengeeDeck(),
+					game.getCurrentTurn(),
+					game.getTurn(),
+					game.getStatus()
+			);
 			
 			/**
 			 * We need some game board data, since it contains current state of decks
@@ -86,7 +99,14 @@ public class EndTurnCommand extends AbstractCommand {
 				
 				IHand cardToDiscard = previousTurnHand.remove(0);
 				
-				HandFactory.registerDeleted(cardToDiscard);
+				HandFactory.registerDeleted(
+						cardToDiscard.getId(),
+						cardToDiscard.getVersion(),
+						cardToDiscard.getGame(),
+						cardToDiscard.getPlayer(),
+						cardToDiscard.getDeck(),
+						cardToDiscard.getCard()
+				);
 				DiscardFactory.createNew(
 						cardToDiscard.getGame(),
 						cardToDiscard.getPlayer(),

@@ -32,17 +32,6 @@ public class DiscardFactory {
 		
 	}
 	
-	public static Discard createClean(IDiscard discardCard) {
-		return createClean(
-				discardCard.getId(),
-				discardCard.getVersion(),
-				discardCard.getGame(),
-				discardCard.getPlayer(),
-				discardCard.getDeck(),
-				discardCard.getCard()
-		);
-	}
-	
 	public static Discard registerDirty(long id, long version, IGame game, IUser player, long deck, ICard card)
 			throws MissingMappingException, MapperException {
 		
@@ -53,18 +42,6 @@ public class DiscardFactory {
 		
 	}
 	
-	public static Discard registerDirty(IDiscard discardCard)
-			throws MissingMappingException, MapperException {
-		return registerDirty(
-				discardCard.getId(),
-				discardCard.getVersion(),
-				discardCard.getGame(),
-				discardCard.getPlayer(),
-				discardCard.getDeck(),
-				discardCard.getCard()
-		);
-	}
-	
 	public static Discard registerDeleted(long id, long version, IGame game, IUser player, long deck, ICard card)
 			throws MissingMappingException, MapperException {
 		
@@ -73,11 +50,6 @@ public class DiscardFactory {
 		
 		return discardCard;
 		
-	}
-	
-	public static Discard registerDeleted(IDiscard discardCard)
-			throws MissingMappingException, MapperException {
-		return registerDeleted(discardCard);
 	}
 
 }

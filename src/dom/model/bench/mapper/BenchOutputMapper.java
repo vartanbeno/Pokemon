@@ -14,7 +14,15 @@ public class BenchOutputMapper extends GenericOutputMapper<Long, Bench> {
 	@Override
 	public void insert(Bench benchCard) throws MapperException {
 		try {
-			insertStatic(benchCard);
+			BenchTDG.insert(
+					benchCard.getId(),
+					benchCard.getVersion(),
+					benchCard.getGame().getId(),
+					benchCard.getPlayer().getId(),
+					benchCard.getDeck(),
+					benchCard.getCard().getId(),
+					benchCard.getPredecessor().getId()
+			);
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
@@ -24,7 +32,8 @@ public class BenchOutputMapper extends GenericOutputMapper<Long, Bench> {
 	@Override
 	public void update(Bench benchCard) throws MapperException {
 		try {
-			updateStatic(benchCard);
+			int count = BenchTDG.update(benchCard.getId(), benchCard.getVersion(), benchCard.getCard().getId(), benchCard.getPredecessor().getId());
+			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update card in play with id: %d.", benchCard.getId()));
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
@@ -34,33 +43,12 @@ public class BenchOutputMapper extends GenericOutputMapper<Long, Bench> {
 	@Override
 	public void delete(Bench benchCard) throws MapperException {
 		try {
-			deleteStatic(benchCard);
+			int count = BenchTDG.delete(benchCard.getId(), benchCard.getVersion());
+			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete card in play with id: %d.", benchCard.getId()));
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
 		}
-	}
-	
-	public static void insertStatic(Bench benchCard) throws SQLException, LostUpdateException {
-		BenchTDG.insert(
-				benchCard.getId(),
-				benchCard.getVersion(),
-				benchCard.getGame().getId(),
-				benchCard.getPlayer().getId(),
-				benchCard.getDeck(),
-				benchCard.getCard().getId(),
-				benchCard.getPredecessor().getId()
-		);
-	}
-	
-	public static void updateStatic(Bench benchCard) throws SQLException, LostUpdateException {
-		int count = BenchTDG.update(benchCard.getId(), benchCard.getVersion(), benchCard.getCard().getId(), benchCard.getPredecessor().getId());
-		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update card in play with id: %d.", benchCard.getId()));
-	}
-	
-	public static void deleteStatic(Bench benchCard) throws SQLException, LostUpdateException {
-		int count = BenchTDG.delete(benchCard.getId(), benchCard.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete card in play with id: %d.", benchCard.getId()));
 	}
 
 }

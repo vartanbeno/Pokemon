@@ -5,8 +5,8 @@ import java.util.List;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
-import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
+import dom.model.challenge.IChallenge;
 import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
@@ -46,7 +46,7 @@ public class ChallengePlayerCommand extends AbstractCommand {
 			IDeck myDeck = getDeck();
 			checkIfItsMyDeck(myDeck);
 			
-			Challenge challenge = ChallengeInputMapper.findOpenByChallengerAndChallengee(challengerId, challengeeId);
+			IChallenge challenge = ChallengeInputMapper.findOpenByChallengerAndChallengee(challengerId, challengeeId);
 			if (challenge != null) throw new CommandException(String.format(ALREADY_CHALLENGED, challenge.getChallengee().getUsername()));
 			
 			IUser challenger = UserInputMapper.findById(challengerId);

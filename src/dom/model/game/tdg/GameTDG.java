@@ -64,6 +64,9 @@ public class GameTDG {
 	private static final String UPDATE = String.format("UPDATE %1$s SET current_turn = ?, turn = ?, status = ?, version = (version + 1) "
 			+ "WHERE id = ? AND version = ?;", TABLE_NAME);
 	
+	private static final String RETIRE = String.format("UPDATE %1$s SET status = ?, version = (version + 1) "
+			+ "WHERE id = ?;", TABLE_NAME);
+	
 	private static final String DELETE = String.format("DELETE FROM %1$s WHERE id = ? AND version = ?;", TABLE_NAME);
 	
 	public static String getTableName() {
@@ -124,6 +127,19 @@ public class GameTDG {
 		ps.setInt(3, status);
 		ps.setLong(4, id);
 		ps.setLong(5, version);
+		
+		int result = ps.executeUpdate();
+		ps.close();
+		
+		return result;
+	}
+	
+	public static int retire(long id, int status) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		
+		PreparedStatement ps = con.prepareStatement(RETIRE);
+		ps.setInt(1, status);
+		ps.setLong(2, id);
 		
 		int result = ps.executeUpdate();
 		ps.close();

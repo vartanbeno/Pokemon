@@ -38,6 +38,8 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			if (myDecks.size() == 0) throw new CommandException(NO_DECK);
 			
 			long challengeId = Long.parseLong((String) helper.getRequestAttribute("challenge"));
+			long challengeVersion = getVersion();
+			
 			IChallenge challenge = getChallengeToAcceptOrRefuse(challengeId);
 			
 			IDeck myDeck = getDeck();
@@ -45,7 +47,14 @@ public class AcceptChallengeCommand extends AbstractCommand {
 			
 			challenge.setStatus(ChallengeStatus.accepted.ordinal());
 			
-			ChallengeFactory.registerDirty(challenge);
+			ChallengeFactory.registerDirty(
+					challenge.getId(),
+					challengeVersion,
+					challenge.getChallenger(),
+					challenge.getChallengee(),
+					challenge.getStatus(),
+					challenge.getChallengerDeck()
+			);
 			
 			/**
 			 * Create a game.

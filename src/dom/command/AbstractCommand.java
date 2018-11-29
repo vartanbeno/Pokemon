@@ -11,10 +11,8 @@ import org.dsrg.soenea.domain.helper.Helper;
 import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeStatus;
 import dom.model.challenge.mapper.ChallengeInputMapper;
-import dom.model.deck.Deck;
 import dom.model.deck.IDeck;
 import dom.model.deck.mapper.DeckInputMapper;
-import dom.model.game.Game;
 import dom.model.game.GameStatus;
 import dom.model.game.IGame;
 import dom.model.game.mapper.GameInputMapper;
@@ -23,6 +21,14 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	
 	@SetInRequestAttribute
 	public String message;
+	
+	/**
+	 * Version fail message.
+	 * Message will be shown if either:
+	 *  - version isn't provided as a parameter;
+	 *  - version provided can't be parsed as a long.
+	 */
+	private static final String VERSION_FAIL = "You must provide a version number.";
 	
 	/**
 	 * Challenge fail messages.
@@ -67,7 +73,16 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		}
 	}
 	
-	protected Deck getDeck() throws SQLException, CommandException {
+	protected long getVersion() throws CommandException {
+		try {
+			return helper.getLong("version");
+		}
+		catch (NumberFormatException e) {
+			throw new CommandException(VERSION_FAIL);
+		}
+	}
+	
+	protected IDeck getDeck() throws SQLException, CommandException {
 		
 		Long deckId = null;
 		try {
@@ -77,16 +92,16 @@ public abstract class AbstractCommand extends ValidatorCommand {
 			throw new CommandException(DECK_ID_FORMAT);
 		}
 		
-		Deck deck = DeckInputMapper.findById(deckId);
+		IDeck deck = DeckInputMapper.findById(deckId);
 		if (deck == null) throw new CommandException(DECK_DOES_NOT_EXIST);
 		
 		return deck;
 		
 	}
 	
-	protected Deck getDeck(long deckId) throws SQLException, CommandException {
+	protected IDeck getDeck(long deckId) throws SQLException, CommandException {
 		
-		Deck deck = DeckInputMapper.findById(deckId);
+		IDeck deck = DeckInputMapper.findById(deckId);
 		if (deck == null) throw new CommandException(DECK_DOES_NOT_EXIST);
 		
 		return deck;
@@ -150,13 +165,13 @@ public abstract class AbstractCommand extends ValidatorCommand {
 						
 	}
 	
-	protected Game getGame(long gameId) throws CommandException, SQLException {
-		Game game = GameInputMapper.findById(gameId);
+	protected IGame getGame(long gameId) throws CommandException, SQLException {
+		IGame game = GameInputMapper.findById(gameId);
 		checkIfGameExists(game);
 		return game;
 	}
 	
-	protected void checkIfGameExists(Game game) throws CommandException {
+	protected void checkIfGameExists(IGame game) throws CommandException {
 		if (game == null) throw new CommandException(GAME_DOES_NOT_EXIST);
 	}
 	
