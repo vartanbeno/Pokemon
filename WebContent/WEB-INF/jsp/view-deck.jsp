@@ -3,17 +3,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 {
-	"deck": {
-		"id": ${deck.player.id},
-		"cards": [
-			<c:forEach items="${deck.cards}" var="card" varStatus="loop">
-				{
-					"id": ${card.id},
-					"t": "${card.type}",
-					"n": "${card.name}",
+	"cards": [
+		<c:forEach items="${deck.cards}" var="card" varStatus="loop">
+			{
+				"id": ${card.id},
+				"t": "${card.type}",
+				"n": "${card.name}"
+				<c:if test="${not empty card.basic}">,
 					"b": "${card.basic}"
-				}<c:if test="${!loop.last}">,</c:if>
-			</c:forEach>
-		]
-	}
+				</c:if>
+			}<c:if test="${!loop.last}">,</c:if>
+		</c:forEach>
+	]
 }
