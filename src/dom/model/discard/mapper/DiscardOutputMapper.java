@@ -14,7 +14,14 @@ public class DiscardOutputMapper extends GenericOutputMapper<Long, Discard> {
 	@Override
 	public void insert(Discard discardCard) throws MapperException {
 		try {
-			insertStatic(discardCard);
+			DiscardTDG.insert(
+					discardCard.getId(),
+					discardCard.getVersion(),
+					discardCard.getGame().getId(),
+					discardCard.getPlayer().getId(),
+					discardCard.getDeck(),
+					discardCard.getCard().getId()
+			);
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
@@ -24,7 +31,8 @@ public class DiscardOutputMapper extends GenericOutputMapper<Long, Discard> {
 	@Override
 	public void update(Discard discardCard) throws MapperException {
 		try {
-			updateStatic(discardCard);
+			int count = DiscardTDG.update(discardCard.getId(), discardCard.getVersion(), discardCard.getCard().getId());
+			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update card in play with id: %d.", discardCard.getId()));
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
@@ -34,32 +42,12 @@ public class DiscardOutputMapper extends GenericOutputMapper<Long, Discard> {
 	@Override
 	public void delete(Discard discardCard) throws MapperException {
 		try {
-			deleteStatic(discardCard);
+			int count = DiscardTDG.delete(discardCard.getId(), discardCard.getVersion());
+			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete card in play with id: %d.", discardCard.getId()));
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
 		}
-	}
-	
-	public static void insertStatic(Discard discardCard) throws SQLException, LostUpdateException {
-		DiscardTDG.insert(
-				discardCard.getId(),
-				discardCard.getVersion(),
-				discardCard.getGame().getId(),
-				discardCard.getPlayer().getId(),
-				discardCard.getDeck(),
-				discardCard.getCard().getId()
-		);
-	}
-	
-	public static void updateStatic(Discard discardCard) throws SQLException, LostUpdateException {
-		int count = DiscardTDG.update(discardCard.getId(), discardCard.getVersion(), discardCard.getCard().getId());
-		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update card in play with id: %d.", discardCard.getId()));
-	}
-	
-	public static void deleteStatic(Discard discardCard) throws SQLException, LostUpdateException {
-		int count = DiscardTDG.delete(discardCard.getId(), discardCard.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete card in play with id: %d.", discardCard.getId()));
 	}
 
 }

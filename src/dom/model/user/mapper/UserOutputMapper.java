@@ -14,7 +14,7 @@ public class UserOutputMapper extends GenericOutputMapper<Long, User> {
 	@Override
 	public void insert(User user) throws MapperException {
 		try {
-			insertStatic(user);
+			UserTDG.insert(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
@@ -24,7 +24,8 @@ public class UserOutputMapper extends GenericOutputMapper<Long, User> {
 	@Override
 	public void update(User user) throws MapperException {
 		try {
-			updateStatic(user);
+			int count = UserTDG.update(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
+			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update user with id: %d.", user.getId()));
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
@@ -34,25 +35,12 @@ public class UserOutputMapper extends GenericOutputMapper<Long, User> {
 	@Override
 	public void delete(User user) throws MapperException {
 		try {
-			deleteStatic(user);
+			int count = UserTDG.delete(user.getId(), user.getVersion());
+			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete user with id: %d.", user.getId()));
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
 		}
-	}
-	
-	public static void insertStatic(User user) throws SQLException {
-		UserTDG.insert(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
-	}
-
-	public static void updateStatic(User user) throws SQLException, LostUpdateException {
-		int count = UserTDG.update(user.getId(), user.getVersion(), user.getUsername(), user.getPassword());
-		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot update user with id: %d.", user.getId()));
-	}
-
-	public static void deleteStatic(User user) throws SQLException, LostUpdateException {
-		int count = UserTDG.delete(user.getId(), user.getVersion());
-		if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete user with id: %d.", user.getId()));
 	}
 
 }
