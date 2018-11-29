@@ -25,6 +25,14 @@ public abstract class AbstractCommand extends ValidatorCommand {
 	public String message;
 	
 	/**
+	 * Version fail message.
+	 * Message will be shown if either:
+	 *  - version isn't provided as a parameter;
+	 *  - version provided can't be parsed as a long.
+	 */
+	private static final String VERSION_FAIL = "You must provide a version number.";
+	
+	/**
 	 * Challenge fail messages.
 	 */
 	private static final String CHALLENGE_NOT_OPEN = "You cannot accept/refuse/withdraw from a challenge that's not open.";
@@ -64,6 +72,15 @@ public abstract class AbstractCommand extends ValidatorCommand {
 		}
 		catch (NullPointerException e) {
 			throw new CommandException(message);
+		}
+	}
+	
+	protected long getVersion() throws CommandException {
+		try {
+			return helper.getLong("version");
+		}
+		catch (NumberFormatException e) {
+			throw new CommandException(VERSION_FAIL);
 		}
 	}
 	

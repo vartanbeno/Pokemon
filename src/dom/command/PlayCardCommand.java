@@ -53,6 +53,8 @@ public class PlayCardCommand extends AbstractCommand {
 			checkIfLoggedIn(NOT_LOGGED_IN);
 			
 			long gameId = Long.parseLong((String) helper.getRequestAttribute("game"));
+			long gameVersion = getVersion();
+			
 			IGame game = getGame(gameId);
 			
 			checkIfImPartOfGame(game);
@@ -81,7 +83,17 @@ public class PlayCardCommand extends AbstractCommand {
 			 * This increments the game version by 1.
 			 * Doesn't modify the current_turn or turn attributes.
 			 */
-			GameFactory.registerDirty(game);
+			GameFactory.registerDirty(
+					game.getId(),
+					gameVersion,
+					game.getChallenger(),
+					game.getChallengee(),
+					game.getChallengerDeck(),
+					game.getChallengeeDeck(),
+					game.getCurrentTurn(),
+					game.getTurn(),
+					game.getStatus()
+			);
 			
 		}
 		catch (Exception e) {
