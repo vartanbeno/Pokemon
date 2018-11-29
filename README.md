@@ -13,7 +13,7 @@ This is a web application built using various architectural patterns. The goal w
     - This project was made in Eclipse, so you might get a smoother run using it.
 3. Import the project.
 4. Deploy the project to the Tomcat server.
-5. Go to [localhost:8080/Pokemon/Register](http://localhost:8080/Pokemon/Register) and play around with the project!
+5. Go to [localhost:8080/Pokemon/Poke/Player/Register](http://localhost:8080/Pokemon/Register) and play around with the project!
     - This is assuming that the context root of the project is `Pokemon`.
 
 ### Running the Application (with Docker)
@@ -22,81 +22,115 @@ Running the application can very easily be done with Docker. Simply run `docker-
 
 The [docker-compose.yml](docker-compose.yml) file spawns 2 containers: one for Tomcat, and another for the MySQL database. When the latter is first run, [this SQL script](mysql-init/init.sql) is executed to set up the tables.
 
-It's important to mention that for the Tomcat container to communicate with the database, before generating the WAR file, I changed the MySQL hostname in [MyResources.properties](src/MyResources.properties) from `localhost:3306` to `db`.
-
-That's because the container used for the database has `db` as a name for its service. You could also set it to `pokemon-db`, since that's the name of the container.
-
-To run the convenient main methods in [src/main](src/main), make sure the MySQL hostname in the properties file is set to `localhost:3306`, since port 3306 is exposed on the running database container.
+If you just want to run a container for the database, run the [docker-compose.db.yml](docker-compose.db.yml) file instead: `docker-compose -f docker-compose.db.yml up`
 
 ## Usage
 
-First, register a user into the database by visiting `/Register` and creating an account.
+All of the following assumes that the context root of the project is `Pokemon`, i.e. every path starts with `Pokemon/`.
 
-- You're better off creating 2+ users, so that you can use the various features of the app.
-- To log out, visit `/Logout`.
-- To log in, visit `/Login`.
+First, register a user into the database by visiting `Poke/Player/Register` and creating an account.
+
+- You're better off creating 2+ users, so that you can use the various features of the app, like challenging and playing a game.
+- To log out, visit `Poke/Player/Logout`.
+- To log in, visit `Poke/Player/Login`.
     
 ### Uploading a Deck
 
-To challenge a player, you first need to upload a deck. You can do that at `/UploadDeck`. Make sure to follow the desired formatting to avoid any errors. An example deck is provided [here](WebContent/deck-example.txt).
+To challenge a player, you first need to upload a deck. You can do that at `/Poke/UploadDeck`. Make sure to follow the desired formatting to avoid any errors. An example deck is provided [here](WebContent/deck-example.txt).
 
 ### Viewing Your Deck
 
-To view the deck you uploaded, visit `/ViewDeck`.
+To view the deck you uploaded, visit `/Poke/Deck/[id]`, where `id` is the ID of the deck you just uploaded.
+
+### Viewing Your Decks
+
+To view all of your decks, visit `/Poke/Deck`.
 
 ### Challenging Players
 
-Once you have a deck, you can challenge players to games! To do that, visit `/ChallengePlayer`, where you get a dropdown of other players you can challenge. Once you challenge a player, a challenge will be created, with the status set to open.
+Once you have a deck, you can challenge players to games! To do that, visit `/Poke/Player/Challenge`. Once you challenge a player, a challenge will be created, with the status set to open.
 
-If you go to `/OpenChallenges`, you can see a list of challenges issued against you _by_ other players, and a list of challenges that you have thrown _to_ other players.
+If you go to `/Poke/Player/OpenChallenges`, you can see a list of challenges issued against you _by_ other players, and a list of challenges that you have thrown _to_ other players.
 
 ### Accepting a Challenge
 
-If you want to accept a challenge issued against you, go to `/OpenChallenges`, and click on the `Accept` button on the challenge you want to accept. This sets the challenge status to accepted.
+If you want to accept a challenge issued against you, go to `/Poke/Player/OpenChallenges`, and click on the `Accept` button on the challenge you want to accept. This sets the challenge status to accepted.
 
-Accepting a challenge creates a game between the challenger and the challengee. More on that later.
+Accepting a challenge creates a game between the challenger and the challengee. The first turn of the game is the challenger's, and they start with 1 card draw from their deck.
 
 ### Refusing a Challenge
 
-If you want to refuse a challenge issued against you, go to `/OpenChallenges`, and click on the `Refuse` button on the challenge you want to accept. This sets the challenge status to refused.
+If you want to refuse a challenge issued against you, go to `/Poke/Player/OpenChallenges`, and click on the `Refuse` button on the challenge you want to accept. This sets the challenge status to refused.
 
 ### Withdrawing From a Challenge
 
-If you want to go back on your steps and withdraw from a challenge that you issued to another player, go to `/OpenChallenges`, and click on the `Withdraw` button on the challenge you want to withdraw from. This sets the challenge status to withdrawn.
+If you want to go back on your steps and withdraw from a challenge that you issued to another player, go to `/Poke/Player/OpenChallenges`, and click on the `Withdraw` button on the challenge you want to withdraw from. This sets the challenge status to withdrawn.
 
 ### List of Players, Challenges, and Games
 
-1. To see the list of players (i.e. users), visit `/ListPlayers`.
-2. To see the list of challenges, visit `/ListChallenges`.
-3. To see the list of games, visit `/ListGames`.
+1. To see the list of players (i.e. users), visit `/Poke/Player`.
+2. To see the list of challenges, visit `/Poke/Challenge`.
+3. To see the list of games, visit `/Poke/Game`.
 
 You must be logged in to do any of those.
 
 ### Viewing Your Game Board
 
-To view your game board, visit `/ViewBoard?game=[id]`, where the game parameter is the ID of an ongoing game that you are part of.
+To view your game board, visit `/Poke/Game/[id]`, where `id` is the ID of the game you want to view.
 
 You must be part of a game to view its board.
 
-### Drawing a Card
+### Ending Your Turn
 
-To draw a card, visit `/DrawCard?game=[id]`, where `id` is the specific game's ID. You must be part of the game to draw a card. Drawing a card adds it to your hand.
+To end your turn, visit `/Poke/Game/[id]/EndTurn?version=[version]`, where `id` is the ID of the game in which you want end your turn, and `version` is the version of the game.
+
+If the `version` you provide doesn't correspond to the version of the game with the provided ID, you get a `LostUpdateException`.
+
+Your opponent cannot play until you end your turn. All they can do is view the game board, their hand, the discard piles, and retire.
+
+One you end your turn, if you have more than 7 cards in your hand, you discard your oldest one, and your opponent draws a card from their deck.
 
 ### Viewing Your Hand
 
-To view your hand, visit `/ViewHand?game=[id]`, with the appropriate game ID parameter.
+To view your hand, visit `/Poke/Game/[id]/Hand`, where `id` is the ID of the game in which you want to view your hand.
 
-### Playing Pokemon to the Bench
+You cannot view your opponent's hand.
 
-To play a Pokemon card to the bench, visit `/PlayPokemonToBench?game=[id]&card=[position]`, where the `game` parameter is the ID of a game that you are a part of, and the `card` parameter is the position of the card in your hand that you want to send to the bench, using a zero-based index (e.g. position 2 corresponds to the 3rd card in your hand).
+### Viewing a Discard Pile
 
-The maximum amount of Pokemon on your bench at any given time is 5, so you might get a fail message.
+To view a discard pile, visit `/Poke/Game/[id]/Player/[id]/Discard`, where the first `id` is the ID of the game, and the second `id` is the ID of the player whose discard pile you want to view.
 
-You can only send Pokemon to the bench. If you attempt to send a card that isn't a Pokemon to the bench, you will get a fail message.
+You can view your opponent's discard pile, not just yours.
+
+### Playing a Card
+
+To play a card, it must be your turn. Visit `/Poke/Game/[id]/Hand/[position]/Play?version=[version]` to play a card, where `id` is the ID of the game, `position` is the position of the card in your hand, based off a 0-based index, and `version` is the version of the game.
+
+#### Playing a Pokemon to the Bench
+
+If the card you select is of type Pokemon, and doesn't have a basic version (i.e. a Pokemon that's not evolved, like Charmander), then the Pokemon goes to your bench.
+
+#### Evolving a Pokemon
+
+You must provide a `basic` parameter, in addition to `version`. `basic` is the position of a Pokemon on your bench.
+
+If the card you select is of type Pokemon and its basic version corresponds to the one you chose from your bench, the evolved one replaces the one on your bench. The latter goes in your discard pile. The former keeps all attached energies that the basic one had.
+
+#### Playing a Trainer
+
+If the card you select is of type trainer, it gets send to your discard pile.
+
+#### Playing an Energy
+
+You must provide a `pokemon` parameter, in addition to `version`. `pokemon` is the position of a Pokemon on your bench.
+
+If the card you select is of type energy, it gets attached to the Pokemon you chose on the bench.
+
+You can only play 1 energy card per turn.
 
 ### Retiring From a Game
 
-To retire from a game, visit `/Retire?game=[id]`, where the `game` parameter is the ID of a game that you are a part of. Once you retire from a game, you can no longer draw cards or play Pokemon to the bench. You can still view its board and the hand you had right before retiring.
+To retire from a game, visit `/Poke/Game/[id]/Retire`, where `id` is the ID of the game you want to retire from. Once you retire from a game, you can no longer play in it. You can still view its board, the hand you had, and the discard pile you had right before retiring.
 
 When you retire from a game, your status is declared retired, and your opponent is declared the winner.
 
@@ -107,4 +141,3 @@ I made use of the [SoenEA](http://soenea.htmlweb.com/) (Software Engineering Ent
 The framework was developed by Stuart Thiel, a professor at Concordia University. Per his thesis, it is used to "aid in the rapid development of dependable Web Enterprise Applications."
 
 The project's file structure follows the recommended file structure from the thesis, which can be found in the Appendix, on page 73.
-
