@@ -7,6 +7,7 @@ import org.dsrg.soenea.domain.mapper.GenericOutputMapper;
 import org.dsrg.soenea.domain.mapper.LostUpdateException;
 
 import dom.model.game.Game;
+import dom.model.game.IGame;
 import dom.model.game.tdg.GameTDG;
 
 public class GameOutputMapper extends GenericOutputMapper<Long, Game> {
@@ -46,6 +47,16 @@ public class GameOutputMapper extends GenericOutputMapper<Long, Game> {
 		try {
 			int count = GameTDG.delete(game.getId(), game.getVersion());
 			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot delete game with id: %d.", game.getId()));
+		}
+		catch (SQLException e) {
+			throw new MapperException(e);
+		}
+	}
+	
+	public static void retire(IGame game) throws MapperException {
+		try {
+			int count = GameTDG.retire(game.getId(), game.getStatus());
+			if (count == 0) throw new LostUpdateException(String.format("Lost update: cannot find game with id: %d.", game.getId()));
 		}
 		catch (SQLException e) {
 			throw new MapperException(e);
