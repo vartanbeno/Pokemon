@@ -11,6 +11,11 @@ import dom.model.game.mapper.GameInputMapper;
 
 public class ViewBoardCommand extends AbstractCommand {
 	
+	private static final String PLAYING = "playing";
+	private static final String RETIRED = "retired";
+	private static final String WON = "won";
+	private static final String LOST = "lost";
+	
 	private static final String NOT_LOGGED_IN = "You must be logged in to view your game board.";
 	
 	@SetInRequestAttribute
@@ -41,23 +46,23 @@ public class ViewBoardCommand extends AbstractCommand {
 			gameBoard = GameInputMapper.buildGameBoard(game);
 			
 			if (gameBoard.getGame().getStatus() == GameStatus.ongoing.ordinal()) {
-				challengerStatus = challengeeStatus = "playing";
+				challengerStatus = challengeeStatus = PLAYING;
 			}
 			else if (gameBoard.getGame().getStatus() == GameStatus.challengerRetired.ordinal()) {
-				challengerStatus = "retired";
-				challengeeStatus = "won";
+				challengerStatus = RETIRED;
+				challengeeStatus = PLAYING;
 			}
 			else if (gameBoard.getGame().getStatus() == GameStatus.challengeeRetired.ordinal()) {
-				challengerStatus = "won";
-				challengeeStatus = "retired";
+				challengerStatus = PLAYING;
+				challengeeStatus = RETIRED;
 			}
 			else if (gameBoard.getGame().getStatus() == GameStatus.challengerWon.ordinal()) {
-				challengerStatus = "won";
-				challengeeStatus = "lost";
+				challengerStatus = WON;
+				challengeeStatus = LOST;
 			}
 			else if (gameBoard.getGame().getStatus() == GameStatus.challengeeWon.ordinal()) {
-				challengerStatus = "lost";
-				challengeeStatus = "won";
+				challengerStatus = LOST;
+				challengeeStatus = WON;
 			}
 			
 		}
