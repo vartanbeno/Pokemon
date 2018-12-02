@@ -3,9 +3,9 @@ package dom.command;
 import org.dsrg.soenea.domain.command.CommandException;
 import org.dsrg.soenea.domain.helper.Helper;
 
+import dom.model.game.GameFactory;
 import dom.model.game.GameStatus;
 import dom.model.game.IGame;
-import dom.model.game.mapper.GameOutputMapper;
 import dom.model.user.IUser;
 import dom.model.user.mapper.UserInputMapper;
 
@@ -44,7 +44,17 @@ public class RetireCommand extends AbstractCommand {
 				opponent = UserInputMapper.findById(game.getChallenger().getId());
 			}
 			
-			GameOutputMapper.retire(game);
+			GameFactory.registerDirty(
+					game.getId(),
+					game.getVersion(),
+					game.getChallenger(),
+					game.getChallengee(),
+					game.getChallengerDeck(),
+					game.getChallengeeDeck(),
+					game.getCurrentTurn(),
+					game.getTurn(),
+					game.getStatus()
+			);
 			
 			this.message = String.format(RETIRE_SUCCESS, opponent.getUsername());
 			
