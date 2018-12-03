@@ -8,7 +8,7 @@ import dom.model.card.mapper.CardInputMapper;
 
 public class CardProxy extends DomainObjectProxy<Long, Card> implements ICard {
 
-	protected CardProxy(Long id) {
+	public CardProxy(Long id) {
 		super(id);
 	}
 

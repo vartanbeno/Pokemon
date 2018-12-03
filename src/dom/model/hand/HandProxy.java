@@ -9,9 +9,15 @@ import dom.model.game.IGame;
 import dom.model.hand.mapper.HandInputMapper;
 import dom.model.user.IUser;
 
+/**
+ * Not using this at all anywhere but keeping it, in case we ever do.
+ * 
+ * @author vartanbeno
+ *
+ */
 public class HandProxy extends DomainObjectProxy<Long, Hand> implements IHand {
 
-	protected HandProxy(Long id) {
+	public HandProxy(Long id) {
 		super(id);
 	}
 

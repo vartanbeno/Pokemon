@@ -9,14 +9,14 @@ import org.dsrg.soenea.domain.ObjectRemovedException;
 import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
 import org.dsrg.soenea.domain.mapper.IdentityMap;
 
+import dom.model.card.CardProxy;
 import dom.model.card.ICard;
 import dom.model.card.mapper.CardInputMapper;
 import dom.model.deck.Deck;
 import dom.model.deck.DeckFactory;
 import dom.model.deck.IDeck;
 import dom.model.deck.tdg.DeckFinder;
-import dom.model.user.User;
-import dom.model.user.mapper.UserInputMapper;
+import dom.model.user.UserProxy;
 
 public class DeckInputMapper {
 	
@@ -57,11 +57,18 @@ public class DeckInputMapper {
 	}
 	
 	public static Deck buildDeck(ResultSet rs) throws SQLException {
+				
+		List<ICard> cards = new ArrayList<ICard>();
+		for (ICard card : CardInputMapper.findByDeck(rs.getLong("id"))) {
+			cards.add(new CardProxy(card.getId()));
+		}
 		
-		User player = UserInputMapper.findById(rs.getLong("player"));
-		List<ICard> cards = CardInputMapper.findByDeck(rs.getLong("id"));
-		
-		return DeckFactory.createClean(rs.getLong("id"), rs.getLong("version"), player, cards);
+		return DeckFactory.createClean(
+				rs.getLong("id"),
+				rs.getLong("version"),
+				new UserProxy(rs.getLong("player")),
+				cards
+		);
 		
 	}
 	

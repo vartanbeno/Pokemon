@@ -12,7 +12,7 @@ import dom.model.user.IUser;
 
 public class DeckProxy extends DomainObjectProxy<Long, Deck> implements IDeck {
 
-	protected DeckProxy(Long id) {
+	public DeckProxy(Long id) {
 		super(id);
 	}
 

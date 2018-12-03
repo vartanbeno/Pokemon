@@ -13,10 +13,8 @@ import dom.model.challenge.Challenge;
 import dom.model.challenge.ChallengeFactory;
 import dom.model.challenge.IChallenge;
 import dom.model.challenge.tdg.ChallengeFinder;
-import dom.model.deck.Deck;
-import dom.model.deck.mapper.DeckInputMapper;
-import dom.model.user.User;
-import dom.model.user.mapper.UserInputMapper;
+import dom.model.deck.DeckProxy;
+import dom.model.user.UserProxy;
 
 public class ChallengeInputMapper {
 	
@@ -132,17 +130,14 @@ public class ChallengeInputMapper {
 	}
 	
 	public static Challenge buildChallenge(ResultSet rs) throws SQLException {
-		
-		User challenger = UserInputMapper.findById(rs.getLong("challenger"));
-		User challengee = UserInputMapper.findById(rs.getLong("challengee"));
-		Deck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
-		
+				
 		return ChallengeFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
-				challenger, challengee,
+				new UserProxy(rs.getLong("challenger")),
+				new UserProxy(rs.getLong("challengee")),
 				rs.getInt("status"),
-				challengerDeck
+				new DeckProxy(rs.getLong("challenger_deck"))
 			);
 		
 	}

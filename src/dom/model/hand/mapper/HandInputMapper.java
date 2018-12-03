@@ -9,16 +9,13 @@ import org.dsrg.soenea.domain.ObjectRemovedException;
 import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
 import org.dsrg.soenea.domain.mapper.IdentityMap;
 
-import dom.model.card.Card;
-import dom.model.card.mapper.CardInputMapper;
-import dom.model.game.Game;
-import dom.model.game.mapper.GameInputMapper;
+import dom.model.card.CardProxy;
+import dom.model.game.GameProxy;
 import dom.model.hand.Hand;
 import dom.model.hand.HandFactory;
 import dom.model.hand.IHand;
 import dom.model.hand.tdg.HandFinder;
-import dom.model.user.User;
-import dom.model.user.mapper.UserInputMapper;
+import dom.model.user.UserProxy;
 
 public class HandInputMapper {
 	
@@ -80,17 +77,13 @@ public class HandInputMapper {
 	
 	public static Hand buildHandCard(ResultSet rs) throws SQLException {
 		
-		Game game = GameInputMapper.findById(rs.getLong("game"));
-		User player = UserInputMapper.findById(rs.getLong("player"));
-		Card card = CardInputMapper.findById(rs.getLong("card"));
-		
 		return HandFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
-				game,
-				player,
+				new GameProxy(rs.getLong("game")),
+				new UserProxy(rs.getLong("player")),
 				rs.getLong("deck"),
-				card
+				new CardProxy(rs.getLong("card"))
 		);
 		
 	}

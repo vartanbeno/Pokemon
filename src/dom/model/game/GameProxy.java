@@ -10,7 +10,7 @@ import dom.model.user.IUser;
 
 public class GameProxy extends DomainObjectProxy<Long, Game> implements IGame {
 
-	protected GameProxy(Long id) {
+	public GameProxy(Long id) {
 		super(id);
 	}
 

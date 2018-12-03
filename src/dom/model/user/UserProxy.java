@@ -8,7 +8,7 @@ import dom.model.user.mapper.UserInputMapper;
 
 public class UserProxy extends DomainObjectProxy<Long, User> implements IUser {
 
-	protected UserProxy(Long id) {
+	public UserProxy(Long id) {
 		super(id);
 	}
 

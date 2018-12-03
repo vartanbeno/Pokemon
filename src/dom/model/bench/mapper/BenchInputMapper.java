@@ -9,18 +9,16 @@ import org.dsrg.soenea.domain.ObjectRemovedException;
 import org.dsrg.soenea.domain.mapper.DomainObjectNotFoundException;
 import org.dsrg.soenea.domain.mapper.IdentityMap;
 
+import dom.model.attachedenergy.AttachedEnergyProxy;
 import dom.model.attachedenergy.IAttachedEnergy;
 import dom.model.attachedenergy.mapper.AttachedEnergyInputMapper;
 import dom.model.bench.Bench;
 import dom.model.bench.BenchFactory;
 import dom.model.bench.IBench;
 import dom.model.bench.tdg.BenchFinder;
-import dom.model.card.Card;
-import dom.model.card.mapper.CardInputMapper;
-import dom.model.game.Game;
-import dom.model.game.mapper.GameInputMapper;
-import dom.model.user.User;
-import dom.model.user.mapper.UserInputMapper;
+import dom.model.card.CardProxy;
+import dom.model.game.GameProxy;
+import dom.model.user.UserProxy;
 
 public class BenchInputMapper {
 	
@@ -82,22 +80,20 @@ public class BenchInputMapper {
 	
 	public static Bench buildBenchCard(ResultSet rs) throws SQLException {
 		
-		Game game = GameInputMapper.findById(rs.getLong("game"));
-		User player = UserInputMapper.findById(rs.getLong("player"));
-		Card card = CardInputMapper.findById(rs.getLong("card"));
-		Card predecessor = CardInputMapper.findById(rs.getLong("predecessor"));
-		
-		List<IAttachedEnergy> attachedEnergyCards =
-				AttachedEnergyInputMapper.findByGameAndPlayerAndPokemonCard(rs.getLong("game"), rs.getLong("player"), rs.getLong("id"));
+		List<IAttachedEnergy> attachedEnergyCards = new ArrayList<IAttachedEnergy>();
+		for (IAttachedEnergy attachedEnergy : 
+				AttachedEnergyInputMapper.findByGameAndPlayerAndPokemonCard(rs.getLong("game"), rs.getLong("player"), rs.getLong("id"))) {
+			attachedEnergyCards.add(new AttachedEnergyProxy(attachedEnergy.getId()));
+		}
 		
 		return BenchFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
-				game,
-				player,
+				new GameProxy(rs.getLong("game")),
+				new UserProxy(rs.getLong("player")),
 				rs.getLong("deck"),
-				card,
-				predecessor,
+				new CardProxy(rs.getLong("card")),
+				new CardProxy(rs.getLong("predecessor")),
 				attachedEnergyCards
 		);
 		
