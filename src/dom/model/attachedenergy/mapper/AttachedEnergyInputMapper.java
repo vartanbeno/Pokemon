@@ -13,12 +13,9 @@ import dom.model.attachedenergy.AttachedEnergy;
 import dom.model.attachedenergy.AttachedEnergyFactory;
 import dom.model.attachedenergy.IAttachedEnergy;
 import dom.model.attachedenergy.tdg.AttachedEnergyFinder;
-import dom.model.card.ICard;
-import dom.model.card.mapper.CardInputMapper;
-import dom.model.game.Game;
-import dom.model.game.mapper.GameInputMapper;
-import dom.model.user.User;
-import dom.model.user.mapper.UserInputMapper;
+import dom.model.card.CardProxy;
+import dom.model.game.GameProxy;
+import dom.model.user.UserProxy;
 
 public class AttachedEnergyInputMapper {
 	
@@ -82,14 +79,14 @@ public class AttachedEnergyInputMapper {
 	
 	public static AttachedEnergy buildAttachedEnergy(ResultSet rs) throws SQLException {
 		
-		Game game = GameInputMapper.findById(rs.getLong("game"));
-		User player = UserInputMapper.findById(rs.getLong("player"));
-		ICard energyCard = CardInputMapper.findById(rs.getLong("energy_card"));
-		
 		return AttachedEnergyFactory.createClean(
-				rs.getLong("id"), rs.getLong("version"),
-				game, rs.getLong("game_turn"), player,
-				energyCard, rs.getLong("pokemon_card")
+				rs.getLong("id"),
+				rs.getLong("version"),
+				new GameProxy(rs.getLong("game")),
+				rs.getLong("game_turn"),
+				new UserProxy(rs.getLong("player")),
+				new CardProxy(rs.getLong("energy_card")),
+				rs.getLong("pokemon_card")
 		);
 		
 	}

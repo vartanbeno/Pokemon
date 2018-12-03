@@ -9,9 +9,15 @@ import dom.model.discard.mapper.DiscardInputMapper;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
 
+/**
+ * Not using this at all anywhere but keeping it, in case we ever do.
+ * 
+ * @author vartanbeno
+ *
+ */
 public class DiscardProxy extends DomainObjectProxy<Long, Discard> implements IDiscard {
 
-	protected DiscardProxy(Long id) {
+	public DiscardProxy(Long id) {
 		super(id);
 	}
 

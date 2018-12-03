@@ -11,7 +11,7 @@ import dom.model.user.IUser;
 
 public class AttachedEnergyProxy extends DomainObjectProxy<Long, AttachedEnergy> implements IAttachedEnergy {
 
-	protected AttachedEnergyProxy(Long id) {
+	public AttachedEnergyProxy(Long id) {
 		super(id);
 	}
 	

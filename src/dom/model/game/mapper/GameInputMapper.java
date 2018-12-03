@@ -12,8 +12,8 @@ import org.dsrg.soenea.domain.mapper.IdentityMap;
 
 import dom.model.bench.IBench;
 import dom.model.bench.mapper.BenchInputMapper;
+import dom.model.deck.DeckProxy;
 import dom.model.deck.IDeck;
-import dom.model.deck.mapper.DeckInputMapper;
 import dom.model.discard.IDiscard;
 import dom.model.discard.mapper.DiscardInputMapper;
 import dom.model.game.Game;
@@ -24,7 +24,7 @@ import dom.model.game.tdg.GameFinder;
 import dom.model.hand.IHand;
 import dom.model.hand.mapper.HandInputMapper;
 import dom.model.user.IUser;
-import dom.model.user.mapper.UserInputMapper;
+import dom.model.user.UserProxy;
 
 public class GameInputMapper {
 	
@@ -110,16 +110,13 @@ public class GameInputMapper {
 	
 	public static Game buildGame(ResultSet rs) throws SQLException {
 		
-		IUser challenger = UserInputMapper.findById(rs.getLong("challenger"));
-		IUser challengee = UserInputMapper.findById(rs.getLong("challengee"));
-		IDeck challengerDeck = DeckInputMapper.findById(rs.getLong("challenger_deck"));
-		IDeck challengeeDeck = DeckInputMapper.findById(rs.getLong("challengee_deck"));
-		
 		return GameFactory.createClean(
 				rs.getLong("id"),
 				rs.getLong("version"),
-				challenger, challengee,
-				challengerDeck, challengeeDeck,
+				new UserProxy(rs.getLong("challenger")),
+				new UserProxy(rs.getLong("challengee")),
+				new DeckProxy(rs.getLong("challenger_deck")),
+				new DeckProxy(rs.getLong("challengee_deck")),
 				rs.getLong("current_turn"),
 				rs.getLong("turn"),
 				rs.getInt("status")

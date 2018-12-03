@@ -8,9 +8,15 @@ import dom.model.challenge.mapper.ChallengeInputMapper;
 import dom.model.deck.IDeck;
 import dom.model.user.IUser;
 
+/**
+ * Not using this at all anywhere but keeping it, in case we ever do.
+ * 
+ * @author vartanbeno
+ *
+ */
 public class ChallengeProxy extends DomainObjectProxy<Long, Challenge> implements IChallenge {
 
-	protected ChallengeProxy(Long id) {
+	public ChallengeProxy(Long id) {
 		super(id);
 	}
 

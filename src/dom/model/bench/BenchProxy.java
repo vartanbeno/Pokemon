@@ -12,9 +12,15 @@ import dom.model.card.ICard;
 import dom.model.game.IGame;
 import dom.model.user.IUser;
 
+/**
+ * Not using this at all anywhere but keeping it, in case we ever do.
+ * 
+ * @author vartanbeno
+ *
+ */
 public class BenchProxy extends DomainObjectProxy<Long, Bench> implements IBench {
 
-	protected BenchProxy(Long id) {
+	public BenchProxy(Long id) {
 		super(id);
 	}
 
